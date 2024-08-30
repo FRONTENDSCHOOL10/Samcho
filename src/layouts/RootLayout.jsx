@@ -1,10 +1,12 @@
+import { Footer } from '@/components';
 import { Outlet } from 'react-router-dom';
 
 function RootLayout() {
   return (
-    <div className="">
+    <>
       <Outlet />
-    </div>
+      <Footer />
+    </>
   );
 }
 
