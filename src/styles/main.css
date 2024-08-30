@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardVariable.woff2') format('woff2'),
+    url('/fonts/PretendardVariable.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 글로벌 폰트 적용 */
+body {
+  font-family: 'Pretendard', sans-serif;
+}
+
+
+#root {
+  max-width: 27.5rem;
+  width: 100%;
+  height: 100dvh;
+  margin: 0 auto;
+  background-color: #F1F5FA;
+}
