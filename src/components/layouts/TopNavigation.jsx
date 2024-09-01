@@ -9,7 +9,7 @@ const TopNavigation = () => {
   };
 
   return (
-    <header className="py-10 w-full max-w-[27.5rem]">
+    <header className="pt-10 w-full max-w-[27.5rem]">
       <nav className="flex w-full justify-between">
         <Filter className="cursor-pointer fill-gray-450" />
         <div className="flex gap-5">
