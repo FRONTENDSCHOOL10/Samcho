@@ -1,4 +1,3 @@
-import propTypes from 'prop-types';
 import { MoodDistribution } from '../index';
 
 const MoodDistributionChart = () => {
