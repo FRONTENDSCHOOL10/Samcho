@@ -12,7 +12,8 @@ const ToggleButton = ({ text, onClick, className }) => {
   };
 
   return (
-    <div
+    <button
+      type="button"
       className={`w-[77px] h-[35px] inline-flex items-center justify-center cursor-pointer rounded-full text-sm font-bold whitespace-nowrap ${
         isActive
           ? 'bg-blue-500 text-white shadow-dark'
@@ -21,7 +22,7 @@ const ToggleButton = ({ text, onClick, className }) => {
       onClick={handleClick}
     >
       {text}
-    </div>
+    </button>
   );
 };
 
