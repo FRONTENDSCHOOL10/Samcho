@@ -10,7 +10,7 @@ const TopHeader = ({ title, isShowIcon = false }) => {
   };
 
   return (
-    <header className="pt-10 w-full max-w-[27.5rem] flex justify-center items-center text-lg font-semibold relative">
+    <header className="pt-5 w-full max-w-[27.5rem] flex justify-center items-center text-lg font-semibold relative">
       {isShowIcon && (
         <DirectionLeft
           className="absolute left-0 cursor-pointer fill-black"
