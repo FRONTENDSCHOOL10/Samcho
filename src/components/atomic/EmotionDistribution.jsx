@@ -38,14 +38,12 @@ const EmotionDistribution = ({ mood = 'happy', ratio = 0 }) => {
       altText = '행복한 감정';
   }
 
-  const containerClasses = `w-[45px] h-[68px] flex flex-col gap-3 items-center`;
-  const imgClasses = `w-[36px] h-[36px]`;
-  const ratioClasses = `flex justify-center items-center w-[45px] h-[20px] bg-blue-10 rounded-xl self-stretch text-xs font-medium text-blue-500 text-center`;
-
   return (
-    <div className={containerClasses}>
-      <img src={moods[mood]} alt={altText} className={imgClasses}></img>
-      <span className={ratioClasses}>{`${ratio}%`}</span>
+    <div className={`w-[45px] h-[68px] flex flex-col gap-3 items-center`}>
+      <img src={moods[mood]} alt={altText} className={`w-9 h-9`}></img>
+      <span
+        className={`flex justify-center items-center w-[45px] h-5 bg-blue-10 rounded-xl self-stretch text-xs font-medium text-blue-500 text-center`}
+      >{`${ratio}%`}</span>
     </div>
   );
 };
