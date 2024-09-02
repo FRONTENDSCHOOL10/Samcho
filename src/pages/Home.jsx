@@ -1,3 +1,4 @@
+import { TopNavigation } from '@/components';
 import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
@@ -18,9 +19,8 @@ const Home = () => {
         <meta property="og:site:author" content="하루몽 일동" />
       </Helmet>
       <section id="page">
-        <div>Home</div>
+        <TopNavigation />
       </section>
-      <nav>하단내비게이션</nav>
     </>
   );
 };

@@ -32,6 +32,7 @@ export default {
         red: '#EC2929',
       },
       boxShadow: {
+        top: '0px -1px 1px 0px rgba(0, 0, 0, 0.15)',
         light: '1px 1px 5px rgba(0, 0, 0, 0.1)',
         dark: '1px 1px 5px rgba(0, 0, 0, 0.15)',
       },

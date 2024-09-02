@@ -1,8 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { configRoutes, getNavigationItems } from '@/utils';
+import { configRoutes } from '@/utils';
 import RootLayout from '@/layouts/RootLayout';
-
-import { Login, Register, Home } from './pages';
+import { Login, Register, Home, Chart, Mypage, Post } from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
 const navigation = [
@@ -10,6 +9,36 @@ const navigation = [
     text: '홈',
     path: '',
     element: <Home />,
+  },
+  {
+    text: '통계',
+    path: 'chart',
+    element: <Chart />,
+  },
+  {
+    text: '우편함',
+    path: 'post',
+    element: <Post />,
+  },
+  {
+    text: '내정보',
+    path: 'mypage',
+    element: <Mypage />,
+  },
+  {
+    text: '일기 상세',
+    path: '/diary/detail',
+    lazy: () => import('@/pages/Diary/DetailDiary'),
+  },
+  {
+    text: '일기 작성',
+    path: '/diary/new',
+    lazy: () => import('@/pages/Diary/NewDiary'),
+  },
+  {
+    text: '일기 수정',
+    path: '/diary/edit',
+    lazy: () => import('@/pages/Diary/EditDiary'),
   },
 ];
 
@@ -30,10 +59,6 @@ export const routes = [
   },
 ];
 
-const router = createBrowserRouter(routes, {
-  basename: import.meta.env.BASE_URL,
-});
+const router = createBrowserRouter(routes);
 
 export default router;
-
-export const navigationItems = getNavigationItems(navigation);
