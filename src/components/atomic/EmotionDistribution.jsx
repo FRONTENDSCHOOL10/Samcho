@@ -1,14 +1,20 @@
 import PropTypes from 'prop-types';
-import { BadMong, SadMong, HappyMong, SmileMong, SosoMong } from '@/assets/icons/mood';
+import {
+  BadMong,
+  SadMong,
+  HappyMong,
+  SmileMong,
+  SosoMong,
+} from '@/assets/icons/mood';
 
-const EmotionDistribution = ({mood = 'happy', ratio = 100}) => {
+const EmotionDistribution = ({ mood = 'happy', ratio = 0 }) => {
   const moods = {
     bad: BadMong,
     sad: SadMong,
     happy: HappyMong,
     smile: SmileMong,
-    soso: SosoMong
-  }
+    soso: SosoMong,
+  };
 
   let altText;
 
@@ -32,26 +38,21 @@ const EmotionDistribution = ({mood = 'happy', ratio = 100}) => {
       altText = '행복한 감정';
   }
 
-
-  const containerClasses = `w-[45px] h-[68px] flex flex-col gap-3 items-center`
+  const containerClasses = `w-[45px] h-[68px] flex flex-col gap-3 items-center`;
   const imgClasses = `w-[36px] h-[36px]`;
   const ratioClasses = `flex justify-center items-center w-[45px] h-[20px] bg-blue-10 rounded-xl self-stretch text-xs font-medium text-blue-500 text-center`;
 
-
   return (
-    <>
     <div className={containerClasses}>
       <img src={moods[mood]} alt={altText} className={imgClasses}></img>
       <span className={ratioClasses}>{`${ratio}%`}</span>
     </div>
-    </>
-  )
-
-}
+  );
+};
 
 EmotionDistribution.propTypes = {
   ratio: PropTypes.number,
-  mood: PropTypes.oneOf(['bad', 'sad', 'happy', 'smile', 'soso'])
-}
+  mood: PropTypes.oneOf(['bad', 'sad', 'happy', 'smile', 'soso']),
+};
 
 export default EmotionDistribution;
