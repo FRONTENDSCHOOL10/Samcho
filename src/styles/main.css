@@ -24,3 +24,12 @@ body {
   padding: 0 20px;
   background-color: #F1F5FA;
 }
+
+.custom-month-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}

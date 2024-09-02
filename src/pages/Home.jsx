@@ -1,4 +1,4 @@
-import { TopNavigation } from '@/components';
+import { TopNavigation, YearMonth } from '@/components';
 import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
@@ -20,6 +20,7 @@ const Home = () => {
       </Helmet>
       <section id="page">
         <TopNavigation />
+        <YearMonth />
       </section>
     </>
   );
