@@ -7,7 +7,7 @@ import {
   SosoMong,
 } from '@/assets/icons/mood';
 
-const EmotionDistribution = ({ mood = 'happy', ratio = 0 }) => {
+const MoodDistribution = ({ mood = 'happy', ratio = 0 }) => {
   const moods = {
     bad: BadMong,
     sad: SadMong,
@@ -48,9 +48,9 @@ const EmotionDistribution = ({ mood = 'happy', ratio = 0 }) => {
   );
 };
 
-EmotionDistribution.propTypes = {
+MoodDistribution.propTypes = {
   ratio: PropTypes.number,
   mood: PropTypes.oneOf(['bad', 'sad', 'happy', 'smile', 'soso']),
 };
 
-export default EmotionDistribution;
+export default MoodDistribution;
