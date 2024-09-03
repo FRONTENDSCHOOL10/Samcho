@@ -1,17 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { HappyMong } from '@/assets/icons/mood';
-import { SmileMong } from '@/assets/icons/mood';
-import { SosoMong } from '@/assets/icons/mood';
-import { BadMong } from '@/assets/icons/mood';
-import { SadMong } from '@/assets/icons/mood';
+import moodIcons from '@/assets/icons/mood/moodIcons'; // Importing moodIcons
 
 const emotions = [
-  { name: 'happy', src: HappyMong, alt: 'Happy icon', color: '#FFD700' },
-  { name: 'smile', src: SmileMong, alt: 'Smile icon', color: '#00FF00' },
-  { name: 'soso', src: SosoMong, alt: 'Soso icon', color: '#0000FF' },
-  { name: 'bad', src: BadMong, alt: 'Bad icon', color: '#FF0000' },
-  { name: 'sad', src: SadMong, alt: 'Sad icon', color: '#800080' },
+  { name: 'happy', src: moodIcons.happy, alt: 'Happy icon' },
+  { name: 'smile', src: moodIcons.smile, alt: 'Smile icon' },
+  { name: 'soso', src: moodIcons.soso, alt: 'Soso icon' },
+  { name: 'bad', src: moodIcons.bad, alt: 'Bad icon' },
+  { name: 'sad', src: moodIcons.sad, alt: 'Sad icon' },
 ];
 
 const SelectEmotion = ({ title }) => {
@@ -22,11 +18,11 @@ const SelectEmotion = ({ title }) => {
   };
 
   return (
-    <div className="w-[356px] h-[108px] px-5 py-2.5 bg-white rounded-[15px] shadow flex-col justify-center items-center gap-[15px] inline-flex">
-      <div className="text-[#555555] text-base font-semibold font-['Pretendard']">
+    <div className="w-[356px] h-[108px] px-5 py-2.5 bg-white rounded-[15px] shadow-light flex-col justify-center items-center gap-[15px] flex">
+      <div className="text-gray-450 text-base font-semibold">
         {title}
       </div>
-      <div className="justify-start items-center gap-[17px] inline-flex">
+      <div className="justify-start items-center gap-[17px] flex">
         {emotions.map((emotion) => (
           <div
             key={emotion.name}
