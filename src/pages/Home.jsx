@@ -27,7 +27,7 @@ const Home = () => {
       </Helmet>
       <section id="page">
         <TopNavigation onToggleView={handleToggleView} />
-        <YearMonth className="pt-10 pb-5" />
+        <YearMonth className="py-5" />
         {viewMode === 'calendar' ? (
           <Calendar />
         ) : (
