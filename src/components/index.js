@@ -16,3 +16,4 @@ export { default as DiaryCard } from './molecule/DiaryCard.jsx';
 export { default as EmotionRanking } from './molecule/EmotionRanking.jsx';
 export { default as MoodDistributionChart } from './molecule/MoodDistributionChart.jsx';
 export { default as SelectPicture } from './molecule/SelectPicture.jsx';
+export { default as ToggleTab } from './atomic/ToggleTab.jsx';
