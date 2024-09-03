@@ -1,11 +1,13 @@
-import { Calendar2, Filter, List, Search } from '@/assets/icons/menu';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Calendar2, Filter, List, Search } from '@/assets/icons/menu';
 
-const TopNavigation = () => {
+const TopNavigation = ({ onToggleView }) => {
   const [isCalendarView, setIsCalendarView] = useState(true);
 
   const handleToggleIcon = () => {
     setIsCalendarView(!isCalendarView);
+    onToggleView();
   };
 
   return (
@@ -30,6 +32,10 @@ const TopNavigation = () => {
       </nav>
     </header>
   );
+};
+
+TopNavigation.propTypes = {
+  onToggleView: PropTypes.func,
 };
 
 export default TopNavigation;

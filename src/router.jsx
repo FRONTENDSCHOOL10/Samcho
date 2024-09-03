@@ -1,7 +1,15 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { configRoutes } from '@/utils';
 import RootLayout from '@/layouts/RootLayout';
-import { Login, Register, Home, Chart, Mypage, Post } from './pages';
+import {
+  Login,
+  Register,
+  Home,
+  Chart,
+  Mypage,
+  Post,
+  ChartMoreList,
+} from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
 const navigation = [
@@ -14,6 +22,11 @@ const navigation = [
     text: '통계',
     path: 'chart',
     element: <Chart />,
+  },
+  {
+    text: '통계',
+    path: 'chart/more',
+    element: <ChartMoreList />,
   },
   {
     text: '우편함',

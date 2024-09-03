@@ -1,7 +1,14 @@
-import { TopNavigation, YearMonth } from '@/components';
+import { useState } from 'react';
+import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
 import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
+  const [viewMode, setViewMode] = useState('calendar');
+
+  const handleToggleView = () => {
+    setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
+  };
+
   return (
     <>
       <Helmet>
@@ -19,8 +26,23 @@ const Home = () => {
         <meta property="og:site:author" content="하루몽 일동" />
       </Helmet>
       <section id="page">
-        <TopNavigation />
-        <YearMonth />
+        <TopNavigation onToggleView={handleToggleView} />
+        <YearMonth className="pt-10 pb-5" />
+        {viewMode === 'calendar' ? (
+          <Calendar />
+        ) : (
+          <div className="flex flex-col gap-5">
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+            <DiaryCard date="2024-09-03" />
+          </div>
+        )}
       </section>
     </>
   );

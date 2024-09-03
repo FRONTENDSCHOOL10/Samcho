@@ -1,21 +1,7 @@
 import PropTypes from 'prop-types';
-import {
-  BadMong,
-  SadMong,
-  HappyMong,
-  SmileMong,
-  SosoMong,
-} from '@/assets/icons/mood';
+import moodIcons from '@/assets/icons/mood/moodIcons';
 
 const MoodDistribution = ({ mood = 'happy', ratio = 0 }) => {
-  const moods = {
-    bad: BadMong,
-    sad: SadMong,
-    happy: HappyMong,
-    smile: SmileMong,
-    soso: SosoMong,
-  };
-
   let altText;
 
   switch (mood) {
@@ -40,7 +26,7 @@ const MoodDistribution = ({ mood = 'happy', ratio = 0 }) => {
 
   return (
     <div className={`w-[45px] h-[68px] flex flex-col gap-3 items-center`}>
-      <img src={moods[mood]} alt={altText} className={`w-9 h-9`}></img>
+      <img src={moodIcons[mood]} alt={altText} className={`w-9 h-9`}></img>
       <span
         className={`flex justify-center items-center w-[45px] h-5 bg-blue-10 rounded-xl self-stretch text-xs font-medium text-blue-500 text-center`}
       >{`${ratio}%`}</span>
