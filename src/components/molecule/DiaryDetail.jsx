@@ -1,5 +1,6 @@
 import { Delete, Edit } from '@/assets/icons/menu';
 import moodIcons from '@/assets/icons/mood/moodIcons';
+import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 
 // 임시 데이터 (DB 연결 시 삭제할 것)
@@ -139,6 +140,10 @@ const DiaryDetail = ({ selectedDate }) => {
       </div>
     </main>
   );
+};
+
+DiaryDetail.propTypes = {
+  selectedDate: PropTypes.string.isRequired,
 };
 
 export default DiaryDetail;
