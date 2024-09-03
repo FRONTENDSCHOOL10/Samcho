@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-const YearMonth = () => {
+const YearMonth = ({ className }) => {
   const [selectedMonth, setSelectedMonth] = useState('2024-09');
 
   const handleChange = (event) => {
@@ -8,7 +9,7 @@ const YearMonth = () => {
   };
 
   return (
-    <div className="flex items-center justify-center">
+    <div className={`flex items-center justify-center ${className}`}>
       <label htmlFor="monthType" className="sr-only">
         월 선택
       </label>
@@ -25,4 +26,9 @@ const YearMonth = () => {
     </div>
   );
 };
+
+YearMonth.propTypes = {
+  className: PropTypes.string,
+};
+
 export default YearMonth;
