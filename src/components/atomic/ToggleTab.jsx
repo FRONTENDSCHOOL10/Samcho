@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
-const ToggleTab = ({ tab1 = '알림', tab2 = '교환일기' }) => {
-  const [activeTab, setActiveTab] = useState('tab1');
-
+const ToggleTab = ({
+  tab1 = '알림',
+  tab2 = '교환일기',
+  activeTab,
+  onTab1Click,
+  onTab2Click,
+}) => {
   const handleTab1Click = () => {
     setActiveTab('tab1');
   };
@@ -28,7 +31,7 @@ const ToggleTab = ({ tab1 = '알림', tab2 = '교환일기' }) => {
               ? 'text-blue-500 font-bold'
               : 'font-medium text-gray-300'
           }`}
-          onClick={handleTab1Click}
+          onClick={onTab1Click}
           role="tab"
           aria-selected={activeTab === 'tab1'}
         >
@@ -41,7 +44,7 @@ const ToggleTab = ({ tab1 = '알림', tab2 = '교환일기' }) => {
               ? 'text-blue-500 font-bold'
               : 'font-medium text-gray-300'
           }`}
-          onClick={handleTab2Click}
+          onClick={onTab2Click}
           role="tab"
           aria-selected={activeTab === 'tab2'}
         >
@@ -55,6 +58,9 @@ const ToggleTab = ({ tab1 = '알림', tab2 = '교환일기' }) => {
 ToggleTab.propTypes = {
   tab1: PropTypes.string,
   tab2: PropTypes.string,
+  activeTab: PropTypes.string.isRequired,
+  onTab1Click: PropTypes.func.isRequired,
+  onTab2Click: PropTypes.func.isRequired,
 };
 
 export default ToggleTab;

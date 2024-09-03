@@ -13,7 +13,7 @@ const PostCard = ({ type = 'postalert', text }) => {
         {text}
       </span>
       {type === 'postalert' ? (
-        <div className="flex flex-row gap-[15px] ">
+        <div className="flex flex-row gap-[15px] ml-[1px] ">
           <button type="button" className="w-[22px] h-[22px]" aria-label="확인">
             <img src={CheckIcon}></img>
           </button>
