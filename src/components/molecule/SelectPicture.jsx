@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CameraIcon from '@/assets/icons/diary/camera.svg';
 
 const SelectPicture = () => {

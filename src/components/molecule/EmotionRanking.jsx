@@ -34,7 +34,7 @@ const EmotionRanking = () => {
   );
 
   return (
-    <div className="w-full p-[15px] bg-white rounded-[15px] shadow flex flex-col gap-6">
+    <div className="w-full p-[15px] bg-white rounded-[15px] shadow-light flex flex-col gap-6">
       <div className="flex items-center justify-between w-full">
         <div className="text-[#555555] text-base font-semibold font-['Pretendard']">
           감정랭킹
@@ -46,7 +46,7 @@ const EmotionRanking = () => {
         </div>
       </div>
 
-      <div className="flex justify-around">
+      <div className="flex justify-between">
         {rankingsData.map((rankItem) => (
           <div
             key={rankItem.rank}
