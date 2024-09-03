@@ -9,7 +9,7 @@ const FeelingCalendar = ({ day, isDiaryWritten = false, mood }) => {
         <img
           src={moodIcons[mood]}
           alt="감정 아이콘"
-          className="w-[44px] h-[44px]"
+          className="w-[44px] h-[44px] cursor-pointer"
         />
       ) : (
         <DayCircle className="fill-blue-50 w-[44px] h-[44px]" />
