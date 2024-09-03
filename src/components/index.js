@@ -14,3 +14,4 @@ export { default as Calendar } from './molecule/Calendar.jsx';
 export { default as DiaryCard } from './molecule/DiaryCard.jsx';
 export { default as EmotionRankCard } from './atomic/EmotionRankCard.jsx';
 export { default as EmotionRanking } from './molecule/EmotionRanking.jsx';
+export { default as SelectPicture } from './molecule/SelectPicture.jsx';
