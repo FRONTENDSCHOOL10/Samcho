@@ -1,3 +1,10 @@
+import { DiaryDetail } from '@/components';
+
 export const Component = () => {
-  return <div>DetailDiary</div>;
+  return (
+    <div>
+      DetailDiary
+      <DiaryDetail selectedDate="2024-08-31" />
+    </div>
+  );
 };

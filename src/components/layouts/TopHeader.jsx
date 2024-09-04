@@ -18,7 +18,7 @@ const TopHeader = ({ title, isShowIcon = false }) => {
           onClick={handleBackClick}
         />
       )}
-      <h2>{title}</h2>
+      <h1>{title}</h1>
     </header>
   );
 };

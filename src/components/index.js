@@ -19,3 +19,5 @@ export { default as SelectPicture } from './molecule/SelectPicture.jsx';
 export { default as ToggleTab } from './atomic/ToggleTab.jsx';
 export { default as PostCard } from './molecule/PostCard.jsx';
 export { default as MoodChart } from './molecule/MoodChart.jsx';
+export { default as SelectMood } from './atomic/SelectMood.jsx';
+export { default as DiaryDetail } from './molecule/DiaryDetail.jsx';
