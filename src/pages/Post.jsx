@@ -17,9 +17,9 @@ const Post = () => {
       {activeTab === 'tab1' ? (
         <div
           className="flex flex-col gap-[15px]"
-          id="panel-1"
+          id="panel-notification"
           role="tabpanel"
-          aria-labelledby="tab-1"
+          aria-labelledby="tab-notification"
         >
           <PostCard
             type="postalert"
@@ -37,9 +37,9 @@ const Post = () => {
       ) : (
         <div
           className="flex flex-col gap-5"
-          id="panel-2"
+          id="panel-exchangeDiaryList"
           role="tabpanel"
-          aria-labelledby="tab-2"
+          aria-labelledby="tab-exchangeDiaryList"
         >
           <DiaryCard date="2024-08-02" type="date" />
           <DiaryCard date="2024-08-05" type="date" />
