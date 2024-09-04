@@ -11,6 +11,7 @@ import {
   MyPageSetting,
   Register,
   ErrorPage,
+  BuddyManagement,
   PhotoGallery,
 } from './pages';
 
@@ -45,6 +46,11 @@ const navigation = [
     text: '계정관리',
     path: 'mypage/setting',
     element: <MyPageSetting />,
+  },
+  {
+    text: '단짝관리',
+    path: 'mypage/buddy-management',
+    element: <BuddyManagement />,
   },
   {
     text: '사진 모아보기',
