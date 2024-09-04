@@ -40,6 +40,7 @@ const Home = () => {
         <meta property="og:site:author" content="하루몽 일동" />
       </Helmet>
       <section id="page">
+        <h1 className="sr-only">캘린더</h1>
         <TopNavigation onToggleView={handleToggleView} />
         <YearMonth className="py-5" />
         {viewMode === 'calendar' ? (

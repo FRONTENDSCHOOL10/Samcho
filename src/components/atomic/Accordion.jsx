@@ -20,8 +20,7 @@ const Accordion = ({ title, children, className = '' }) => {
         className="flex items-center justify-between cursor-pointer"
         onClick={handleToggle}
       >
-        <span className="text-base font-semibold text-gray-450">{title}</span>
-
+        <h2 className="text-base font-semibold text-gray-450">{title}</h2>
         {isOpen ? (
           <FaChevronUp color="#555555" />
         ) : (

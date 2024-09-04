@@ -6,8 +6,7 @@ const TextArea = () => {
 
   const onChange = (e) => {
     const value = e.target.value;
-    console.log(textarea.current.scrollHeight);
-    if (textarea.current.scrollHeight > 184) {
+    if (textarea.current.scrollHeight >= 184) {
       alert('최대 6줄까지 작성을 할 수 있습니다.');
       return;
     }
@@ -30,10 +29,6 @@ const TextArea = () => {
         placeholder="일기를 작성해주세요."
         maxLength="200"
         rows={1}
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        }}
       />
     </div>
   );

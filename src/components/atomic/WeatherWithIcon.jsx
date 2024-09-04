@@ -1,20 +1,35 @@
 import PropTypes from 'prop-types';
 
-const WeatherWithIcon = ({ text, className }) => {
+const WeatherWithIcon = ({ src, text, isSelected, onClick, className }) => {
   return (
-    <div
-      className={`flex flex-col items-center gap-[0.375rem] w-fit ${className}`}
+    <button
+      className={`flex flex-col justify-center items-center gap-1.5 w-full cursor-pointer ${className}`}
+      onClick={onClick}
+      aria-pressed={isSelected}
     >
-      <div className="h-11 w-11 bg-[#D3E0EF] rounded-full" />
-      <div className="text-[#4D82BE] text-xs font-medium font-Pretendard break-words">
+      <img
+        src={src}
+        alt={text}
+        className={`rounded-full w-9 h-9 ${
+          isSelected ? 'grayscale-0' : 'grayscale'
+        }`}
+      />
+      <span
+        className={`text-xs font-medium ${
+          isSelected ? 'text-blue-500' : 'text-gray-300'
+        }`}
+      >
         {text}
-      </div>
-    </div>
+      </span>
+    </button>
   );
 };
 
 WeatherWithIcon.propTypes = {
+  src: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
+  isSelected: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
   className: PropTypes.string,
 };
 
