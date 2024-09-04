@@ -11,6 +11,7 @@ import {
   MyPageSetting,
   Register,
   ErrorPage,
+  PhotoGallery,
 } from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
@@ -44,6 +45,11 @@ const navigation = [
     text: '계정관리',
     path: 'mypage/setting',
     element: <MyPageSetting />,
+  },
+  {
+    text: '사진 모아보기',
+    path: 'mypage/photo',
+    element: <PhotoGallery />,
   },
   {
     text: '일기 상세',
