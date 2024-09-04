@@ -1,14 +1,15 @@
-import { createBrowserRouter } from 'react-router-dom';
-import { configRoutes } from '@/utils';
 import RootLayout from '@/layouts/RootLayout';
+import { configRoutes } from '@/utils';
+import { createBrowserRouter } from 'react-router-dom';
 import {
-  Login,
-  Register,
-  Home,
   Chart,
+  ChartMoreList,
+  Home,
+  Login,
   Mypage,
   Post,
-  ChartMoreList,
+  Register,
+  ErrorPage,
 } from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
@@ -69,6 +70,10 @@ export const routes = [
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '*',
+    element: <ErrorPage />, // 에러 페이지 컴포넌트
   },
 ];
 
