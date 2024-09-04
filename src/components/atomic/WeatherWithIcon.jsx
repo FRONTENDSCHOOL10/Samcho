@@ -4,11 +4,18 @@ const WeatherWithIcon = ({ text, className }) => {
   return (
     <div
       className={`flex flex-col items-center gap-[0.375rem] w-fit ${className}`}
+      role="group"
+      aria-label={text}
     >
-      <div className="h-11 w-11 bg-[#D3E0EF] rounded-full" />
-      <div className="text-[#4D82BE] text-xs font-medium font-Pretendard break-words">
+      <div 
+        className="h-11 w-11 bg-blue-50 rounded-full" 
+        aria-hidden="true" 
+      />
+      <span 
+        className="text-blue text-xs font-medium font-Pretendard break-words"
+      >
         {text}
-      </div>
+      </span>
     </div>
   );
 };
