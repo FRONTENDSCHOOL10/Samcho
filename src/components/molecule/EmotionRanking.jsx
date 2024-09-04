@@ -51,13 +51,10 @@ const EmotionRanking = () => {
             count={rankItem.count}
             rank={rankItem.rank}
           />
-          <div id={`rank-description-${rankItem.rank}`} className="sr-only">
-            순위 {rankItem.rank}위: {rankItem.mood} - 기록 수: {rankItem.count}
-          </div>
+          
         </article>
         ))}
       </div>
-
       <p className="text-center text-gray-600 text-base font-medium">
         {description}
       </p>
