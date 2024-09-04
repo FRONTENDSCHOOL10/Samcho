@@ -26,7 +26,7 @@ const MoodDistribution = ({ mood = 'happy', ratio = 0 }) => {
 
   return (
     <div className={`w-[45px] h-[68px] flex flex-col gap-3 items-center`}>
-      <img src={moodIcons[mood]} alt={altText} className={`w-9 h-9`}></img>
+      <img src={moodIcons[mood]} alt={altText} className={`w-9 h-9`} />
       <span
         className={`flex justify-center items-center w-[45px] h-5 bg-blue-10 rounded-xl self-stretch text-xs font-medium text-blue-500 text-center`}
       >{`${ratio}%`}</span>
