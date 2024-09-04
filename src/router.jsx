@@ -11,6 +11,7 @@ import {
   MyPageSetting,
   Register,
   ErrorPage,
+  BuddyManagement,
 } from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
@@ -44,6 +45,11 @@ const navigation = [
     text: '계정관리',
     path: 'mypage/setting',
     element: <MyPageSetting />,
+  },
+  {
+    text: '단짝관리',
+    path: 'mypage/buddy-management',
+    element: <BuddyManagement />,
   },
   {
     text: '일기 상세',
