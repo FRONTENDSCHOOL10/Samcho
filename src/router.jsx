@@ -8,6 +8,8 @@ import {
   Login,
   Mypage,
   Post,
+  ChartMoreList,
+  MyPageSetting,
   Register,
   ErrorPage,
 } from './pages';
@@ -38,6 +40,11 @@ const navigation = [
     text: '내정보',
     path: 'mypage',
     element: <Mypage />,
+  },
+  {
+    text: '계정관리',
+    path: 'mypage/setting',
+    element: <MyPageSetting />
   },
   {
     text: '일기 상세',
