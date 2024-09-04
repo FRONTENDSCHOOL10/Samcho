@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 
-const Input = ({ label, id, type, className = '' }) => {
+const inputClasses =
+  'block py-2.5 px-0 w-[242px] text-sm rounded-none bg-transparent border-b text-gray-400 border-gray-400 focus:outline-none focus:border-blue-500 focus:text-blue-500';
+
+const Input = ({ label, id, type, className = '', ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [hasValue, setHasValue] = useState(false);
 
@@ -13,11 +16,6 @@ const Input = ({ label, id, type, className = '' }) => {
   const handleChange = ({ target: { value } }) => {
     setHasValue(Boolean(value));
   };
-
-  const inputClasses = `
-    block py-2.5 px-0 w-[242px] text-sm rounded-none bg-transparent border-b-[1px]
-    text-gray-400 border-gray-400 focus:outline-none focus:border-blue-500 focus:text-blue-500
-  `;
 
   const labelClasses = `
   absolute text-sm top-3 duration-300 transform origin-[0]
@@ -38,6 +36,7 @@ const Input = ({ label, id, type, className = '' }) => {
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}
+        {...props}
       />
       <label htmlFor={id} className={labelClasses}>
         {label}
