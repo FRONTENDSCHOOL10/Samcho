@@ -9,8 +9,8 @@ import {
   Mypage,
   Post,
   Register,
+  ErrorPage,
 } from './pages';
-import ErrorPage from './pages/ErrorPage';
 
 /**@type {import('react-router-dom').RouteObject[]} */
 const navigation = [

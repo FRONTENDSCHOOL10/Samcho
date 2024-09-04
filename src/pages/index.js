@@ -5,3 +5,4 @@ export { default as Chart } from './Chart.jsx';
 export { default as ChartMoreList } from './ChartMoreList.jsx';
 export { default as Post } from './Post.jsx';
 export { default as Mypage } from './Mypage.jsx';
+export { default as ErrorPage } from './ErrorPage.jsx';
