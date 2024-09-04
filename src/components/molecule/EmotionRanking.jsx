@@ -3,21 +3,9 @@ import { EmotionRankCard } from '@/components';
 
 const EmotionRanking = () => {
   const rankingsData = [
-    {
-      mood: 'happy',
-      count: 40,
-      rank: 1,
-    },
-    {
-      mood: 'smile',
-      count: 20,
-      rank: 2,
-    },
-    {
-      mood: 'soso',
-      count: 10,
-      rank: 3,
-    },
+    { mood: 'happy', count: 40, rank: 1 },
+    { mood: 'smile', count: 20, rank: 2 },
+    { mood: 'soso', count: 10, rank: 3 },
   ];
 
   const topMood = rankingsData.reduce(
@@ -34,36 +22,40 @@ const EmotionRanking = () => {
   );
 
   return (
-    <div className="w-full p-[15px] bg-white rounded-[15px] shadow-light flex flex-col gap-6">
-      <div className="flex items-center justify-between w-full">
-        <div className="text-[#555555] text-base font-semibold font-['Pretendard']">
-          감정랭킹
-        </div>
-        <div className="flex items-center">
-          <div className="w-[37px] h-[17.13px] text-[#979797] text-sm font-medium font-['Pretendard'] mr-1">
-            <Link to="/chart/more">더보기</Link>
-          </div>
-        </div>
-      </div>
+    <div className="w-full p-4 bg-white rounded-lg shadow-light flex flex-col gap-6">
+      <header className="flex items-center justify-between">
+        <h2 className="text-gray-600 text-base font-semibold">감정랭킹</h2>
+        <Link 
+          to="/chart/more"
+          aria-label="감정 랭킹 더보기"
+          className="text-sm text-gray-500 hover:text-gray-700"
+        >
+          더보기
+        </Link>
+      </header>
 
       <div className="flex justify-between">
         {rankingsData.map((rankItem) => (
-          <div
+          <article
             key={rankItem.rank}
-            className="relative w-[99px] flex flex-col items-center gap-2.5"
+            className="w-24 flex flex-col items-center gap-2.5"
+            aria-labelledby={`rank-item-${rankItem.rank}`}
           >
             <EmotionRankCard
               text={rankItem.mood}
               count={rankItem.count}
               rank={rankItem.rank}
             />
-          </div>
+            <div id={`rank-item-${rankItem.rank}`} className="sr-only">
+              순위 {rankItem.rank}위: {rankItem.mood} - 기록 수: {rankItem.count}
+            </div>
+          </article>
         ))}
       </div>
 
-      <div className="text-center text-[#555555] text-base font-medium font-['Pretendard']">
+      <p className="text-center text-gray-600 text-base font-medium">
         {description}
-      </div>
+      </p>
     </div>
   );
 };
