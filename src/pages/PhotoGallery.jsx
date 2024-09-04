@@ -1,90 +1,24 @@
 import { TopHeader } from '@/components';
+import useFetchDiaryData from '@/hooks/useFetchDiaryData';
 import { Helmet } from 'react-helmet-async';
 
-const dummyDB = [
-  {
-    id: 1,
-    date: '2024-07-31',
-    mood: 'happy',
-    picture:
-      'https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/dqCU/image/2yjMHNudp61nTAq6CzH1aSAMUeE.jpg',
-    content: `1`,
-    weather: 'sunny',
-  },
-  {
-    id: 2,
-    date: '2024-08-01',
-    mood: 'happy',
-    picture: '',
-    content: `2`,
-    weather: 'sunny',
-  },
-  {
-    id: 3,
-    date: '2024-08-11',
-    mood: 'happy',
-    picture: '',
-    content: `3일`,
-    weather: 'sunny',
-  },
-  {
-    id: 4,
-    date: '2024-08-12',
-    mood: 'happy',
-    picture:
-      'https://cdn.eyesmag.com/content/uploads/posts/2020/01/03/studio-ghibli-hayao-miyazaki-two-new-movies-2020-1-b1a90537-20c5-4aac-874d-471cc550499e.jpg',
-    content: `4`,
-    weather: 'sunny',
-  },
-  {
-    id: 5,
-    date: '2024-09-01',
-    mood: 'happy',
-    picture:
-      'https://i.pinimg.com/736x/2f/d2/42/2fd2427a4efd37c9a5bc371c13f759e6.jpg',
-    content: `5`,
-    weather: 'sunny',
-  },
-  {
-    id: 6,
-    date: '2024-09-02',
-    mood: 'happy',
-    picture: '',
-    content: `6`,
-    weather: 'sunny',
-  },
-  {
-    id: 7,
-    date: '2024-09-03',
-    mood: 'happy',
-    picture:
-      'https://i.namu.wiki/i/Y5AdKdPtkxn3BhOGJpmCtw9S7QzhVzxEXtOW956x4ViGTLM2K-BY-eZmcowW1Nsfhlc4sQyMoor8K2QlqcfVhV3in90TW_Pza6M0NC8IoPjzmpCLaLx-gr6Gi3U3PQSFBvGc3zcD-SXPATZgSO2-Cg.webp',
-    content: `7`,
-    weather: 'sunny',
-  },
-  {
-    id: 8,
-    date: '2024-09-05',
-    mood: 'happy',
-    picture:
-      'https://i.namu.wiki/i/Y5AdKdPtkxn3BhOGJpmCtw9S7QzhVzxEXtOW956x4ViGTLM2K-BY-eZmcowW1Nsfhlc4sQyMoor8K2QlqcfVhV3in90TW_Pza6M0NC8IoPjzmpCLaLx-gr6Gi3U3PQSFBvGc3zcD-SXPATZgSO2-Cg.webp',
-    content: `8`,
-    weather: 'sunny',
-  },
-  {
-    id: 9,
-    date: '2024-09-08',
-    mood: 'happy',
-    picture:
-      'https://i.namu.wiki/i/Y5AdKdPtkxn3BhOGJpmCtw9S7QzhVzxEXtOW956x4ViGTLM2K-BY-eZmcowW1Nsfhlc4sQyMoor8K2QlqcfVhV3in90TW_Pza6M0NC8IoPjzmpCLaLx-gr6Gi3U3PQSFBvGc3zcD-SXPATZgSO2-Cg.webp',
-    content: `9`,
-    weather: 'sunny',
-  },
-];
-
 const PhotoGallery = () => {
+  const { diaryData, loading, error } = useFetchDiaryData();
+
+  const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
+
+  if (loading) {
+    console.log('로딩 중..');
+    {
+      /* 추후 로딩 처리 로직을 가져오거나..등 */
+    }
+  }
+
+  // useFetchDiaryData 훅에서 오류 페이지로 이동 처리
+  if (error) return null;
+
   // 1. diary DB에서 사진이 있는 DB만 골라오기
-  const PictureWithDiary = dummyDB.filter((data) => data.picture !== '');
+  const PictureWithDiary = diaryData.filter((data) => data.picture !== '');
 
   // 2. 그 DB들을 같은 년/월 끼리 그룹핑
   const groupByMonth = PictureWithDiary.reduce((group, diary) => {
@@ -127,7 +61,7 @@ const PhotoGallery = () => {
               {diaries.map((diary) => (
                 <div key={diary.id} style={{ aspectRatio: '1 / 1' }}>
                   <img
-                    src={`${diary.picture}`}
+                    src={`${baseImageUrl}/${diary.id}/${diary.picture}`}
                     alt={`${diary.date}의 일기 사진`}
                     className="object-cover w-full h-full"
                   />
