@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { EmotionRankCard } from '@/components';
 
+const rankingsData = [
+  { mood: 'happy', count: 40, rank: 1 },
+  { mood: 'smile', count: 20, rank: 2 },
+  { mood: 'soso', count: 10, rank: 3 },
+];
+
 const EmotionRanking = () => {
-  const rankingsData = [
-    { mood: 'happy', count: 40, rank: 1 },
-    { mood: 'smile', count: 20, rank: 2 },
-    { mood: 'soso', count: 10, rank: 3 },
-  ];
 
   const topMood = rankingsData.reduce(
     (prev, current) => (prev.count > current.count ? prev : current),
@@ -14,11 +15,11 @@ const EmotionRanking = () => {
   );
 
   const description = (
-    <span>
+    <>
       이번 달에는{' '}
       <span className="font-bold text-blue-500">{topMood.mood}</span>을(를) 많이
       기록했어요.
-    </span>
+    </>
   );
 
   return (
@@ -36,20 +37,24 @@ const EmotionRanking = () => {
 
       <div className="flex justify-between">
         {rankingsData.map((rankItem) => (
-          <article
-            key={rankItem.rank}
-            className="w-24 flex flex-col items-center gap-2.5"
-            aria-labelledby={`rank-item-${rankItem.rank}`}
-          >
-            <EmotionRankCard
-              text={rankItem.mood}
-              count={rankItem.count}
-              rank={rankItem.rank}
-            />
-            <div id={`rank-item-${rankItem.rank}`} className="sr-only">
-              순위 {rankItem.rank}위: {rankItem.mood} - 기록 수: {rankItem.count}
-            </div>
-          </article>
+        <article
+          key={rankItem.rank}
+          className="w-24 flex flex-col items-center gap-2.5"
+          aria-labelledby={`rank-title-${rankItem.rank}`}
+          aria-describedby={`rank-description-${rankItem.rank}`}  // aria-describedby로 추가 설명 연결
+        >
+          <h2 id={`rank-title-${rankItem.rank}`} className="sr-only">
+            {rankItem.mood}
+          </h2>
+          <EmotionRankCard
+            text={rankItem.mood}
+            count={rankItem.count}
+            rank={rankItem.rank}
+          />
+          <div id={`rank-description-${rankItem.rank}`} className="sr-only">
+            순위 {rankItem.rank}위: {rankItem.mood} - 기록 수: {rankItem.count}
+          </div>
+        </article>
         ))}
       </div>
 
