@@ -1,7 +1,8 @@
 // 사용 시 주의 사항
-// tab 변경에 의해 보여지는 콘텐츠에 aria-selected와 id를 추가해줘야 함.
-// ex. tab1 콘텐츠 : aria-selected={activeTab === 'tab1'} id="tab-1-content"
-// ex. tab2 콘텐츠 : aria-selected={activeTab === 'tab2'} id="tab-2-content"
+// tab 변경에 의해 보여지는 콘텐츠에 id, role, aria-labelledby를 추가해줘야 함.
+// 예시 그대로 추가하면 됨.
+// ex. tab1 콘텐츠 : id="panel-1" role="tabpanel" aria-labelledby="tab-1"
+// ex. tab2 콘텐츠 : id="panel-2" role="tabpanel" aria-labelledby="tab-2"
 
 import PropTypes from 'prop-types';
 
@@ -29,7 +30,9 @@ const ToggleTab = ({
         }`}
         onClick={onTab1Click}
         role="tab"
-        aria-controls="tab-1-content"
+        aria-controls="panel-1"
+        aria-selected={activeTab === 'tab1'}
+        id="tab-1"
       >
         {tab1}
       </button>
@@ -42,7 +45,9 @@ const ToggleTab = ({
         }`}
         onClick={onTab2Click}
         role="tab"
-        aria-controls="tab-2-content"
+        aria-controls="panel-2"
+        aria-selected={activeTab === 'tab2'}
+        id="tab-2"
       >
         {tab2}
       </button>
