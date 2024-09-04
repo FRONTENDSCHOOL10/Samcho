@@ -11,7 +11,7 @@ const Mypage = () => {
         {/* 계정 섹션 */}
         <section className="w-full flex flex-col gap-4"> 
           <h2 className="text-gray-450 text-lg font-semibold">계정</h2>
-          <div className="w-full h-[100px] relative flex items-center justify-between p-6 bg-white rounded-[10px] shadow">
+          <div className="w-full h-[100px] flex items-center justify-between p-6 bg-white rounded-[10px] shadow">
             <div className="flex flex-grow items-center">
               <div className="flex flex-col">
                 <p className="text-blue-500 text-lg font-semibold">두팔</p>
