@@ -7,4 +7,4 @@ export { default as Post } from './Post.jsx';
 export { default as Mypage } from './Mypage.jsx';
 export { default as MyPageSetting } from './MyPageSetting.jsx';
 export { default as ErrorPage } from './ErrorPage.jsx';
-
+export { default as BuddyManagement } from './BuddyManagement.jsx';
