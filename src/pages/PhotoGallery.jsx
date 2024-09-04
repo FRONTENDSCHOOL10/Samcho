@@ -1,4 +1,5 @@
 import { TopHeader } from '@/components';
+import { Helmet } from 'react-helmet-async';
 
 const dummyDB = [
   {
@@ -98,26 +99,45 @@ const PhotoGallery = () => {
   }, {});
 
   return (
-    <main className="grid gap-5">
-      <TopHeader isShowIcon={true} title="사진 모아보기" />
+    <>
+      <Helmet>
+        <title>하루몽 - 사진 모아보기</title>
+        <meta name="description" content="하루몽 사진 모아보기 페이지입니다." />
+        <meta property="og:title" content="하루몽 - 사진 모아보기" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://harumong.netlify.app/mypage/photo"
+        />
+        <meta
+          property="og:description"
+          content="감정일기의 사진을 모아보는 페이지입니다."
+        />
+        <meta property="og:image" content="" />
+        <meta property="og:site:author" content="하루몽 일동" />
+      </Helmet>
 
-      {Object.entries(groupByMonth).map(([date, diaries]) => (
-        <section key={date} className="grid gap-2 mb-4">
-          <h2 className="font-semibold">{date}</h2>
-          <div className="grid grid-cols-3 gap-4">
-            {diaries.map((diary) => (
-              <div key={diary.id} style={{ aspectRatio: '1 / 1' }}>
-                <img
-                  src={`${diary.picture}`}
-                  alt={`${diary.date}의 일기 사진`}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-      ))}
-    </main>
+      <main className="grid gap-5">
+        <TopHeader isShowIcon={true} title="사진 모아보기" />
+
+        {Object.entries(groupByMonth).map(([date, diaries]) => (
+          <section key={date} className="grid gap-2 mb-4">
+            <h2 className="font-semibold">{date}</h2>
+            <div className="grid grid-cols-3 gap-4">
+              {diaries.map((diary) => (
+                <div key={diary.id} style={{ aspectRatio: '1 / 1' }}>
+                  <img
+                    src={`${diary.picture}`}
+                    alt={`${diary.date}의 일기 사진`}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </main>
+    </>
   );
 };
 
