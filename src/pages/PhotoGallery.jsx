@@ -1,5 +1,5 @@
 import { TopHeader } from '@/components';
-import useFetchDiaryData from '@/hooks/useFetchDiaryData';
+import { useFetchDiaryData } from '@/hooks';
 import { Helmet } from 'react-helmet-async';
 
 const PhotoGallery = () => {

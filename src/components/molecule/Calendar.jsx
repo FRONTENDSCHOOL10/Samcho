@@ -1,4 +1,4 @@
-import useCalendar from '@/hooks/useCalendar';
+import { useCalendar } from '@/hooks';
 
 const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
