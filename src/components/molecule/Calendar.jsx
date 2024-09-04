@@ -1,5 +1,7 @@
 import useCalendar from '@/hooks/useCalendar';
 
+const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
+
 // 임시 데이터 (DB 연결 시 삭제할 것)
 const diaryData = [
   { date: '2024-08-01', isDiaryWritten: true, mood: 'happy' },
@@ -16,10 +18,10 @@ const diaryData = [
 
 const Calendar = () => {
   const { weekRows } = useCalendar(diaryData);
-  const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
   return (
     <table className="w-full border-separate border-spacing-y-8 border-spacing-x-0">
+      <caption className="sr-only">일기 달력</caption>
       <thead>
         <tr>
           {WEEKS.map((day, idx) => (
