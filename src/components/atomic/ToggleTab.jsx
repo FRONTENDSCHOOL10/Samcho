@@ -84,8 +84,8 @@ const ToggleTab = ({
 };
 
 ToggleTab.propTypes = {
-  tab1: PropTypes.oneOf[('알림', '나의 단짝')],
-  tab2: PropTypes.oneOf[('교환일기', '단짝 요청')],
+  tab1: PropTypes.oneOf(['알림', '나의 단짝']),
+  tab2: PropTypes.oneOf(['교환일기', '단짝 요청']),
   activeTab: PropTypes.string.isRequired,
   onTab1Click: PropTypes.func.isRequired,
   onTab2Click: PropTypes.func.isRequired,
