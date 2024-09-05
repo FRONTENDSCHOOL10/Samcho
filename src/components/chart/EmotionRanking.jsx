@@ -34,7 +34,7 @@ const EmotionRanking = () => {
         </Link>
       </header>
 
-      <div className="flex justify-between">
+      <div className="flex justify-around">
         {rankingsData.map((rankItem) => (
           <article
             key={rankItem.rank}
