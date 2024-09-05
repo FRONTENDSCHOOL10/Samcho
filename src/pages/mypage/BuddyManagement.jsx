@@ -1,4 +1,4 @@
-import { TopHeader, ToggleTab, PostCard } from '@/components';
+import { TopHeader, ToggleTab, PostCard, BuddyCard } from '@/components';
 import { useState } from 'react';
 
 const BuddyManagement = () => {
@@ -20,7 +20,9 @@ const BuddyManagement = () => {
           id="panel-buddyList"
           role="tabpanel"
           aria-labelledby="tab-buddyList"
-        ></div>
+        >
+          <BuddyCard buddyName="두팔" startDate="2023-10-04"></BuddyCard>
+        </div>
       ) : (
         <div
           className="flex flex-col gap-5"
