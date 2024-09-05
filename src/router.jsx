@@ -12,6 +12,7 @@ import {
   Register,
   ErrorPage,
   BuddyManagement,
+  PhotoGallery,
 } from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
@@ -50,6 +51,11 @@ const navigation = [
     text: '단짝관리',
     path: 'mypage/buddy-management',
     element: <BuddyManagement />,
+  },
+  {
+    text: '사진 모아보기',
+    path: 'mypage/photo',
+    element: <PhotoGallery />,
   },
   {
     text: '일기 상세',
