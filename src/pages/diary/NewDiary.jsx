@@ -9,6 +9,7 @@ import {
 } from '@/components';
 import emotions from '@/assets/icons/emotions/emotions';
 import weathers from '@/assets/icons/weather/weathers';
+import toast, { Toaster } from 'react-hot-toast';
 
 export const Component = () => {
   const [selectedMood, setSelectedMood] = useState(null);
@@ -23,6 +24,9 @@ export const Component = () => {
       );
     } else if (selectedEmotions.length < 5) {
       setSelectedEmotions([...selectedEmotions, text]);
+    } else {
+      toast.dismiss();
+      toast.error('감정은 5개까지 선택 가능합니다.');
     }
   };
 
@@ -34,6 +38,9 @@ export const Component = () => {
       );
     } else if (selectedWeathers.length < 2) {
       setSelectedWeathers([...selectedWeathers, text]);
+    } else {
+      toast.dismiss();
+      toast.error('날씨는 2개까지 선택 가능합니다.');
     }
   };
 
@@ -41,7 +48,7 @@ export const Component = () => {
     <section className="flex flex-col gap-5">
       <TopHeader title={'일기작성'} isShowIcon={true} />
       <SelectMood isSelected={selectedMood} setSelected={setSelectedMood} />
-      <Accordion title="감정" className="grid grid-cols-5 gap-x-8 gap-y-4">
+      <Accordion open={true} title="감정" className="grid grid-cols-5 gap-4">
         {Object.entries(emotions).map(([key, src]) => (
           <WeatherWithIcon
             key={key}
@@ -52,7 +59,7 @@ export const Component = () => {
           />
         ))}
       </Accordion>
-      <Accordion title="날씨" className="grid grid-cols-5 gap-8">
+      <Accordion open={true} title="날씨" className="grid grid-cols-5 gap-4">
         {Object.entries(weathers).map(([key, src]) => (
           <WeatherWithIcon
             key={key}
@@ -65,6 +72,7 @@ export const Component = () => {
       </Accordion>
       <TextArea />
       <SelectPicture />
+      <Toaster />
     </section>
   );
 };
