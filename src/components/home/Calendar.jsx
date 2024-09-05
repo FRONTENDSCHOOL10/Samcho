@@ -4,16 +4,16 @@ const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
 // 임시 데이터 (DB 연결 시 삭제할 것)
 const diaryData = [
-  { date: '2024-08-01', isDiaryWritten: true, mood: 'happy' },
-  { date: '2024-08-31', isDiaryWritten: true, mood: 'soso' },
-  { date: '2024-09-01', isDiaryWritten: true, mood: 'sad' },
-  { date: '2024-09-11', isDiaryWritten: true, mood: 'bad' },
-  { date: '2024-09-16', isDiaryWritten: true, mood: 'soso' },
-  { date: '2024-09-18', isDiaryWritten: true, mood: 'smile' },
-  { date: '2024-09-21', isDiaryWritten: true, mood: 'sad' },
-  { date: '2024-09-25', isDiaryWritten: true, mood: 'smile' },
-  { date: '2024-09-26', isDiaryWritten: true, mood: 'smile' },
-  { date: '2024-09-30', isDiaryWritten: true, mood: 'bad' },
+  { date: '2024-08-01', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-08-31', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-01', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-11', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-16', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-18', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-21', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-25', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-26', isDiaryWritten: true, mood: '행복' },
+  { date: '2024-09-30', isDiaryWritten: true, mood: '행복' },
 ];
 
 const Calendar = () => {

@@ -1,11 +1,11 @@
-import { TopHeader, ToggleTab, PostCard, DiaryCard } from '@/components';
+import { TopHeader, ToggleTab, PostCard } from '@/components';
 import { useState } from 'react';
 
 const BuddyManagement = () => {
   const [activeTab, setActiveTab] = useState('tab1');
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-5">
       <TopHeader title="단짝 관리" isShowIcon={true}></TopHeader>
       <ToggleTab
         tab1="나의 단짝"

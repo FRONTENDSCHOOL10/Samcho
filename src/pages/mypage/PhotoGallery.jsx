@@ -3,7 +3,7 @@ import { useFetchDiaryData } from '@/hooks';
 import { Helmet } from 'react-helmet-async';
 
 const PhotoGallery = () => {
-  const { diaryData, loading, error } = useFetchDiaryData();
+  const { diaryData, loading } = useFetchDiaryData();
 
   const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -13,9 +13,6 @@ const PhotoGallery = () => {
       /* 추후 로딩 처리 로직을 가져오거나..등 */
     }
   }
-
-  // useFetchDiaryData 훅에서 오류 페이지로 이동 처리
-  if (error) return null;
 
   // 1. diary DB에서 사진이 있는 DB만 골라오기
   const PictureWithDiary = diaryData.filter((data) => data.picture !== '');

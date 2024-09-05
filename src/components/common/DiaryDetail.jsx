@@ -1,5 +1,5 @@
 import { Delete, Edit } from '@/assets/icons/menu';
-import moodIcons from '@/assets/icons/mood/moodIcons';
+import moods from '@/assets/icons/mood/moods';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 
@@ -108,7 +108,7 @@ const DiaryDetail = ({ selectedDate }) => {
         <div className="flex flex-col items-center">
           <img
             key={diaryEntry.date}
-            src={moodIcons[diaryEntry.mood]}
+            src={moods[diaryEntry.mood]}
             alt="감정 아이콘"
             className="w-[44px] h-[44px]"
           />
