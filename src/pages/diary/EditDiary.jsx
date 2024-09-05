@@ -1,3 +1,3 @@
 export const Component = () => {
-  return <div>EditDiary</div>;
+  return <div>EditDiary2</div>;
 };
