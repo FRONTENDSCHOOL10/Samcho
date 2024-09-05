@@ -8,7 +8,7 @@ const diaryData = [
   {
     id: 1,
     date: '2024-08-31',
-    mood: 'happy',
+    mood: '행복',
     photoUrl:
       'https://i.namu.wiki/i/Y5AdKdPtkxn3BhOGJpmCtw9S7QzhVzxEXtOW956x4ViGTLM2K-BY-eZmcowW1Nsfhlc4sQyMoor8K2QlqcfVhV3in90TW_Pza6M0NC8IoPjzmpCLaLx-gr6Gi3U3PQSFBvGc3zcD-SXPATZgSO2-Cg.webp',
     content: `1일본 거장 애니메이터 미야자키 하야오가 감독한 스튜디오 지브리의
@@ -23,7 +23,7 @@ const diaryData = [
   {
     id: 2,
     date: '2024-09-21',
-    mood: 'happy',
+    mood: '행복',
     photoUrl: '',
     content: `2일본 거장 애니메이터 미야자키 하야오가 감독한 스튜디오 지브리의
     2004년작 장편 애니메이션. 영국 소설가 다이애나 윈 존스의 동명 판타지
@@ -37,7 +37,7 @@ const diaryData = [
   {
     id: 3,
     date: '2024-08-11',
-    mood: 'happy',
+    mood: '행복',
     photoUrl: '',
     content: `3일본 거장 애니메이터 미야자키 하야오가 감독한 스튜디오 지브리의
     2004년작 장편 애니메이션. 영국 소설가 다이애나 윈 존스의 동명 판타지
@@ -51,7 +51,7 @@ const diaryData = [
   {
     id: 4,
     date: '2024-07-12',
-    mood: 'happy',
+    mood: '행복',
     photoUrl:
       'https://i.namu.wiki/i/Y5AdKdPtkxn3BhOGJpmCtw9S7QzhVzxEXtOW956x4ViGTLM2K-BY-eZmcowW1Nsfhlc4sQyMoor8K2QlqcfVhV3in90TW_Pza6M0NC8IoPjzmpCLaLx-gr6Gi3U3PQSFBvGc3zcD-SXPATZgSO2-Cg.webp',
     content: `4일본 거장 애니메이터 미야자키 하야오가 감독한 스튜디오 지브리의
@@ -98,21 +98,21 @@ const DiaryDetail = ({ selectedDate }) => {
   const dateFormatted = `${day} ${weekday}`;
 
   return (
-    <main className="w-full bg-white rounded-[10px] shadow-light px-[25px] py-5 mt-10 ">
+    <main className="w-full bg-white rounded-[10px] shadow-light px-[25px] py-5 mt-5">
       <div className="flex justify-end gap-[15px] item-center cursor-pointer">
         <Edit className="w-5 h-5 fill-gray-400" />
         <Delete className="w-5 h-5 fill-gray-400" />
       </div>
 
       <div className="flex flex-col gap-y-5">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-2">
           <img
             key={diaryEntry.date}
             src={moods[diaryEntry.mood]}
             alt="감정 아이콘"
             className="w-[44px] h-[44px]"
           />
-          <span className="text-sm font-semibold text-gray-450">
+          <span className="text-base font-semibold text-gray-450">
             {dateFormatted}
           </span>
         </div>
@@ -134,7 +134,7 @@ const DiaryDetail = ({ selectedDate }) => {
           />
         )}
 
-        <p className="text-sm font-medium tracking-wide text-blue-500">
+        <p className="text-base font-medium tracking-wide text-blue-500">
           {diaryEntry.content}
         </p>
       </div>

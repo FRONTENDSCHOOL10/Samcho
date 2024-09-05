@@ -1,10 +1,10 @@
-import { DiaryDetail } from '@/components';
+import { DiaryDetail, TopHeader } from '@/components';
 
 export const Component = () => {
   return (
     <div>
-      DetailDiary
-      <DiaryDetail selectedDate="2024-08-30" />
+      <TopHeader title="2024-08-31" isShowIcon={true} />
+      <DiaryDetail selectedDate="2024-08-31" />
     </div>
   );
 };
