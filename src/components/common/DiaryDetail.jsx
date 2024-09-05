@@ -56,7 +56,7 @@ const DiaryDetail = ({ selectedDate }) => {
           <img
             key={diaryEntry.date}
             src={moods[diaryEntry.mood]}
-            alt="감정 아이콘"
+            alt={`${diaryEntry.mood} 아이콘`}
             className="w-[44px] h-[44px]"
           />
           <span className="text-base font-semibold text-gray-450">
