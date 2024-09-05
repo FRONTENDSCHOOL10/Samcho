@@ -12,11 +12,14 @@ const TopHeader = ({ title, isShowIcon = false }) => {
   return (
     <header className="pt-5 w-full max-w-[27.5rem] flex justify-center items-center text-lg font-semibold relative">
       {isShowIcon && (
-        <DirectionLeft
-          className="absolute left-0 cursor-pointer fill-black"
+        <button
+          type="button"
+          className="absolute left-0 cursor-pointer"
           aria-label="뒤로 가기"
           onClick={handleBackClick}
-        />
+        >
+          <DirectionLeft className="fill-black" />
+        </button>
       )}
       <h1 className="text-xl">{title}</h1>
     </header>
