@@ -18,10 +18,10 @@ const TopHeader = ({ title, isShowIcon = false }) => {
           aria-label="뒤로 가기"
           onClick={handleBackClick}
         >
-          <DirectionLeft className="fill-black" />
+          <DirectionLeft className="fill-black" aria-hidden="true" />
         </button>
       )}
-      <h1 className="text-xl">{title}</h1>
+      <h1 className="text-lg">{title}</h1>
     </header>
   );
 };

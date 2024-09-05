@@ -7,7 +7,7 @@ const Calendar = ({ diaryData = [] }) => {
   const { weekRows } = useCalendar(diaryData);
 
   return (
-    <table className="w-full border-separate border-spacing-y-8 border-spacing-x-0">
+    <table className="w-full border-separate border-spacing-y-5 border-spacing-x-0">
       <caption className="sr-only">일기 달력</caption>
       <thead>
         <tr>

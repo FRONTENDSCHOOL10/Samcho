@@ -52,14 +52,14 @@ const DiaryDetail = ({ selectedDate }) => {
       </div>
 
       <div className="flex flex-col gap-y-5">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-2">
           <img
             key={diaryEntry.date}
             src={moods[diaryEntry.mood]}
             alt="감정 아이콘"
             className="w-[44px] h-[44px]"
           />
-          <span className="text-sm font-semibold text-gray-450">
+          <span className="text-base font-semibold text-gray-450">
             {dateFormatted}
           </span>
         </div>
@@ -83,7 +83,7 @@ const DiaryDetail = ({ selectedDate }) => {
           />
         )}
 
-        <p className="text-sm font-medium tracking-wide text-blue-500">
+        <p className="text-base font-medium tracking-wide text-blue-500">
           {diaryEntry.content}
         </p>
       </div>
