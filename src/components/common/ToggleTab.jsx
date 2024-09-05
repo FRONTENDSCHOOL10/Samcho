@@ -46,7 +46,7 @@ const ToggleTab = ({
 
   return (
     <div
-      className="flex flex-row gap-10 text-[18px] h-[21px] justify-center items-center"
+      className="flex flex-row gap-10 text-[18px] justify-center items-center"
       role="tablist"
     >
       <button

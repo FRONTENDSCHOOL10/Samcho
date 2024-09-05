@@ -1,23 +1,23 @@
 import PropTypes from 'prop-types';
-import moodIcons from '@/assets/icons/mood/moodIcons';
+import moods from '@/assets/icons/mood/moods';
 
-const MoodDistribution = ({ mood = 'happy', ratio = 0 }) => {
+const MoodDistribution = ({ mood = '행복', ratio = 0 }) => {
   let altText;
 
   switch (mood) {
-    case 'happy':
+    case '행복':
       altText = '행복한 감정';
       break;
-    case 'sad':
+    case '슬픔':
       altText = '슬픈 감정';
       break;
-    case 'bad':
+    case '나쁨':
       altText = '기분 나쁜 감정';
       break;
-    case 'smile':
+    case '기쁨':
       altText = '기분 좋은 감정';
       break;
-    case 'soso':
+    case '보통':
       altText = '그저 그런 감정';
       break;
     default:
@@ -26,7 +26,7 @@ const MoodDistribution = ({ mood = 'happy', ratio = 0 }) => {
 
   return (
     <div className={`w-[45px] h-[68px] flex flex-col gap-3 items-center`}>
-      <img src={moodIcons[mood]} alt={altText} className={`w-9 h-9`} />
+      <img src={moods[mood]} alt={altText} className={`w-9 h-9`} />
       <span
         className={`flex justify-center items-center w-[45px] h-5 bg-blue-10 rounded-xl self-stretch text-xs font-medium text-blue-500 text-center`}
       >{`${ratio}%`}</span>
@@ -36,7 +36,7 @@ const MoodDistribution = ({ mood = 'happy', ratio = 0 }) => {
 
 MoodDistribution.propTypes = {
   ratio: PropTypes.number,
-  mood: PropTypes.oneOf(['bad', 'sad', 'happy', 'smile', 'soso']),
+  mood: PropTypes.oneOf(['나쁨', '슬픔', '행복', '기쁨', '보통']),
 };
 
 export default MoodDistribution;

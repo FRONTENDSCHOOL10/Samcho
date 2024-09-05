@@ -1,5 +1,5 @@
 import DayCircle from '@/assets/icons/daycircle/daycircle.svg?react';
-import moodIcons from '@/assets/icons/mood/moodIcons';
+import moods from '@/assets/icons/mood/moods';
 import PropTypes from 'prop-types';
 
 const FeelingCalendar = ({ day, isDiaryWritten = false, mood }) => {
@@ -7,8 +7,8 @@ const FeelingCalendar = ({ day, isDiaryWritten = false, mood }) => {
     <div className="flex items-center flex-col gap-[7px]">
       {isDiaryWritten ? (
         <img
-          src={moodIcons[mood]}
-          alt="감정 아이콘"
+          src={moods[mood]}
+          alt={mood}
           className="w-[44px] h-[44px] cursor-pointer"
         />
       ) : (

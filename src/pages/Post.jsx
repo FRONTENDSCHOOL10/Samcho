@@ -5,7 +5,7 @@ const Post = () => {
   const [activeTab, setActiveTab] = useState('tab1');
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-5">
       <TopHeader title="우편함" />
       <ToggleTab
         tab1="알림"

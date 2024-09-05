@@ -1,5 +1,4 @@
 import RootLayout from '@/layouts/RootLayout';
-import { configRoutes } from '@/utils';
 import { createBrowserRouter } from 'react-router-dom';
 import {
   Chart,
@@ -16,83 +15,42 @@ import {
 } from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
-const navigation = [
-  {
-    text: '홈',
-    path: '',
-    element: <Home />,
-  },
-  {
-    text: '통계',
-    path: 'chart',
-    element: <Chart />,
-  },
-  {
-    text: '통계',
-    path: 'chart/more',
-    element: <ChartMoreList />,
-  },
-  {
-    text: '우편함',
-    path: 'post',
-    element: <Post />,
-  },
-  {
-    text: '내정보',
-    path: 'mypage',
-    element: <Mypage />,
-  },
-  {
-    text: '계정관리',
-    path: 'mypage/setting',
-    element: <MyPageSetting />,
-  },
-  {
-    text: '단짝관리',
-    path: 'mypage/buddy-management',
-    element: <BuddyManagement />,
-  },
-  {
-    text: '사진 모아보기',
-    path: 'mypage/photo',
-    element: <PhotoGallery />,
-  },
-  {
-    text: '일기 상세',
-    path: '/diary/detail',
-    lazy: () => import('@/pages/Diary/DetailDiary'),
-  },
-  {
-    text: '일기 작성',
-    path: '/diary/new',
-    lazy: () => import('@/pages/Diary/NewDiary'),
-  },
-  {
-    text: '일기 수정',
-    path: '/diary/edit',
-    lazy: () => import('@/pages/Diary/EditDiary'),
-  },
-];
-
-/**@type {import('react-router-dom').RouteObject[]} */
 export const routes = [
   {
     path: '/',
     element: <RootLayout />,
-    children: configRoutes(navigation),
+    children: [
+      { path: '', element: <Home /> },
+      {
+        path: 'chart',
+        children: [
+          { index: true, element: <Chart /> },
+          { path: 'more', element: <ChartMoreList /> },
+        ],
+      },
+      { path: 'post', element: <Post /> },
+      {
+        path: 'mypage',
+        children: [
+          { index: true, element: <Mypage /> },
+          { path: 'setting', element: <MyPageSetting /> },
+          { path: 'buddy-management', element: <BuddyManagement /> },
+          { path: 'photo', element: <PhotoGallery /> },
+        ],
+      },
+      {
+        path: 'diary',
+        children: [
+          { path: 'detail', lazy: () => import('@/pages/diary/DetailDiary') },
+          { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
+          { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
+        ],
+      },
+    ],
   },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/register',
-    element: <Register />,
-  },
-  {
-    path: '*',
-    element: <ErrorPage />, // 에러 페이지 컴포넌트
-  },
+  { path: '/login', element: <Login /> },
+  { path: '/register', element: <Register /> },
+  { path: '*', element: <ErrorPage /> },
 ];
 
 const router = createBrowserRouter(routes);

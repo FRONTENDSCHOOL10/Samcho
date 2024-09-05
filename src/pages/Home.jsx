@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
 import { Helmet } from 'react-helmet-async';
-import pb from '@/api/pb';
-import { useEffect } from 'react';
 
 const Home = () => {
   const [viewMode, setViewMode] = useState('calendar');
@@ -10,18 +8,6 @@ const Home = () => {
   const handleToggleView = () => {
     setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
   };
-
-  useEffect(() => {
-    const getData = async () => {
-      const records = await pb.collection('diary').getFullList({
-        sort: '-created',
-      });
-
-      console.log(records);
-    };
-
-    getData();
-  }, []);
 
   return (
     <>

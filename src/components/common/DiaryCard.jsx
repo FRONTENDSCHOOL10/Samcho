@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Delete, Edit, Share } from '@/assets/icons/diarylist';
-import moodIcons from '@/assets/icons/mood/moodIcons';
+import moods from '@/assets/icons/mood/moods';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
@@ -38,19 +38,19 @@ const DiaryCard = ({ date, type = 'icons' }) => {
       <section className="flex flex-col w-full p-4 bg-white h-fit rounded-[0.625rem] shadow-light gap-4">
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-row items-center justify-center gap-1 w-fit">
-            <img src={moodIcons['happy']} width={30} height={30} alt="기분" />
+            <img src={moods['행복']} width={30} height={30} alt="기분" />
             <span className="text-nowrap px-2.5 py-0.5 text-xs rounded-md bg-blue-50 text-gray-450 h-fit">
               {day}
             </span>
           </div>
           <div className="flex flex-row justify-end gap-1">
-            <img src="/icons/weather/rainy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weather/rainy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weather/windy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weather/cloudy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weather/snowy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weather/rainy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weather/sunny.png" alt="" className="w-6 h-6" />
+            <img src="/icons/weathers/rainy.png" alt="" className="w-6 h-6" />
+            <img src="/icons/weathers/rainy.png" alt="" className="w-6 h-6" />
+            <img src="/icons/weathers/windy.png" alt="" className="w-6 h-6" />
+            <img src="/icons/weathers/cloudy.png" alt="" className="w-6 h-6" />
+            <img src="/icons/weathers/snowy.png" alt="" className="w-6 h-6" />
+            <img src="/icons/weathers/rainy.png" alt="" className="w-6 h-6" />
+            <img src="/icons/weathers/sunny.png" alt="" className="w-6 h-6" />
           </div>
         </div>
         <div className="flex flex-row gap-3">

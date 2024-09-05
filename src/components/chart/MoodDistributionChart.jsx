@@ -2,11 +2,11 @@ import { MoodDistribution } from '../index';
 
 const MoodDistributionChart = () => {
   const moodData = [
-    { mood: 'happy', ratio: 40, color: 'bg-blue-50' },
-    { mood: 'smile', ratio: 20, color: 'bg-blue-200' },
-    { mood: 'soso', ratio: 20, color: 'bg-blue-400' },
-    { mood: 'bad', ratio: 10, color: 'bg-blue-700' },
-    { mood: 'sad', ratio: 10, color: 'bg-gray-300' },
+    { mood: '행복', ratio: 40, color: 'bg-blue-50' },
+    { mood: '기쁨', ratio: 20, color: 'bg-blue-200' },
+    { mood: '보통', ratio: 20, color: 'bg-blue-400' },
+    { mood: '나쁨', ratio: 10, color: 'bg-blue-700' },
+    { mood: '슬픔', ratio: 10, color: 'bg-gray-300' },
   ];
 
   return (
