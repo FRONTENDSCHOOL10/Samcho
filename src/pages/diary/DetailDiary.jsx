@@ -1,4 +1,4 @@
-import { DiaryDetail } from '@/components';
+import { DiaryDetail, TopHeader } from '@/components';
 import { useLocation } from 'react-router-dom';
 
 const DetailDiary = () => {
@@ -7,6 +7,7 @@ const DetailDiary = () => {
 
   return (
     <div>
+      <TopHeader isShowIcon={true} title={selectedDate} />
       <DiaryDetail selectedDate={selectedDate} />
     </div>
   );

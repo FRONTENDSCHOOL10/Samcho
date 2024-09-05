@@ -1,17 +1,18 @@
 import RootLayout from '@/layouts/RootLayout';
 import { createBrowserRouter } from 'react-router-dom';
 import {
+  BuddyManagement,
   Chart,
   ChartMoreList,
+  DetailDiary,
+  ErrorPage,
   Home,
   Login,
   Mypage,
-  Post,
   MyPageSetting,
-  Register,
-  ErrorPage,
-  BuddyManagement,
   PhotoGallery,
+  Post,
+  Register,
 } from './pages';
 
 /**@type {import('react-router-dom').RouteObject[]} */
@@ -41,7 +42,7 @@ export const routes = [
       {
         path: 'diary',
         children: [
-          { path: 'detail', lazy: () => import('@/pages/diary/DetailDiary') },
+          { path: 'detail', element: <DetailDiary /> },
           { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],
