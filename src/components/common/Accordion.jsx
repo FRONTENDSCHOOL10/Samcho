@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import 'tailwindcss/tailwind.css';
 
-const Accordion = ({ title, children, className = '' }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Accordion = ({ open = true, title, children, className = '' }) => {
+  const [isOpen, setIsOpen] = useState(open);
 
   const handleToggle = (event) => {
     event.preventDefault();
@@ -33,6 +33,7 @@ const Accordion = ({ title, children, className = '' }) => {
 };
 
 Accordion.propTypes = {
+  open: PropTypes.bool,
   title: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
