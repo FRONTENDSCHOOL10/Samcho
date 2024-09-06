@@ -1,13 +1,22 @@
-import { useState } from 'react';
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
+import { useFetchDiaryData } from '@/hooks';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const [viewMode, setViewMode] = useState('calendar');
+  const { diaryData, loading } = useFetchDiaryData();
 
   const handleToggleView = () => {
     setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
   };
+
+  if (loading) {
+    console.log('로딩 중..');
+    {
+      /* 추후 로딩 처리 로직을 가져오거나..등 */
+    }
+  }
 
   return (
     <>
@@ -30,18 +39,12 @@ const Home = () => {
         <TopNavigation onToggleView={handleToggleView} />
         <YearMonth className="py-5" />
         {viewMode === 'calendar' ? (
-          <Calendar />
+          <Calendar diaryData={diaryData} />
         ) : (
           <div className="flex flex-col gap-5">
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
+            {diaryData.map((diary) => (
+              <DiaryCard key={diary.id} date={diary.date} />
+            ))}
           </div>
         )}
       </section>

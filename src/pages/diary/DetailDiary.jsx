@@ -1,10 +1,16 @@
 import { DiaryDetail, TopHeader } from '@/components';
+import { useLocation } from 'react-router-dom';
 
-export const Component = () => {
+const DetailDiary = () => {
+  const location = useLocation();
+  const selectedDate = location.state?.selectedDate;
+
   return (
     <div>
-      <TopHeader title="2024-08-31" isShowIcon={true} />
-      <DiaryDetail selectedDate="2024-08-31" />
+      <TopHeader isShowIcon={true} title={selectedDate} />
+      <DiaryDetail selectedDate={selectedDate} />
     </div>
   );
 };
+
+export default DetailDiary;
