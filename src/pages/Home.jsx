@@ -1,6 +1,7 @@
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
 import { useFetchDiaryData } from '@/hooks';
 import { format } from 'date-fns';
+import { useEffect } from 'react';
 
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -10,6 +11,10 @@ const Home = () => {
   const [selectedMonth, setSelectedMonth] = useState(() =>
     format(new Date(), 'yyyy-MM')
   );
+
+  useEffect(() => {
+    console.log(selectedMonth);
+  }, [selectedMonth]);
 
   const { diaryData, loading } = useFetchDiaryData();
 

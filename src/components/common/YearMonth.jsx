@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useId } from 'react';
 
@@ -8,18 +9,19 @@ const YearMonth = ({ selectedMonth, setSelectedMonth, className }) => {
     setSelectedMonth(event.target.value);
   };
 
+  const currentMonth = format(new Date(), 'yyyy-MM');
+
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <label htmlFor={id} className="sr-only">
         연도 및 월 선택
       </label>
       <input
-        aria-hidden="true"
         className="custom-month-input relative text-base font-semibold text-gray-450 bg-inherit border-b-[1px] border-gray-300 px-[0.625rem] py-[0.3125rem] rounded-none"
         type="month"
         id={id}
         min="1900-01"
-        max={selectedMonth}
+        max={currentMonth}
         value={selectedMonth}
         onChange={handleChange}
       />
