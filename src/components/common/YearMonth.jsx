@@ -1,9 +1,6 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
-const YearMonth = ({ className }) => {
-  const [selectedMonth, setSelectedMonth] = useState('2024-09');
-
+const YearMonth = ({ selectedMonth, setSelectedMonth, className }) => {
   const handleChange = (event) => {
     setSelectedMonth(event.target.value);
   };
@@ -19,7 +16,7 @@ const YearMonth = ({ className }) => {
         name="monthType"
         id="monthType"
         min="1900-01"
-        max="2024-09"
+        max={selectedMonth}
         value={selectedMonth}
         onChange={handleChange}
       />
@@ -28,6 +25,8 @@ const YearMonth = ({ className }) => {
 };
 
 YearMonth.propTypes = {
+  selectedMonth: PropTypes.string,
+  setSelectedMonth: PropTypes.func,
   className: PropTypes.string,
 };
 

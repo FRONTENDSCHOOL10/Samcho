@@ -16,7 +16,7 @@ const Footer = () => {
 
   if (currentUrl === '/diary/new') {
     return (
-      <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
+      <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-3 z-50 shadow-top -mx-5 px-5">
         <Button text="작성완료" size="large" />
       </footer>
     );
