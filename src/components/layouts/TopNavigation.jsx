@@ -37,7 +37,6 @@ const TopNavigation = ({ onToggleView }) => {
             type="button"
             aria-label="일기 리스트 보기"
             onClick={handleToggleIcon}
-            onKeydown={handleToggleIcon}
           >
             <List className="fill-gray-450" aria-hidden="true" />
           </button>
@@ -46,7 +45,6 @@ const TopNavigation = ({ onToggleView }) => {
             type="button"
             aria-label="캘린더 보기"
             onClick={handleToggleIcon}
-            onKeydown={handleToggleIcon}
           >
             <Calendar2 className="fill-gray-450" aria-hidden="true" />
           </button>
