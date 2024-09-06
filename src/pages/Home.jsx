@@ -1,13 +1,28 @@
-import { useState } from 'react';
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
+import { useFetchDiaryData } from '@/hooks';
+import { format } from 'date-fns';
+
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const [viewMode, setViewMode] = useState('calendar');
+  const [selectedMonth, setSelectedMonth] = useState(() =>
+    format(new Date(), 'yyyy-MM')
+  );
+
+  const { diaryData, loading } = useFetchDiaryData();
 
   const handleToggleView = () => {
     setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
   };
+
+  if (loading) {
+    console.log('로딩 중..');
+    {
+      /* 추후 로딩 처리 로직을 가져오거나..등 */
+    }
+  }
 
   return (
     <>
@@ -25,24 +40,23 @@ const Home = () => {
         <meta property="og:image" content="" />
         <meta property="og:site:author" content="하루몽 일동" />
       </Helmet>
-      <section id="page">
+
+      <section>
         <h1 className="sr-only">캘린더</h1>
         <TopNavigation onToggleView={handleToggleView} />
-        <YearMonth className="py-5" />
+        <YearMonth
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          className="py-5"
+        />
         {viewMode === 'calendar' ? (
-          <Calendar />
+          <Calendar diaryData={diaryData} />
         ) : (
-          <div className="flex flex-col gap-5">
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-          </div>
+          <main className="flex flex-col gap-5">
+            {diaryData.map((diary) => (
+              <DiaryCard key={diary.id} date={diary.date} />
+            ))}
+          </main>
         )}
       </section>
     </>

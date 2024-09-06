@@ -51,8 +51,8 @@ const useCalendar = (diaryData) => {
             <td key={dayIdx}>
               <FeelingCalendar
                 day={parseInt(format(day, 'd'), 10)}
-                isDiaryWritten={!!dayDiary}
                 mood={dayDiary ? dayDiary.mood : undefined}
+                date={formattedDate}
               />
             </td>
           ),
