@@ -17,40 +17,92 @@ const DiaryCard = ({ date, type = 'icons' }) => {
 
   const dateOrIcons =
     type === 'date' ? (
-      <span className="text-sm font-medium text-gray-700">{formattedDate}</span>
+      <span className="text-sm font-medium text-right text-gray-700">
+        {formattedDate}
+      </span>
     ) : (
-      <>
-        <button type="button">
-          <Delete />
+      <div
+        className="flex flex-row justify-end gap-3"
+        role="group"
+        aria-label="일기 관리"
+      >
+        <button type="button" aria-label="일기 삭제" title="일기 삭제">
+          <Delete aria-hidden={true} />
         </button>
-        <button type="button">
-          <Edit />
+        <button type="button" aria-label="일기 수정" title="일기 수정">
+          <Edit aria-hidden={true} />
         </button>
-        <button type="button">
-          <Share />
+        <button type="button" aria-label="일기 공유" title="일기 공유">
+          <Share aria-hidden={true} />
         </button>
-      </>
+      </div>
     );
 
   return (
-    <div className="flex flex-col w-full gap-2">
-      <div className="flex flex-row justify-end gap-3">{dateOrIcons}</div>
-      <section className="flex flex-col w-full p-4 bg-white h-fit rounded-[0.625rem] shadow-light gap-4">
+    <article className="flex flex-col w-full gap-2">
+      <h2 className="sr-only">{`${date} 작성한 일기`}</h2>
+      {dateOrIcons}
+      <div className="flex flex-col w-full p-4 bg-white h-fit rounded-[0.625rem] shadow-light gap-4">
         <div className="flex flex-row items-center justify-between">
           <div className="flex flex-row items-center justify-center gap-1 w-fit">
-            <img src={moods['행복']} width={30} height={30} alt="기분" />
+            <img
+              src={moods['행복']}
+              width={30}
+              height={30}
+              alt="행복"
+              aria-label="행복 아이콘"
+            />
             <span className="text-nowrap px-2.5 py-0.5 text-xs rounded-md bg-blue-50 text-gray-450 h-fit">
               {day}
             </span>
           </div>
-          <div className="flex flex-row justify-end gap-1">
-            <img src="/icons/weathers/rainy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weathers/rainy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weathers/windy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weathers/cloudy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weathers/snowy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weathers/rainy.png" alt="" className="w-6 h-6" />
-            <img src="/icons/weathers/sunny.png" alt="" className="w-6 h-6" />
+          <div
+            className="flex flex-row justify-end gap-1"
+            role="group"
+            aria-label="기록한 감정 및 날씨"
+          >
+            <img
+              src="/icons/weathers/rainy.png"
+              alt="비"
+              className="w-6 h-6"
+              aria-label="비 아이콘"
+            />
+            <img
+              src="/icons/weathers/rainy.png"
+              alt="비"
+              className="w-6 h-6"
+              aria-label="비 아이콘"
+            />
+            <img
+              src="/icons/weathers/rainy.png"
+              alt="비"
+              className="w-6 h-6"
+              aria-label="비 아이콘"
+            />
+            <img
+              src="/icons/weathers/rainy.png"
+              alt="비"
+              className="w-6 h-6"
+              aria-label="비 아이콘"
+            />
+            <img
+              src="/icons/weathers/rainy.png"
+              alt="비"
+              className="w-6 h-6"
+              aria-label="비 아이콘"
+            />
+            <img
+              src="/icons/weathers/rainy.png"
+              alt="비"
+              className="w-6 h-6"
+              aria-label="비 아이콘"
+            />
+            <img
+              src="/icons/weathers/rainy.png"
+              alt="비"
+              className="w-6 h-6"
+              aria-label="비 아이콘"
+            />
           </div>
         </div>
         <div className="flex flex-row gap-3">
@@ -59,11 +111,12 @@ const DiaryCard = ({ date, type = 'icons' }) => {
           )}
           <img
             src="https://picsum.photos/600/400"
-            alt=""
+            alt={date}
             className={`max-w-[100px] max-h-[80px] rounded-[0.625rem] ${
               !isImageLoaded ? 'hidden' : 'block'
             }`}
             onLoad={() => setIsImageLoaded(true)}
+            aria-label={`${date} 기록한 사진`}
           />
           <p className="text-sm font-medium text-left custom-line-clamp-4">
             한 여름 밤, 도심의 불빛이 반짝이는 고요한 거리에서 나는 산책을 했다.
@@ -75,8 +128,8 @@ const DiaryCard = ({ date, type = 'icons' }) => {
             빛을 따라 나아가기로 결심했다.
           </p>
         </div>
-      </section>
-    </div>
+      </div>
+    </article>
   );
 };
 
