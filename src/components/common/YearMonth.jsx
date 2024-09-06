@@ -11,9 +11,10 @@ const YearMonth = ({ selectedMonth, setSelectedMonth, className }) => {
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <label htmlFor={id} className="sr-only">
-        월 선택
+        연도 및 월 선택
       </label>
       <input
+        aria-hidden="true"
         className="custom-month-input relative text-base font-semibold text-gray-450 bg-inherit border-b-[1px] border-gray-300 px-[0.625rem] py-[0.3125rem] rounded-none"
         type="month"
         id={id}
