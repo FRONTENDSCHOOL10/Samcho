@@ -75,17 +75,22 @@ const DiaryDetail = ({ selectedDate }) => {
           ))}
         </div>
 
-        {diaryEntry.picture && (
-          <img
-            src={`${baseImageUrl}/${diaryEntry.id}/${diaryEntry.picture}`}
-            className="w-full rounded-xl bg-blue-50"
-            alt={`${diaryEntry.date}의 사진`}
-          />
+        {diaryEntry.picture ? (
+          <>
+            <img
+              src={`${baseImageUrl}/${diaryEntry.id}/${diaryEntry.picture}`}
+              className="w-full rounded-xl bg-blue-50"
+              alt={`${diaryEntry.date}의 사진`}
+            />
+            <p className="text-sm font-medium leading-normal text-blue-500">
+              {diaryEntry.content}
+            </p>
+          </>
+        ) : (
+          <p className="text-sm font-medium leading-relaxed text-blue-500">
+            {diaryEntry.content}
+          </p>
         )}
-
-        <p className="text-sm font-medium text-blue-500">
-          {diaryEntry.content}
-        </p>
       </div>
     </article>
   );
