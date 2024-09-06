@@ -83,7 +83,7 @@ const DiaryDetail = ({ selectedDate }) => {
           />
         )}
 
-        <p className="text-base font-medium tracking-wide text-blue-500">
+        <p className="text-sm font-medium text-blue-500">
           {diaryEntry.content}
         </p>
       </div>
