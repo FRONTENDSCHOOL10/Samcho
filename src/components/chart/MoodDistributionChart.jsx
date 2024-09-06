@@ -10,7 +10,7 @@ const MoodDistributionChart = () => {
   ];
 
   return (
-    <div className="w-full p-[15px] rounded-[15px] bg-white flex flex-col gap-6 shadow-light">
+    <article className="w-full p-[15px] rounded-[15px] bg-white flex flex-col gap-6 shadow-light">
       <h2 className="text-base font-semibold text-gray-450 h-[19px]">
         기분 분포
       </h2>
@@ -31,7 +31,7 @@ const MoodDistributionChart = () => {
           ></div>
         ))}
       </div>
-    </div>
+    </article>
   );
 };
 
