@@ -4,5 +4,6 @@ import List from './list.svg?react';
 import Search from './search.svg?react';
 import Delete from './delete.svg?react';
 import Edit from './edit.svg?react';
+import Notification from './notification.svg?react';
 
-export { Calendar2, Filter, List, Search, Delete, Edit };
+export { Calendar2, Filter, List, Search, Delete, Edit, Notification };
