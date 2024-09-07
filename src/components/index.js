@@ -23,3 +23,4 @@ export { default as SelectMood } from './newdiary/SelectMood.jsx';
 export { default as DiaryDetail } from './common/DiaryDetail.jsx';
 export { default as WeatherWithIcon } from './newdiary/WeatherWithIcon.jsx';
 export { default as BuddyCard } from '../pages/mypage/BuddyCard.jsx';
+export { default as NotificationCard } from './notification/NotificationCard.jsx';

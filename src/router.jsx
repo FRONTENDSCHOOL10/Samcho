@@ -10,6 +10,7 @@ import {
   Login,
   Mypage,
   MyPageSetting,
+  Notification,
   PhotoGallery,
   Post,
   Register,
@@ -52,6 +53,7 @@ export const routes = [
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '*', element: <ErrorPage /> },
+  { path: '/notification', element: <Notification /> },
 ];
 
 const router = createBrowserRouter(routes);
