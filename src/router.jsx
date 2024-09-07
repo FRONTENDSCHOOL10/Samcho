@@ -48,12 +48,12 @@ export const routes = [
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],
       },
+      { path: '/notification', element: <Notification /> },
     ],
   },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '*', element: <ErrorPage /> },
-  { path: '/notification', element: <Notification /> },
 ];
 
 const router = createBrowserRouter(routes);
