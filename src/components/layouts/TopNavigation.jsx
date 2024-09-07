@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import {
   Calendar2,
   Filter,
@@ -28,9 +29,9 @@ const TopNavigation = ({ onToggleView }) => {
         <button type="button" aria-label="검색">
           <Search aria-hidden="true" />
         </button>
-        <button type="button" aria-label="알림">
+        <Link to={'/notification'} title="알림">
           <Notification className=" fill-gray-450" aria-hidden="true" />
-        </button>
+        </Link>
 
         {isCalendarView ? (
           <button

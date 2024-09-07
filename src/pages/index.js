@@ -19,3 +19,6 @@ export { default as PhotoGallery } from './mypage/PhotoGallery.jsx';
 export { default as Home } from './Home.jsx';
 export { default as Post } from './Post.jsx';
 export { default as ErrorPage } from './ErrorPage.jsx';
+
+// notification
+export { default as Notification } from './Notification.jsx';
