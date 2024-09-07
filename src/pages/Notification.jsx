@@ -1,11 +1,10 @@
 import { TopHeader, NotificationCard } from '@/components';
-import ChartMoreList from './chart/ChartMoreList';
 
 const Notification = () => {
   return (
-    <section className="flex flex-col gap-[15px]">
+    <section className="flex flex-col gap-5">
       <TopHeader title="알림" isShowIcon />
-      <main className="flex flex-col gap-[15px]">
+      <main className="flex flex-col gap-5">
         <NotificationCard
           buddyName="최강두팔바보똥개1"
           notificationTime="2024-09-07 17:14:00"

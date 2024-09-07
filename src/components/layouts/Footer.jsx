@@ -5,7 +5,6 @@ import { Button } from '../';
 
 const Footer = () => {
   const currentUrl = useLocation().pathname;
-  console.log(currentUrl);
 
   const getLinkClassName = (path) => {
     if (path === '/') {
