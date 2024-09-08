@@ -5,7 +5,6 @@ import weathers from '@/assets/icons/weather/weathers';
 import PropTypes from 'prop-types';
 
 const DiaryDetail = ({ diaryDetail }) => {
-  console.log(diaryDetail);
   const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
   if (!diaryDetail) return;
