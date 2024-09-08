@@ -1,7 +1,54 @@
+import { useState } from 'react';
 import { DirectionRight } from '@/assets/icons/direction';
 import { TopHeader } from '@/components';
+import pb from '@/api/pb'; // PocketBase API 연결
+import { toast } from 'react-hot-toast';
 
 const MypageSetting = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+
+    try {
+      pb.authStore.clear();
+
+      toast.success('로그아웃 되었습니다.');
+      location.href = '/login';
+    } catch (error) {
+      console.error(error);
+      toast.error('로그아웃 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 회원 탈퇴 처리 함수
+  // const handleDeleteAccount = async () => {
+  //   const confirmed = window.confirm('정말로 회원 탈퇴를 하시겠습니까?');
+  //   if (!confirmed) return;
+
+  //   setIsLoading(true);
+
+  //   try {
+  //     // API 호출을 통해 회원 탈퇴 처리
+  //     await pb.collection('users').delete(pb.authStore.model.id); // 현재 사용자 삭제
+
+  //     // 탈퇴 성공 후 로그아웃 처리
+  //     pb.authStore.clear(); // 인증 정보 초기화
+
+  //     toast.success('회원 탈퇴가 완료되었습니다.');
+
+  //     // 리디렉션 (로그아웃 후 홈으로 이동)
+  //     location.href = '/login';
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error('회원 탈퇴 중 오류가 발생했습니다.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   return (
     <div className="flex flex-col justify-between h-full pb-20">
       <TopHeader title="계정 관리" isShowIcon={true} />
@@ -29,14 +76,18 @@ const MypageSetting = () => {
       </main>
       <div className="flex flex-col gap-2">
         <button
+          onClick={handleLogout}
           className="w-full px-5 py-[15px] bg-white rounded-[10px] shadow-light flex justify-center items-center"
           aria-label="로그아웃 버튼"
+          disabled={isLoading}
         >
           <span className="text-lg font-bold text-blue-500">로그아웃</span>
         </button>
         <button
+          //onClick={handleDeleteAccount}
           className="w-full px-5 py-[15px] bg-red rounded-[10px] shadow-light flex justify-center items-center"
           aria-label="회원 탈퇴 버튼"
+          disabled={isLoading}
         >
           <span className="text-lg font-bold text-white">회원탈퇴</span>
         </button>
