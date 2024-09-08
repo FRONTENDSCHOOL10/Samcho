@@ -55,7 +55,7 @@ const Home = ({ viewMode: initialViewMode }) => {
         <meta property="og:site:author" content="하루몽 일동" />
       </Helmet>
 
-      <section>
+      <section className="min-h-dvh pb-[80px]">
         <h1 className="sr-only">캘린더</h1>
         <TopNavigation
           selectedMood={selectedMood}

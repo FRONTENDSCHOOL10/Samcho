@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 const Mypage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+
   useEffect(() => {
     const authData = localStorage.getItem('pocketbase_auth');
 
@@ -29,7 +30,7 @@ const Mypage = () => {
   return (
     <>
       <TopHeader title="내정보" />
-      <div className="flex flex-col justify-center items-center gap-[25px] mt-5">
+      <div className="flex flex-col justify-center items-center gap-[25px] mt-5 min-h-dvh pb-[80px]">
         {/* 계정 섹션 */}
         <section className="flex flex-col w-full gap-4">
           <h2 className="text-lg font-semibold text-gray-450">계정</h2>

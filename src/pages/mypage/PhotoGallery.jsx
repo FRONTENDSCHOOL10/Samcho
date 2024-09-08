@@ -48,7 +48,7 @@ const PhotoGallery = () => {
         <meta property="og:site:author" content="하루몽 일동" />
       </Helmet>
 
-      <main className="grid gap-5">
+      <main className="grid gap-5 min-h-hdv pb-[80px]">
         <TopHeader isShowIcon={true} title="사진 모아보기" />
 
         {Object.entries(groupByMonth).map(([date, diaries]) => (
