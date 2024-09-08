@@ -1,9 +1,9 @@
 import { TopHeader } from '@/components';
-import { useFetchDiaryData } from '@/hooks';
+import { useFetchAllDiaryData } from '@/hooks';
 import { Helmet } from 'react-helmet-async';
 
 const PhotoGallery = () => {
-  const { diaryData, loading } = useFetchDiaryData();
+  const { diaryData, loading } = useFetchAllDiaryData();
 
   const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 

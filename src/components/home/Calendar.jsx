@@ -1,10 +1,14 @@
 import { useCalendar } from '@/hooks';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 
 const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
-const Calendar = ({ diaryData = [] }) => {
-  const { weekRows } = useCalendar(diaryData);
+const Calendar = ({
+  diaryData = [],
+  selectedMonth = format(new Date(), 'yyyy-MM'),
+}) => {
+  const { weekRows } = useCalendar(diaryData, selectedMonth);
 
   return (
     <table className="w-full border-separate border-spacing-y-5 border-spacing-x-0">
@@ -29,6 +33,7 @@ const Calendar = ({ diaryData = [] }) => {
 
 Calendar.propTypes = {
   diaryData: PropTypes.array,
+  selectedMonth: PropTypes.string,
 };
 
 export default Calendar;

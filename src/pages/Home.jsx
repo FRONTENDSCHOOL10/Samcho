@@ -1,5 +1,5 @@
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
-import { useFetchDiaryData } from '@/hooks';
+import { useFetchMonthlyDiaryData } from '@/hooks';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -24,7 +24,7 @@ const Home = ({ viewMode: initialViewMode }) => {
     }
   }, [location.pathname]);
 
-  const { diaryData, loading } = useFetchDiaryData();
+  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth);
 
   const handleToggleView = () => {
     const newViewMode = viewMode === 'calendar' ? 'list' : 'calendar';
@@ -63,7 +63,7 @@ const Home = ({ viewMode: initialViewMode }) => {
           className="py-5"
         />
         {viewMode === 'calendar' ? (
-          <Calendar diaryData={diaryData} />
+          <Calendar diaryData={diaryData} selectedMonth={selectedMonth} />
         ) : (
           <main className="flex flex-col gap-5">
             {diaryData.map((diary) => (

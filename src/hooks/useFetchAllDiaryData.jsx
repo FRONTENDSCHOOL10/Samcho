@@ -2,7 +2,7 @@ import pb from '@/api/pb';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const useFetchDiaryData = () => {
+const useFetchAllDiaryData = () => {
   const [diaryData, setDiaryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -43,4 +43,4 @@ const useFetchDiaryData = () => {
   return { diaryData, loading };
 };
 
-export default useFetchDiaryData;
+export default useFetchAllDiaryData;
