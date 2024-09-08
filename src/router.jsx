@@ -1,5 +1,5 @@
 import RootLayout from '@/layouts/RootLayout';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import {
   BuddyManagement,
   Chart,
@@ -22,7 +22,15 @@ export const routes = [
     path: '/',
     element: <RootLayout />,
     children: [
-      { path: '', element: <Home /> },
+      { index: true, element: <Navigate to="/home/calendar" replace /> },
+      {
+        path: 'home',
+        children: [
+          { path: 'calendar', element: <Home viewMode="calendar" /> },
+          { path: 'list', element: <Home viewMode="list" /> },
+          { path: 'notification', element: <Notification /> },
+        ],
+      },
       {
         path: 'chart',
         children: [
@@ -48,7 +56,6 @@ export const routes = [
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],
       },
-      { path: '/notification', element: <Notification /> },
     ],
   },
   { path: '/login', element: <Login /> },
