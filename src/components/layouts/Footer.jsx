@@ -7,9 +7,6 @@ const Footer = () => {
   const currentUrl = useLocation().pathname;
 
   const getLinkClassName = (path) => {
-    if (path === '/') {
-      return currentUrl === path ? 'fill-blue-500' : 'fill-gray-300';
-    }
     return currentUrl.startsWith(path) ? 'fill-blue-500' : 'fill-gray-300';
   };
 
@@ -34,7 +31,7 @@ const Footer = () => {
       <nav className="flex items-center justify-around">
         <h2 className="sr-only">메뉴 내비게이션</h2>
         <Link to={'/'} title="홈">
-          <Calendar className={`cursor-pointer ${getLinkClassName('/')}`} />
+          <Calendar className={`cursor-pointer ${getLinkClassName('/home')}`} />
         </Link>
         <Link to={'/chart'} title="통계">
           <Chart className={`cursor-pointer ${getLinkClassName('/chart')}`} />
