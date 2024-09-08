@@ -12,6 +12,12 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    toast.dismiss();
+
+    if (username === '' || password === '') {
+      toast.error('아이디 혹은 비밀번호를 입력해 주세요.');
+      return;
+    }
 
     try {
       await pb.collection('users').authWithPassword(username, password);

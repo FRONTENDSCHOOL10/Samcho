@@ -59,7 +59,7 @@ const MoodChart = () => {
   };
 
   const saturdays = getSaturdays();
-  console.log(saturdays);
+
   const data = {
     datasets: [
       {

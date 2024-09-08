@@ -2,9 +2,15 @@ import { useState } from 'react';
 import { Button, Input } from '@/components';
 import pb from '@/api/pb';
 import toast, { Toaster } from 'react-hot-toast';
+import {
+  validateEmail,
+  validateUsername,
+  validateNickname,
+  validatePassword,
+} from '@/utils';
 
 const Register = () => {
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     username: '',
     email: '',
     name: '',
@@ -12,93 +18,95 @@ const Register = () => {
     passwordConfirm: '',
   });
 
-  //const [success, setSuccess] = useState('');
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
+    setForm({ ...form, [id]: value });
+
+    validateField(id, value);
   };
 
-  const validateUsername = (username) => {
-    const usernameRegex = /^[A-Za-z]+$/;
-    return usernameRegex.test(username);
-  };
+  const validateField = (id, value) => {
+    let error = '';
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+    switch (id) {
+      case 'username':
+        if (!validateUsername(value))
+          error = '아이디는 영문, 숫자 포함 4자리 이상 입력하세요.';
+        break;
+      case 'email':
+        if (!validateEmail(value)) error = '유효한 이메일 주소를 입력하세요.';
+        break;
+      case 'name':
+        if (!validateNickname(value))
+          error = '닉네임은 한글로 두자리 이상 입력하세요.';
+        break;
+      case 'password':
+        if (!validatePassword(value))
+          error =
+            '비밀번호는 8자리 이상 영문, 숫자, 특수문자를 포함해야 합니다.';
+        break;
+      case 'passwordConfirm':
+        if (value !== form.password) error = '비밀번호가 일치하지 않습니다.';
+        break;
+      default:
+        break;
+    }
 
-  const validatePassword = (password) => {
-    const regex =
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  };
-
-  const validateName = (name) => {
-    const nameRegex = /^[A-Za-z0-9]{2,}$/;
-    return nameRegex.test(name);
+    setErrors({ ...errors, [id]: error });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, email, name, password, passwordConfirm } = formData;
+    const { username, email, name, password, passwordConfirm } = form;
 
     // 중복 토스트 제거
     toast.dismiss();
 
-    if (username === '') {
-      toast.error('아이디를 입력해 주십시오');
-      return;
-    } else if (!validateUsername(username)) {
-      toast.error('아이디는 영어로만 입력해 주십시오');
-      return;
-    } else if (email === '') {
-      toast.error('이메일을 입력해 주십시오');
-      return;
-    } else if (!validateEmail(email)) {
-      toast.error('유효한 이메일 주소를 입력해 주십시오');
-      return;
-    } else if (name === '') {
-      toast.error('닉네임을 입력해 주십시오');
-      return;
-    } else if (!validateName(name)) {
-      toast.error(
-        '닉네임은 두 자리 이상이어야 하며, 특수문자는 사용할 수 없습니다.'
-      );
-      return;
-    } else if (password === '') {
-      toast.error('비밀번호를 입력해 주십시오');
-      return;
-    } else if (!validatePassword(password)) {
-      toast.error(
-        '비밀번호는 최소 8자리 이상, 영문자, 숫자, 특수문자를 포함해야 합니다.'
-      );
-      return;
-    } else if (password !== passwordConfirm) {
-      toast.error('비밀번호가 일치하지 않습니다.', {});
+    let formIsValid = true;
+    let missingFields = false;
+
+    const fieldKeys = Object.keys(form);
+    const newErrors = {};
+
+    fieldKeys.forEach((field) => {
+      if (!form[field]) {
+        missingFields = true;
+        newErrors[field] = '해당 필드를 입력해 주세요.';
+      }
+      validateField(field, form[field]);
+      if (errors[field]) formIsValid = false;
+    });
+
+    setErrors(newErrors);
+
+    if (missingFields) {
+      toast.error('입력하지 않은 필드값이 존재합니다.');
       return;
     }
 
-    try {
-      const data = {
-        username,
-        email,
-        name,
-        password,
-        passwordConfirm,
-      };
+    if (formIsValid) {
+      try {
+        const data = {
+          username,
+          email,
+          name,
+          password,
+          passwordConfirm,
+          emailVisibility: true,
+        };
+        console.log(data);
 
-      const record = await pb.collection('users').create(data);
+        await pb.collection('users').create(data);
 
-      toast.success('회원가입이 완료되었습니다.');
-      location.reload();
-    } catch (err) {
-      toast.error('회원가입 중 오류가 발생했습니다.');
-      console.error(err);
+        toast.success('회원가입이 완료되었습니다.');
+      } catch (err) {
+        toast.error('회원가입 중 오류가 발생했습니다.');
+        console.error(err);
+      }
+    } else {
+      toast.error('입력하지 않은 필드값이 존재합니다.');
     }
   };
 
@@ -113,36 +121,46 @@ const Register = () => {
             label="아이디"
             type="text"
             id="username"
-            value={formData.username}
+            value={form.username}
             onChange={handleChange}
+            error={!!errors.username}
+            errorMessage={errors.username}
           />
           <Input
             label="이메일"
             type="email"
             id="email"
-            value={formData.email}
+            value={form.email}
             onChange={handleChange}
+            error={!!errors.email}
+            errorMessage={errors.email}
           />
           <Input
             label="닉네임"
             type="text"
             id="name"
-            value={formData.name}
+            value={form.name}
             onChange={handleChange}
+            error={!!errors.name}
+            errorMessage={errors.name}
           />
           <Input
             label="비밀번호"
             type="password"
             id="password"
-            value={formData.password}
+            value={form.password}
             onChange={handleChange}
+            error={!!errors.password}
+            errorMessage={errors.password}
           />
           <Input
             label="비밀번호 확인"
             type="password"
             id="passwordConfirm"
-            value={formData.passwordConfirm}
+            value={form.passwordConfirm}
             onChange={handleChange}
+            error={!!errors.passwordConfirm}
+            errorMessage={errors.passwordConfirm}
           />
         </div>
         <Toaster />
