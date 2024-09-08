@@ -1,8 +1,6 @@
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
-import { useFetchDiaryData } from '@/hooks';
+import { useFetchMonthlyDiaryData } from '@/hooks';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
-
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
@@ -12,11 +10,7 @@ const Home = () => {
     format(new Date(), 'yyyy-MM')
   );
 
-  useEffect(() => {
-    console.log(selectedMonth);
-  }, [selectedMonth]);
-
-  const { diaryData, loading } = useFetchDiaryData();
+  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth);
 
   const handleToggleView = () => {
     setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
@@ -55,7 +49,7 @@ const Home = () => {
           className="py-5"
         />
         {viewMode === 'calendar' ? (
-          <Calendar diaryData={diaryData} />
+          <Calendar diaryData={diaryData} selectedMonth={selectedMonth} />
         ) : (
           <main className="flex flex-col gap-5">
             {diaryData.map((diary) => (
