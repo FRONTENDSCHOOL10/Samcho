@@ -3,11 +3,11 @@ import moods from '@/assets/icons/mood/moods';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const FeelingCalendar = ({ day, mood, date }) => {
+const FeelingCalendar = ({ day, mood, id }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/diary/${date}`);
+    navigate(`/diary/detail/${id}`);
   };
 
   return (
@@ -32,7 +32,7 @@ const FeelingCalendar = ({ day, mood, date }) => {
 FeelingCalendar.propTypes = {
   day: PropTypes.number.isRequired,
   mood: PropTypes.string,
-  date: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default FeelingCalendar;

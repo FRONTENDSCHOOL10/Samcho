@@ -65,6 +65,7 @@ const useCalendar = (
                 day={parseInt(format(day, 'd'), 10)}
                 mood={dayDiary ? dayDiary.mood : undefined}
                 date={formattedDate}
+                id={dayDiary ? dayDiary.id : ''}
               />
             </td>
           ),

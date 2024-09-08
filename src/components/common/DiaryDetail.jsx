@@ -1,41 +1,23 @@
+import emotions from '@/assets/icons/emotions/emotions';
 import { Delete, Edit } from '@/assets/icons/menu';
 import moods from '@/assets/icons/mood/moods';
-import emotions from '@/assets/icons/emotions/emotions';
-import { useFetchMonthlyDiaryData } from '@/hooks';
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
 import weathers from '@/assets/icons/weather/weathers';
+import PropTypes from 'prop-types';
 
-const DiaryDetail = ({ selectedDate }) => {
-  const [diaryEntry, setDiaryEntry] = useState(null);
-  const { diaryData, loading } = useFetchMonthlyDiaryData();
-
+const DiaryDetail = ({ diaryDetail }) => {
+  console.log(diaryDetail);
   const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
-  useEffect(() => {
-    if (selectedDate) {
-      const entry = diaryData.find((entry) => entry.date === selectedDate);
-      setDiaryEntry(entry);
-    }
-  }, [selectedDate, diaryData]);
+  if (!diaryDetail) return;
 
-  if (loading) {
-    console.log('로딩 중..');
-    {
-      /* 추후 로딩 처리 로직을 가져오거나..등 */
-    }
-  }
-
-  if (!diaryEntry) return;
-
-  const dateObj = new Date(diaryEntry.date);
+  const dateObj = new Date(diaryDetail.date);
   const day = dateObj.getDate();
   const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
   const weekday = weekDays[dateObj.getDay()];
   const dateFormatted = `${day} ${weekday}`;
 
   // 감정 아이콘 최대 5개,  날씨 아이콘 최대 5개
-  const combinedIcons = [...diaryEntry.emotion, ...diaryEntry.weather].slice(
+  const combinedIcons = [...diaryDetail.emotion, ...diaryDetail.weather].slice(
     0.7
   );
 
@@ -54,9 +36,9 @@ const DiaryDetail = ({ selectedDate }) => {
       <div className="flex flex-col gap-y-5">
         <div className="flex flex-col items-center gap-2">
           <img
-            key={diaryEntry.date}
-            src={moods[diaryEntry.mood]}
-            alt={`${diaryEntry.mood} 아이콘`}
+            key={diaryDetail.date}
+            src={moods[diaryDetail.mood]}
+            alt={`${diaryDetail.mood} 아이콘`}
             className="w-[44px] h-[44px]"
           />
           <span className="text-base font-semibold text-gray-450">
@@ -75,20 +57,20 @@ const DiaryDetail = ({ selectedDate }) => {
           ))}
         </div>
 
-        {diaryEntry.picture ? (
+        {diaryDetail.picture ? (
           <>
             <img
-              src={`${baseImageUrl}/${diaryEntry.id}/${diaryEntry.picture}`}
+              src={`${baseImageUrl}/${diaryDetail.id}/${diaryDetail.picture}`}
               className="w-full rounded-xl bg-blue-50"
-              alt={`${diaryEntry.date}의 사진`}
+              alt={`${diaryDetail.date}의 사진`}
             />
             <p className="text-sm font-medium leading-normal text-blue-500">
-              {diaryEntry.content}
+              {diaryDetail.content}
             </p>
           </>
         ) : (
           <p className="text-sm font-medium leading-relaxed text-blue-500">
-            {diaryEntry.content}
+            {diaryDetail.content}
           </p>
         )}
       </div>
@@ -97,7 +79,7 @@ const DiaryDetail = ({ selectedDate }) => {
 };
 
 DiaryDetail.propTypes = {
-  selectedDate: PropTypes.string.isRequired,
+  diaryDetail: PropTypes.object.isRequired,
 };
 
 export default DiaryDetail;
