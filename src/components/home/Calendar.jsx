@@ -8,7 +8,6 @@ const Calendar = ({
   diaryData = [],
   selectedMonth = format(new Date(), 'yyyy-MM'),
 }) => {
-  console.log(selectedMonth);
   const { weekRows } = useCalendar(diaryData, selectedMonth);
 
   return (

@@ -30,7 +30,6 @@ const useFetchMonthlyDiaryData = (selectedMonth) => {
           })
         );
         setDiaryData(formattedData);
-        console.log(formattedData);
       } catch (error) {
         if (error.status === 0) return;
         console.error('Data fetch error', error);
