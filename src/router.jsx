@@ -43,7 +43,7 @@ export const routes = [
       {
         path: 'diary',
         children: [
-          { path: 'detail', element: <DetailDiary /> },
+          { path: ':date', element: <DetailDiary /> },
           { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],
