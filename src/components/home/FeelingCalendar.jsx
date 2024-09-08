@@ -7,7 +7,7 @@ const FeelingCalendar = ({ day, mood, date }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/diary/detail', { state: { selectedDate: date } });
+    navigate(`/diary/${date}`);
   };
 
   return (
