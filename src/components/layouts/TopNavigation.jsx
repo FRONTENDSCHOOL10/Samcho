@@ -9,9 +9,9 @@ import {
   Notification,
 } from '@/assets/icons/menu';
 import { useModal } from '@/hooks';
-import { Modal } from '..';
+import { Modal, Select } from '..';
 
-const TopNavigation = ({ onToggleView }) => {
+const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
   const [isCalendarView, setIsCalendarView] = useState(true);
 
   const { isOpen, openModal, closeModal } = useModal();
@@ -19,6 +19,10 @@ const TopNavigation = ({ onToggleView }) => {
   const handleToggleIcon = () => {
     setIsCalendarView(!isCalendarView);
     onToggleView();
+  };
+
+  const handleFilterConfirm = () => {
+    closeModal('filterModal');
   };
 
   return (
@@ -70,15 +74,32 @@ const TopNavigation = ({ onToggleView }) => {
         isOpen={isOpen('filterModal')}
         closeModal={() => closeModal('filterModal')}
       >
-        <h2 className="mb-4 text-xl font-bold">기분 필터링 검색</h2>
-        <p className="mb-4">모달 바디</p>
+        <div className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-gray-500">
+            기분 필터링 검색
+          </h2>
+          <Select
+            options={['전체', '행복', '기쁨', '보통', '나쁨', '슬픔']}
+            value={selectedMood}
+            onChange={(value) => setSelectedMood(value)}
+          />
+          <div className="flex justify-end">
+            <button
+              className="px-3 py-1 font-medium text-white bg-blue-500 rounded-md w-fit"
+              onClick={handleFilterConfirm}
+              type="button"
+            >
+              적용
+            </button>
+          </div>
+        </div>
       </Modal>
 
       <Modal
         isOpen={isOpen('searchModal')}
         closeModal={() => closeModal('searchModal')}
       >
-        <h2 className="mb-4 text-xl font-bold">일기 검색</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-500">일기 검색</h2>
         <p className="mb-4">모달 바디</p>
       </Modal>
     </>
@@ -87,6 +108,8 @@ const TopNavigation = ({ onToggleView }) => {
 
 TopNavigation.propTypes = {
   onToggleView: PropTypes.func,
+  selectedMood: PropTypes.string,
+  setSelectedMood: PropTypes.func,
 };
 
 export default TopNavigation;

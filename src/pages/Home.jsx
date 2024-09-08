@@ -12,6 +12,7 @@ const Home = ({ viewMode: initialViewMode }) => {
   const location = useLocation();
 
   const [viewMode, setViewMode] = useState(initialViewMode || 'calendar');
+  const [selectedMood, setSelectedMood] = useState('전체');
   const [selectedMonth, setSelectedMonth] = useState(() =>
     format(new Date(), 'yyyy-MM')
   );
@@ -56,7 +57,11 @@ const Home = ({ viewMode: initialViewMode }) => {
 
       <section>
         <h1 className="sr-only">캘린더</h1>
-        <TopNavigation onToggleView={handleToggleView} />
+        <TopNavigation
+          selectedMood={selectedMood}
+          setSelectedMood={setSelectedMood}
+          onToggleView={handleToggleView}
+        />
         <YearMonth
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
