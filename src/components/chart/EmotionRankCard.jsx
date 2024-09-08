@@ -11,7 +11,7 @@ const EmotionRankCard = ({ text, count, rank }) => {
       </p>
       <div className="flex flex-col items-center justify-center gap-1">
         <div className="w-[50px] h-[50px] bg-blue-100 rounded-full" />
-        <p className="text-xs font-semibold text-blue" aria-hidden="true">
+        <p className="text-sm font-semibold text-blue" aria-hidden="true">
           {text}
         </p>
         <p className="text-xs font-medium text-blue">{count}회</p>
