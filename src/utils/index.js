@@ -1,2 +1,1 @@
-export * from './getNavigationItems.js';
-export * from './configRoutes.js';
+export * from './validation';
