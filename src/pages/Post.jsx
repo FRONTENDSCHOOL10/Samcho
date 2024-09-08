@@ -2,7 +2,7 @@ import { TopHeader, DiaryCard } from '@/components';
 
 const Post = () => {
   return (
-    <section className="flex flex-col gap-5">
+    <section className="flex flex-col gap-5 pb-[80px]">
       <TopHeader title="교환일기 우편함" />
       <main className="flex flex-col gap-5">
         <DiaryCard date="2024-08-02" type="date" />

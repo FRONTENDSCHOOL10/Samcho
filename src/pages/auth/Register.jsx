@@ -103,7 +103,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-10">
+    <div className="flex flex-col items-center justify-center gap-10 min-h-dvh">
       <header className="flex justify-center">
         <h1 className="text-[36px] font-semibold text-gray-450">회원가입</h1>
       </header>

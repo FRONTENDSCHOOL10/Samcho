@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { DirectionRight } from '@/assets/icons/direction';
 import { TopHeader } from '@/components';
-import pb from '@/api/pb'; // PocketBase API 연결
+import { defaultAuthData, pb } from '@/api';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const MypageSetting = () => {
+  const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {
@@ -12,9 +15,8 @@ const MypageSetting = () => {
 
     try {
       pb.authStore.clear();
-
-      toast.success('로그아웃 되었습니다.');
-      location.href = '/login';
+      localStorage.setItem('auth', JSON.stringify(defaultAuthData));
+      navigate('/login');
     } catch (error) {
       console.error(error);
       toast.error('로그아웃 중 오류가 발생했습니다.');
@@ -50,7 +52,7 @@ const MypageSetting = () => {
   // };
 
   return (
-    <div className="flex flex-col justify-between h-full pb-20">
+    <section className="flex flex-col justify-between min-h-dvh pb-[80px]">
       <TopHeader title="계정 관리" isShowIcon={true} />
       <main className="flex flex-col items-center flex-1 gap-10 mt-5">
         <section
@@ -92,7 +94,7 @@ const MypageSetting = () => {
           <span className="text-lg font-bold text-white">회원탈퇴</span>
         </button>
       </div>
-    </div>
+    </section>
   );
 };
 

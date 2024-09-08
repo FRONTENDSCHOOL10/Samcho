@@ -14,7 +14,7 @@ const Chart = () => {
   );
 
   return (
-    <div className="flex flex-col gap-5">
+    <section className="flex flex-col gap-5 pb-[80px]">
       <TopHeader title="분석보고서" />
       <YearMonth
         selectedMonth={selectedMonth}
@@ -23,7 +23,7 @@ const Chart = () => {
       <MoodChart />
       <MoodDistributionChart />
       <EmotionRanking />
-    </div>
+    </section>
   );
 };
 

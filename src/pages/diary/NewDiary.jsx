@@ -45,7 +45,7 @@ export const Component = () => {
   };
 
   return (
-    <section className="flex flex-col gap-5">
+    <section className="flex flex-col gap-5 pb-[100px]">
       <TopHeader title={'일기작성'} isShowIcon={true} />
       <SelectMood isSelected={selectedMood} setSelected={setSelectedMood} />
       <Accordion open={true} title="감정" className="grid grid-cols-5 gap-4">

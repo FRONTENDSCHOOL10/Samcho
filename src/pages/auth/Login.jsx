@@ -2,36 +2,47 @@ import { useState } from 'react';
 import { Button, Input } from '@/components';
 import pb from '@/api/pb';
 import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // const [error, setError] = useState('');
-
-  // 로그인 처리 함수
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const authData = await pb
-        .collection('users')
-        .authWithPassword(username, password);
+      await pb.collection('users').authWithPassword(username, password);
 
-      localStorage.setItem('pb_auth_token', authData.token);
+      const pocketbaseAuth = JSON.parse(
+        localStorage.getItem('pocketbase_auth')
+      );
 
-      toast.success('로그인에 성공하였습니다.');
-      location.href = '/';
+      const { model, token } = pocketbaseAuth;
+
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({
+          isAuth: !!model,
+          user: model,
+          token,
+        })
+      );
+
+      navigate('/');
     } catch (error) {
       toast.dismiss();
-      toast.error('로그인에 실패했습니다.');
+      toast.error('아이디 혹은 비밀번호가 일치하지 않습니다.');
       console.error('로그인 실패:', error);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-10">
+    <section className="flex flex-col items-center justify-center gap-10 min-h-dvh">
       <header className="flex justify-center w-[225px] h-[150px]">
+        <h1 className="sr-only">하루몽 로그인</h1>
         <img src="/logo.png" alt="하루몽" />
       </header>
       <form onSubmit={handleLogin} className="flex flex-col gap-10">
@@ -63,7 +74,7 @@ const Login = () => {
           <Button type="primary" text="로그인" className="flex-1" />
         </div>
       </form>
-    </div>
+    </section>
   );
 };
 
