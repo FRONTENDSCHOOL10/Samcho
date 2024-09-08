@@ -2,7 +2,7 @@ import { TopHeader, NotificationCard } from '@/components';
 
 const Notification = () => {
   return (
-    <section className="flex flex-col gap-5">
+    <section className="flex flex-col gap-5 min-h-dvh pb-[80px]">
       <TopHeader title="알림" isShowIcon />
       <main className="flex flex-col gap-5">
         <NotificationCard
@@ -22,6 +22,11 @@ const Notification = () => {
           type="exchangeRequest"
           buddyName="최강두팔바보똥개4"
           notificationTime="2024-08-06 00:00:00"
+        />
+        <NotificationCard
+          type="exchangeRequest"
+          buddyName="최강두팔바보똥개5"
+          notificationTime="2024-08-09 00:00:00"
         />
       </main>
     </section>

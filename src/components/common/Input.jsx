@@ -4,7 +4,7 @@ import { useState } from 'react';
 const inputClasses =
   'block py-2.5 px-0 w-[242px] text-sm rounded-none bg-transparent border-b text-gray-400 border-gray-400 focus:outline-none focus:border-blue-500 focus:text-blue-500';
 
-const errorClasses = 'text-red text-xs mt-1';
+const errorClasses = 'w-[242px] text-red text-xs mt-1';
 
 const Input = ({
   label,
