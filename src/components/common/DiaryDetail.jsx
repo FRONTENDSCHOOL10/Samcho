@@ -1,14 +1,14 @@
 import { Delete, Edit } from '@/assets/icons/menu';
 import moods from '@/assets/icons/mood/moods';
 import emotions from '@/assets/icons/emotions/emotions';
-import { useFetchDiaryData } from '@/hooks';
+import { useFetchMonthlyDiaryData } from '@/hooks';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import weathers from '@/assets/icons/weather/weathers';
 
 const DiaryDetail = ({ selectedDate }) => {
   const [diaryEntry, setDiaryEntry] = useState(null);
-  const { diaryData, loading } = useFetchDiaryData();
+  const { diaryData, loading } = useFetchMonthlyDiaryData();
 
   const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
