@@ -25,3 +25,4 @@ export { default as WeatherWithIcon } from './newdiary/WeatherWithIcon.jsx';
 export { default as BuddyCard } from '../pages/mypage/BuddyCard.jsx';
 export { default as NotificationCard } from './notification/NotificationCard.jsx';
 export { default as Modal } from './common/Modal.jsx';
+export { default as Select } from './common/Select.jsx';
