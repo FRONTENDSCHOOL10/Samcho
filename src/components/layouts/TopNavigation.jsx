@@ -42,14 +42,14 @@ const TopNavigation = ({ onToggleView }) => {
           >
             <Search aria-hidden="true" />
           </button>
-          <Link to={'/notification'} title="알림">
+          <Link to={'/home/notification'} title="알림">
             <Notification className=" fill-gray-450" aria-hidden="true" />
           </Link>
 
           {isCalendarView ? (
             <button
               type="button"
-              aria-label="일기 리스트 보기"
+              aria-label="일기 리스트 형식으로 보기"
               onClick={handleToggleIcon}
             >
               <List className="fill-gray-450" aria-hidden="true" />
@@ -57,7 +57,7 @@ const TopNavigation = ({ onToggleView }) => {
           ) : (
             <button
               type="button"
-              aria-label="캘린더 보기"
+              aria-label="일기 캘린더 형식으로 보기"
               onClick={handleToggleIcon}
             >
               <Calendar2 className="fill-gray-450" aria-hidden="true" />

@@ -2,31 +2,39 @@ import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
 import { useFetchDiaryData } from '@/hooks';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
-
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate, useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const Home = () => {
-  const [viewMode, setViewMode] = useState('calendar');
+const Home = ({ viewMode: initialViewMode }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [viewMode, setViewMode] = useState(initialViewMode || 'calendar');
   const [selectedMonth, setSelectedMonth] = useState(() =>
     format(new Date(), 'yyyy-MM')
   );
 
   useEffect(() => {
-    console.log(selectedMonth);
-  }, [selectedMonth]);
+    if (location.pathname.includes('list')) {
+      setViewMode('list');
+    } else {
+      setViewMode('calendar');
+    }
+  }, [location.pathname]);
 
   const { diaryData, loading } = useFetchDiaryData();
 
   const handleToggleView = () => {
-    setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
+    const newViewMode = viewMode === 'calendar' ? 'list' : 'calendar';
+    setViewMode(newViewMode);
+    navigate(`/home/${newViewMode}`);
   };
 
   if (loading) {
     console.log('로딩 중..');
-    {
-      /* 추후 로딩 처리 로직을 가져오거나..등 */
-    }
+    // 추후 로딩 처리 로직을 가져오거나..등
   }
 
   return (
@@ -66,6 +74,10 @@ const Home = () => {
       </section>
     </>
   );
+};
+
+Home.propTypes = {
+  viewMode: PropTypes.node,
 };
 
 export default Home;
