@@ -3,7 +3,7 @@ import { useFetchDiaryDetail } from '@/hooks';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-const DetailDiary = () => {
+export const Component = () => {
   const { id } = useParams();
   const { diaryDetail, loading } = useFetchDiaryDetail(id);
   const [diaryDate, setDiaryDate] = useState('');
@@ -30,5 +30,3 @@ const DetailDiary = () => {
     </section>
   );
 };
-
-export default DetailDiary;

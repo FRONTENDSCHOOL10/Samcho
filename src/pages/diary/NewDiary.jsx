@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import emotions from '@/assets/icons/emotions/emotions';
+import weathers from '@/assets/icons/weather/weathers';
 import {
   Accordion,
   SelectMood,
@@ -7,11 +8,16 @@ import {
   TopHeader,
   WeatherWithIcon,
 } from '@/components';
-import emotions from '@/assets/icons/emotions/emotions';
-import weathers from '@/assets/icons/weather/weathers';
+import { format } from 'date-fns';
+import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 
 export const Component = () => {
+  const location = useLocation();
+  const { date } = location.state || {};
+  const defaultTitle = date || format(new Date(), 'yyyy-MM-dd'); //
+
   const [selectedMood, setSelectedMood] = useState(null);
   const [selectedEmotions, setSelectedEmotions] = useState([]);
   const [selectedWeathers, setSelectedWeathers] = useState([]);
@@ -46,7 +52,7 @@ export const Component = () => {
 
   return (
     <section className="flex flex-col gap-5 pb-[100px]">
-      <TopHeader title={'일기작성'} isShowIcon={true} />
+      <TopHeader title={defaultTitle} isShowIcon={true} />
       <SelectMood isSelected={selectedMood} setSelected={setSelectedMood} />
       <Accordion open={true} title="감정" className="grid grid-cols-5 gap-4">
         {Object.entries(emotions).map(([key, src]) => (
