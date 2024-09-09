@@ -1,13 +1,42 @@
-import { useState } from 'react';
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
+import { useFetchMonthlyDiaryData } from '@/hooks';
+import { format } from 'date-fns';
+import { useEffect } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate, useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const Home = () => {
-  const [viewMode, setViewMode] = useState('calendar');
+const Home = ({ viewMode: initialViewMode }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [viewMode, setViewMode] = useState(initialViewMode || 'calendar');
+  const [selectedMood, setSelectedMood] = useState('전체');
+  const [selectedMonth, setSelectedMonth] = useState(() =>
+    format(new Date(), 'yyyy-MM')
+  );
+
+  useEffect(() => {
+    if (location.pathname.includes('list')) {
+      setViewMode('list');
+    } else {
+      setViewMode('calendar');
+    }
+  }, [location.pathname]);
+
+  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth);
 
   const handleToggleView = () => {
-    setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
+    const newViewMode = viewMode === 'calendar' ? 'list' : 'calendar';
+    setViewMode(newViewMode);
+    navigate(`/home/${newViewMode}`);
   };
+
+  if (loading) {
+    console.log('로딩 중..');
+    // 추후 로딩 처리 로직을 가져오거나..등
+  }
 
   return (
     <>
@@ -25,28 +54,41 @@ const Home = () => {
         <meta property="og:image" content="" />
         <meta property="og:site:author" content="하루몽 일동" />
       </Helmet>
-      <section id="page">
+
+      <section className="min-h-dvh pb-[80px]">
         <h1 className="sr-only">캘린더</h1>
-        <TopNavigation onToggleView={handleToggleView} />
-        <YearMonth className="py-5" />
+        <TopNavigation
+          selectedMood={selectedMood}
+          setSelectedMood={setSelectedMood}
+          onToggleView={handleToggleView}
+        />
+        <YearMonth
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          className="py-5"
+        />
         {viewMode === 'calendar' ? (
-          <Calendar />
+          <Calendar diaryData={diaryData} selectedMonth={selectedMonth} />
         ) : (
-          <div className="flex flex-col gap-5">
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-            <DiaryCard date="2024-09-03" />
-          </div>
+          <main className="flex flex-col gap-5">
+            {diaryData.length > 0 ? (
+              diaryData.map((diary) => (
+                <DiaryCard key={diary.id} date={diary.date} />
+              ))
+            ) : (
+              <p className="mt-5 font-semibold text-center text-gray-300">
+                해당 월에는 일기 기록이 없어요 😭
+              </p>
+            )}
+          </main>
         )}
       </section>
     </>
   );
+};
+
+Home.propTypes = {
+  viewMode: PropTypes.node,
 };
 
 export default Home;

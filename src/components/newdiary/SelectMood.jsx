@@ -36,7 +36,7 @@ const SelectMood = ({ isSelected, setSelected }) => {
       <h2 className="text-base font-semibold text-gray-450">
         오늘 하루는 어떠셨나요?
       </h2>
-      <ul className="justify-start items-center gap-[17px] flex">
+      <ul className="flex items-center justify-between w-full px-5">
         {emotionItems}
       </ul>
     </div>

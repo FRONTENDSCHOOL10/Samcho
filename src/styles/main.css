@@ -13,20 +13,19 @@
 
 /* 글로벌 폰트 적용 */
 body {
+  height: 100%;
   font-family: 'Pretendard', sans-serif;
 }
 
 #root {
+  position: relative;
   max-width: 27.5rem;
   min-width: 23.4375rem;
   width: 100%;
-  height: 100dvh;
+  min-height: 100dvh;
   margin: 0 auto;
   padding: 0 20px;
   background-color: #F1F5FA;
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
 summary::-webkit-details-marker {

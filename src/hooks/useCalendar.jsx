@@ -7,10 +7,22 @@ import {
   startOfMonth,
   startOfWeek,
 } from 'date-fns';
-import { useMemo, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useMemo, useState } from 'react';
 
-const useCalendar = (diaryData) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const useCalendar = (
+  diaryData,
+  selectedMonth = format(new Date(), 'yyyy-MM')
+) => {
+  const [currentDate, setCurrentDate] = useState(
+    new Date(`${selectedMonth}-01`)
+  );
+
+  useEffect(() => {
+    if (selectedMonth) {
+      setCurrentDate(new Date(`${selectedMonth}-01`));
+    }
+  }, [selectedMonth]);
 
   const month = useMemo(() => getMonth(currentDate), [currentDate]);
   const firstDayOfMonth = useMemo(
@@ -51,8 +63,9 @@ const useCalendar = (diaryData) => {
             <td key={dayIdx}>
               <FeelingCalendar
                 day={parseInt(format(day, 'd'), 10)}
-                isDiaryWritten={!!dayDiary}
                 mood={dayDiary ? dayDiary.mood : undefined}
+                date={formattedDate}
+                id={dayDiary ? dayDiary.id : ''}
               />
             </td>
           ),
@@ -66,6 +79,11 @@ const useCalendar = (diaryData) => {
   }, [diaryData, firstDayOfCalendar, weeksInMonth, month]);
 
   return { weekRows, currentDate, setCurrentDate };
+};
+
+useCalendar.propTypes = {
+  diaryData: PropTypes.array,
+  selectedMonth: PropTypes.string,
 };
 
 export default useCalendar;

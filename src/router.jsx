@@ -1,26 +1,35 @@
 import RootLayout from '@/layouts/RootLayout';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import {
+  BuddyManagement,
   Chart,
   ChartMoreList,
+  ErrorPage,
   Home,
   Login,
   Mypage,
-  Post,
   MyPageSetting,
-  Register,
-  ErrorPage,
-  BuddyManagement,
+  Notification,
   PhotoGallery,
+  Post,
+  Register,
 } from './pages';
 
-/**@type {import('react-router-dom').RouteObject[]} */
+/*@type {import('react-router-dom').RouteObject[]}*/
 export const routes = [
   {
     path: '/',
     element: <RootLayout />,
     children: [
-      { path: '', element: <Home /> },
+      { index: true, element: <Navigate to="/home/calendar" replace /> },
+      {
+        path: 'home',
+        children: [
+          { path: 'calendar', element: <Home viewMode="calendar" /> },
+          { path: 'list', element: <Home viewMode="list" /> },
+          { path: 'notification', element: <Notification /> },
+        ],
+      },
       {
         path: 'chart',
         children: [
@@ -41,7 +50,10 @@ export const routes = [
       {
         path: 'diary',
         children: [
-          { path: 'detail', lazy: () => import('@/pages/diary/DetailDiary') },
+          {
+            path: 'detail/:id',
+            lazy: () => import('@/pages/diary/DetailDiary'),
+          },
           { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],

@@ -1,23 +1,14 @@
 import { useCalendar } from '@/hooks';
+import { format } from 'date-fns';
+import PropTypes from 'prop-types';
 
 const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
-// 임시 데이터 (DB 연결 시 삭제할 것)
-const diaryData = [
-  { date: '2024-08-01', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-08-31', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-01', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-11', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-16', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-18', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-21', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-25', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-26', isDiaryWritten: true, mood: '행복' },
-  { date: '2024-09-30', isDiaryWritten: true, mood: '행복' },
-];
-
-const Calendar = () => {
-  const { weekRows } = useCalendar(diaryData);
+const Calendar = ({
+  diaryData = [],
+  selectedMonth = format(new Date(), 'yyyy-MM'),
+}) => {
+  const { weekRows } = useCalendar(diaryData, selectedMonth);
 
   return (
     <table className="w-full border-separate border-spacing-y-5 border-spacing-x-0">
@@ -38,6 +29,11 @@ const Calendar = () => {
       </tbody>
     </table>
   );
+};
+
+Calendar.propTypes = {
+  diaryData: PropTypes.array,
+  selectedMonth: PropTypes.string,
 };
 
 export default Calendar;

@@ -2,15 +2,19 @@ import pb from '@/api/pb';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const useFetchDiaryData = () => {
+const useFetchAllDiaryData = () => {
+  const navigate = useNavigate();
+
   const [diaryData, setDiaryData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+
+  const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
   useEffect(() => {
     const getData = async () => {
       try {
         const records = await pb.collection('diary').getFullList({
+          filter: `user = "${userId}"`,
           // 현재, pb 서버에 임의의 db를 넣느라 임의로 정렬 설정 해 놓음.
           // 추후 `-created` 등 변경 필요!!
           sort: 'date',
@@ -38,9 +42,9 @@ const useFetchDiaryData = () => {
     };
 
     getData();
-  }, [navigate]);
+  }, [navigate, userId]);
 
   return { diaryData, loading };
 };
 
-export default useFetchDiaryData;
+export default useFetchAllDiaryData;

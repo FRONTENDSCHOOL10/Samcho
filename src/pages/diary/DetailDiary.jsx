@@ -1,10 +1,32 @@
 import { DiaryDetail, TopHeader } from '@/components';
+import { useFetchDiaryDetail } from '@/hooks';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 export const Component = () => {
+  const { id } = useParams();
+  const { diaryDetail, loading } = useFetchDiaryDetail(id);
+  const [diaryDate, setDiaryDate] = useState('');
+
+  useEffect(() => {
+    if (diaryDetail) {
+      setDiaryDate(diaryDetail.date);
+    }
+  }, [diaryDetail]);
+
+  if (loading) {
+    console.log('로딩 중..');
+    {
+      /* 추후 로딩 처리 로직을 가져오거나..등 */
+    }
+  }
+
+  if (!diaryDate) return;
+
   return (
-    <div>
-      <TopHeader title="2024-08-31" isShowIcon={true} />
-      <DiaryDetail selectedDate="2024-08-31" />
-    </div>
+    <section className="min-h-dvh pb-[110px]">
+      <TopHeader isShowIcon={true} title={diaryDate} />
+      <DiaryDetail diaryDetail={diaryDetail} />
+    </section>
   );
 };

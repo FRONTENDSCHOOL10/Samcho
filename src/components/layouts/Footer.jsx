@@ -5,24 +5,19 @@ import { Button } from '../';
 
 const Footer = () => {
   const currentUrl = useLocation().pathname;
-  console.log(currentUrl);
-
   const getLinkClassName = (path) => {
-    if (path === '/') {
-      return currentUrl === path ? 'fill-blue-500' : 'fill-gray-300';
-    }
     return currentUrl.startsWith(path) ? 'fill-blue-500' : 'fill-gray-300';
   };
 
   if (currentUrl === '/diary/new') {
     return (
-      <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
+      <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-3 z-50 shadow-top -mx-5 px-5">
         <Button text="작성완료" size="large" />
       </footer>
     );
   }
 
-  if (currentUrl === '/diary/detail') {
+  if (currentUrl.startsWith('/diary/detail')) {
     return (
       <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
         <Button text="교환하기" size="large" />
@@ -35,7 +30,7 @@ const Footer = () => {
       <nav className="flex items-center justify-around">
         <h2 className="sr-only">메뉴 내비게이션</h2>
         <Link to={'/'} title="홈">
-          <Calendar className={`cursor-pointer ${getLinkClassName('/')}`} />
+          <Calendar className={`cursor-pointer ${getLinkClassName('/home')}`} />
         </Link>
         <Link to={'/chart'} title="통계">
           <Chart className={`cursor-pointer ${getLinkClassName('/chart')}`} />

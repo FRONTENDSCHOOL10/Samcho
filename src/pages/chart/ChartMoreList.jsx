@@ -14,7 +14,7 @@ const ChartMoreList = () => {
       : 'bg-white text-blue-500 border-gray-200 font-medium';
 
   return (
-    <>
+    <section className="min-h-dvh pb-[80px]">
       <TopHeader title="감정 랭킹" isShowIcon={true} />
       <div className="flex pt-5 gap-x-2">
         <ToggleButton
@@ -32,8 +32,14 @@ const ChartMoreList = () => {
         <IconRankMoreList rank={1} emotion="신나는" count={30} />
         <IconRankMoreList rank={2} emotion="기대되는" count={20} />
         <IconRankMoreList rank={20} emotion="설레는" count={10} />
+        <IconRankMoreList rank={20} emotion="설레는" count={10} />
+        <IconRankMoreList rank={20} emotion="설레는" count={10} />
+        <IconRankMoreList rank={20} emotion="설레는" count={10} />
+        <IconRankMoreList rank={20} emotion="설레는" count={10} />
+        <IconRankMoreList rank={20} emotion="설레는" count={10} />
+        <IconRankMoreList rank={20} emotion="설레는" count={10} />
       </div>
-    </>
+    </section>
   );
 };
 
