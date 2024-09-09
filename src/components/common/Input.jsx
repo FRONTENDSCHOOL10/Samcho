@@ -86,7 +86,7 @@ const Input = ({
           onClick={handleToggle}
           aria-label={isHide ? '비밀번호 보기' : '비밀번호 숨기기'}
         >
-          <img src={isHide ? VisibleIcon : InvisibleIcon} aria-hidden="true" />
+          <img src={isHide ? InvisibleIcon : VisibleIcon} aria-hidden="true" />
         </button>
       )}
     </div>
