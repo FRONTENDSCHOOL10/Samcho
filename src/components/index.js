@@ -36,3 +36,8 @@ export { default as WeatherWithIcon } from './newdiary/WeatherWithIcon.jsx';
 
 // notification
 export { default as NotificationCard } from './notification/NotificationCard.jsx';
+
+// search diary
+export { default as SearchDiaryHistory } from './searchdiary/SearchDiaryHistory.jsx';
+export { default as SearchDiaryHistoryItem } from './searchdiary/SearchDiaryHistoryItem.jsx';
+export { default as SearchDiaryInput } from './searchdiary/SearchDiaryInput.jsx';

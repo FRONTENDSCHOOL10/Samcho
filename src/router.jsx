@@ -13,6 +13,7 @@ import {
   PhotoGallery,
   Post,
   Register,
+  SearchDiary,
 } from './pages';
 
 /*@type {import('react-router-dom').RouteObject[]}*/
@@ -28,6 +29,7 @@ export const routes = [
           { path: 'calendar', element: <Home viewMode="calendar" /> },
           { path: 'list', element: <Home viewMode="list" /> },
           { path: 'notification', element: <Notification /> },
+          { path: 'search', element: <SearchDiary /> },
         ],
       },
       {
