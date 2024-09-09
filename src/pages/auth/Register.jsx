@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Input } from '@/components';
 import pb from '@/api/pb';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import {
   validateEmail,
   validateUsername,
@@ -19,6 +19,71 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [duplicate, setDuplicate] = useState({ username: false, name: false });
+
+  const checkAvailability = async (e, field) => {
+    toast.dismiss();
+
+    switch (field) {
+      case 'username':
+        if (!validateUsername(form.username)) {
+          toast.error('아이디 형식이 올바르지 않습니다.');
+          return;
+        }
+
+        try {
+          const existingUser = await pb
+            .collection('users')
+            .getFirstListItem(`username="${form.username}"`);
+
+          if (existingUser) {
+            toast.error('이미 존재하는 아이디 입니다.');
+            setDuplicate({ ...duplicate, username: false });
+          }
+        } catch (error) {
+          if (error.status === 404) {
+            // 404 에러인 경우, 유저가 없다는 뜻이므로 success toast 출력
+            toast.success('사용 가능한 아이디 입니다!');
+            setDuplicate({ ...duplicate, username: true });
+            return;
+          } else {
+            throw error; // 다른 에러는 다시 throw하여 catch로 넘김
+          }
+        }
+        break;
+
+      case 'name':
+        if (!validateNickname(form.name)) {
+          toast.error('닉네임 형식이 올바르지 않습니다.');
+          return;
+        }
+
+        try {
+          const existingUser = await pb
+            .collection('users')
+            .getFirstListItem(`name="${form.name}"`);
+
+          if (existingUser) {
+            toast.error('이미 존재하는 닉네임 입니다!');
+            setDuplicate({ ...duplicate, name: false });
+          }
+        } catch (error) {
+          if (error.status === 404) {
+            // 404 에러인 경우, 닉네임이 없다는 뜻이므로 success toast 출력
+            toast.success('사용 가능한 닉네임 입니다!');
+            setDuplicate({ ...duplicate, name: true });
+            return;
+          } else {
+            throw error; // 다른 에러는 다시 throw하여 catch로 넘김
+          }
+        }
+        break;
+
+      default:
+        toast.error('알 수 없는 필드입니다.');
+        break;
+    }
+  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -33,19 +98,17 @@ const Register = () => {
     switch (id) {
       case 'username':
         if (!validateUsername(value))
-          error = '아이디는 영문, 숫자 포함 4자리 이상 입력하세요.';
+          error = '영문, 숫자 포함 4자리 이상 입력하세요.';
         break;
       case 'email':
         if (!validateEmail(value)) error = '유효한 이메일 주소를 입력하세요.';
         break;
       case 'name':
-        if (!validateNickname(value))
-          error = '닉네임은 한글로 두자리 이상 입력하세요.';
+        if (!validateNickname(value)) error = '한글 2자리 이상 입력하세요.';
         break;
       case 'password':
         if (!validatePassword(value))
-          error =
-            '비밀번호는 8자리 이상 영문, 숫자, 특수문자를 포함해야 합니다.';
+          error = '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.';
         break;
       case 'passwordConfirm':
         if (value !== form.password) error = '비밀번호가 일치하지 않습니다.';
@@ -116,16 +179,27 @@ const Register = () => {
         <h1 className="text-[36px] font-semibold text-gray-450">회원가입</h1>
       </header>
       <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-6">
-          <Input
-            label="아이디"
-            type="text"
-            id="username"
-            value={form.username}
-            onChange={handleChange}
-            error={!!errors.username}
-            errorMessage={errors.username}
-          />
+        <div className="flex flex-col gap-5">
+          <div className="flex gap-2 w-fit">
+            <Input
+              label="아이디"
+              type="text"
+              id="username"
+              value={form.username}
+              onChange={handleChange}
+              error={!!errors.username}
+              errorMessage={errors.username}
+              duplicate={duplicate.username}
+              className="!w-[166px] min-h-[61px]"
+            />
+            <Button
+              type="secondary"
+              size="xs"
+              text="중복 확인"
+              onClick={(e) => checkAvailability(e, 'username')}
+              className="!rounded-md"
+            />
+          </div>
           <Input
             label="이메일"
             type="email"
@@ -134,16 +208,28 @@ const Register = () => {
             onChange={handleChange}
             error={!!errors.email}
             errorMessage={errors.email}
+            className="min-h-[61px]"
           />
-          <Input
-            label="닉네임"
-            type="text"
-            id="name"
-            value={form.name}
-            onChange={handleChange}
-            error={!!errors.name}
-            errorMessage={errors.name}
-          />
+          <div className="flex gap-2 w-fit">
+            <Input
+              label="닉네임"
+              type="text"
+              id="name"
+              value={form.name}
+              onChange={handleChange}
+              error={!!errors.name}
+              errorMessage={errors.name}
+              duplicate={duplicate.name}
+              className="!w-[166px] min-h-[61px]"
+            />
+            <Button
+              size="xs"
+              type="secondary"
+              text="중복 확인"
+              onClick={(e) => checkAvailability(e, 'name')}
+              className="!rounded-md"
+            />
+          </div>
           <Input
             label="비밀번호"
             type="password"
@@ -153,6 +239,7 @@ const Register = () => {
             error={!!errors.password}
             errorMessage={errors.password}
             isViewIcon={true}
+            className="min-h-[61px]"
           />
           <Input
             label="비밀번호 확인"
@@ -163,9 +250,9 @@ const Register = () => {
             error={!!errors.passwordConfirm}
             errorMessage={errors.passwordConfirm}
             isViewIcon={true}
+            className="min-h-[61px]"
           />
         </div>
-        <Toaster />
 
         <div className="flex flex-row justify-between flex-nowrap">
           <Button
@@ -174,7 +261,12 @@ const Register = () => {
             type="secondary"
             className="flex-1"
           />
-          <Button text="회원가입" type="primary" className="flex-1" />
+          <Button
+            buttonType="submit"
+            text="회원가입"
+            type="primary"
+            className="flex-1"
+          />
         </div>
       </form>
     </div>
