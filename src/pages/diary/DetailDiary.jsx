@@ -24,10 +24,10 @@ const DetailDiary = () => {
   if (!diaryDate) return;
 
   return (
-    <div>
+    <section className="min-h-dvh pb-[110px]">
       <TopHeader isShowIcon={true} title={diaryDate} />
       <DiaryDetail diaryDetail={diaryDetail} />
-    </div>
+    </section>
   );
 };
 

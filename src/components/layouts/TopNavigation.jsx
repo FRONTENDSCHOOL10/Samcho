@@ -39,11 +39,7 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
           <Filter className=" fill-gray-450" aria-hidden="true" />
         </button>
         <div className="flex gap-[10px]">
-          <button
-            type="button"
-            aria-label="검색"
-            onClick={() => openModal('searchModal')}
-          >
+          <button type="button" aria-label="검색">
             <Search aria-hidden="true" />
           </button>
           <Link to={'/home/notification'} title="알림">
@@ -93,14 +89,6 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
             </button>
           </div>
         </div>
-      </Modal>
-
-      <Modal
-        isOpen={isOpen('searchModal')}
-        closeModal={() => closeModal('searchModal')}
-      >
-        <h2 className="mb-4 text-lg font-semibold text-gray-500">일기 검색</h2>
-        <p className="mb-4">모달 바디</p>
       </Modal>
     </>
   );

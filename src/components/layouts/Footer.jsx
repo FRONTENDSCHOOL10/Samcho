@@ -5,7 +5,6 @@ import { Button } from '../';
 
 const Footer = () => {
   const currentUrl = useLocation().pathname;
-
   const getLinkClassName = (path) => {
     return currentUrl.startsWith(path) ? 'fill-blue-500' : 'fill-gray-300';
   };
@@ -18,7 +17,7 @@ const Footer = () => {
     );
   }
 
-  if (currentUrl === '/diary/detail') {
+  if (currentUrl.startsWith('/diary/detail')) {
     return (
       <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
         <Button text="교환하기" size="large" />
