@@ -2,7 +2,7 @@ import DayCircle from '@/assets/icons/daycircle/daycircle.svg?react';
 import moods from '@/assets/icons/mood/moods';
 import { isFuture } from 'date-fns';
 import PropTypes from 'prop-types';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const FeelingCalendar = ({ day, mood, id, date }) => {
@@ -38,7 +38,6 @@ const FeelingCalendar = ({ day, mood, id, date }) => {
         )}
       </button>
       <span>{day}</span>
-      <Toaster />
     </div>
   );
 };

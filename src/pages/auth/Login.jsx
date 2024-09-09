@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Input } from '@/components';
 import pb from '@/api/pb';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -66,10 +66,9 @@ const Login = () => {
             id="login_password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            isViewIcon="true"
+            isViewIcon={true}
           />
         </div>
-        <Toaster />
 
         <div className="flex flex-row justify-between flex-nowrap">
           <Button
@@ -78,7 +77,12 @@ const Login = () => {
             type="secondary"
             className="flex-1"
           />
-          <Button type="primary" text="로그인" className="flex-1" />
+          <Button
+            buttonType="submit"
+            type="primary"
+            text="로그인"
+            className="flex-1"
+          />
         </div>
       </form>
     </section>

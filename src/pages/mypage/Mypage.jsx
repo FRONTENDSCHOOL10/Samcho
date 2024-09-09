@@ -1,7 +1,7 @@
 import { TopHeader } from '@/components';
 import { Link } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 
 const Mypage = () => {
@@ -20,7 +20,7 @@ const Mypage = () => {
       setUsername(storedUsername);
       setEmail(storedEmail);
     }
-  });
+  }, [setUsername]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -131,7 +131,6 @@ const Mypage = () => {
             >
               검색
             </button>
-            <Toaster />
           </form>
         </section>
       </div>

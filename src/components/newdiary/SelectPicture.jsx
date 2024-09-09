@@ -1,17 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CameraIcon from '@/assets/icons/diary/camera.svg';
+import PropTypes from 'prop-types';
 
-const SelectPicture = () => {
+const SelectPicture = ({ picture, setPicture }) => {
   const [preview, setPreview] = useState(null);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+  useEffect(() => {
+    if (picture) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(picture);
+    } else {
+      setPreview(null);
+    }
+  }, [picture]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPicture(file);
     }
   };
 
@@ -45,6 +54,11 @@ const SelectPicture = () => {
       />
     </div>
   );
+};
+
+SelectPicture.propTypes = {
+  picture: PropTypes.instanceOf(File),
+  setPicture: PropTypes.func.isRequired,
 };
 
 export default SelectPicture;

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 const WeatherWithIcon = ({ src, text, isSelected, onClick, className }) => {
   return (
     <button
+      type="button"
       className={`flex flex-col justify-center items-center gap-1.5 w-full cursor-pointer ${className}`}
       onClick={onClick}
       aria-pressed={isSelected}
