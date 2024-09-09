@@ -1,164 +1,142 @@
-import { useState } from 'react';
-import { Button, Input } from '@/components';
-import pb from '@/api/pb';
+import { TopHeader } from '@/components';
+import { Link } from 'react-router-dom';
+import { DirectionRight } from '@/assets/icons/direction';
 import toast, { Toaster } from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
-const Register = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    name: '',
-    password: '',
-    passwordConfirm: '',
+const Mypage = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    const authData = localStorage.getItem('pocketbase_auth');
+
+    if (authData) {
+      const parsedData = JSON.parse(authData);
+      const userModel = parsedData.model;
+      const storedUsername = userModel.username;
+      const storedEmail = userModel.email;
+
+      setUsername(storedUsername);
+      setEmail(storedEmail);
+    }
   });
 
-  //const [success, setSuccess] = useState('');
-
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value,
-    });
-  };
-
-  const validateUsername = (username) => {
-    const usernameRegex = /^[A-Za-z]+$/;
-    return usernameRegex.test(username);
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    const regex =
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(password);
-  };
-
-  const validateName = (name) => {
-    const nameRegex = /^[A-Za-z0-9]{2,}$/;
-    return nameRegex.test(name);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { username, email, name, password, passwordConfirm } = formData;
-
-    // 중복 토스트 제거
     toast.dismiss();
-
-    if (username === '') {
-      toast.error('아이디를 입력해 주십시오');
-      return;
-    } else if (!validateUsername(username)) {
-      toast.error('아이디는 영어로만 입력해 주십시오');
-      return;
-    } else if (email === '') {
-      toast.error('이메일을 입력해 주십시오');
-      return;
-    } else if (!validateEmail(email)) {
-      toast.error('유효한 이메일 주소를 입력해 주십시오');
-      return;
-    } else if (name === '') {
-      toast.error('닉네임을 입력해 주십시오');
-      return;
-    } else if (!validateName(name)) {
-      toast.error(
-        '닉네임은 두 자리 이상이어야 하며, 특수문자는 사용할 수 없습니다.'
-      );
-      return;
-    } else if (password === '') {
-      toast.error('비밀번호를 입력해 주십시오');
-      return;
-    } else if (!validatePassword(password)) {
-      toast.error(
-        '비밀번호는 최소 8자리 이상, 영문자, 숫자, 특수문자를 포함해야 합니다.'
-      );
-      return;
-    } else if (password !== passwordConfirm) {
-      toast.error('비밀번호가 일치하지 않습니다.', {});
-      return;
-    }
-
-    try {
-      const data = {
-        username,
-        email,
-        name,
-        password,
-        passwordConfirm,
-      };
-
-      const record = await pb.collection('users').create(data);
-
-      toast.success('회원가입이 완료되었습니다.');
-      location.reload();
-    } catch (err) {
-      toast.error('회원가입 중 오류가 발생했습니다.');
-      console.error(err);
-    }
+    toast.error('Here is your toast.');
   };
-
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-10">
-      <header className="flex justify-center">
-        <h1 className="text-[36px] font-semibold text-gray-450">회원가입</h1>
-      </header>
-      <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-6">
-          <Input
-            label="아이디"
-            type="text"
-            id="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-          <Input
-            label="이메일"
-            type="email"
-            id="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <Input
-            label="닉네임"
-            type="text"
-            id="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          <Input
-            label="비밀번호"
-            type="password"
-            id="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <Input
-            label="비밀번호 확인"
-            type="password"
-            id="passwordConfirm"
-            value={formData.passwordConfirm}
-            onChange={handleChange}
-          />
-        </div>
-        <Toaster />
+    <>
+      <TopHeader title="내정보" />
+      <div className="flex flex-col justify-start items-center gap-[25px] mt-5 min-h-dvh pb-[80px]">
+        {/* 계정 섹션 */}
+        <section className="flex flex-col w-full gap-4">
+          <h2 className="text-lg font-semibold text-gray-450">계정</h2>
+          <div className="w-full flex items-center justify-between p-[0.9375rem] bg-white rounded-[10px] shadow-light">
+            <div className="flex flex-col">
+              <h3 className="text-base font-semibold text-gray-450">
+                {username}
+              </h3>
+              <p className="text-sm font-medium text-gray-400">{email}</p>
+            </div>
+            <nav aria-label="계정 관리">
+              <Link to="/mypage/setting" aria-label="계정 관리 페이지로 이동">
+                <DirectionRight className="fill-black" />
+              </Link>
+            </nav>
+          </div>
+        </section>
 
-        <div className="flex flex-row justify-between flex-nowrap">
-          <Button
-            to="/login"
-            text="이전으로"
-            type="secondary"
-            className="flex-1"
-          />
-          <Button text="회원가입" type="primary" className="flex-1" />
-        </div>
-      </form>
-    </div>
+        {/* 나의 기록 섹션 */}
+        <section className="flex flex-col justify-between w-full gap-4">
+          <h2 className="text-lg font-semibold text-gray-450">나의 기록</h2>
+          <div className="flex justify-between gap-5">
+            <article className="w-full h-[110px] p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex flex-col gap-2">
+              <h3 className="text-base font-medium text-gray-450">
+                기록한 하루
+              </h3>
+              <p className="text-sm font-medium text-gray-400 self-left">
+                1234개
+              </p>
+            </article>
+            <article className="w-full p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex flex-col gap-2">
+              <h3 className="text-base font-medium text-gray-450">올린 사진</h3>
+              <p className="text-sm font-medium text-gray-400 self-left">
+                1234개
+              </p>
+            </article>
+          </div>
+          <article className="w-full h-[60px] p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex items-center justify-between">
+            <h3 className="sr-only">사진 모아 보기</h3>
+            <p className="text-base font-medium text-gray-450">
+              사진 모아 보기
+            </p>
+            <nav aria-label="사진 모아 보기">
+              <Link
+                to="/mypage/photo"
+                aria-label="사진 모아 보기 페이지로 이동"
+              >
+                <DirectionRight className="fill-black" />
+              </Link>
+            </nav>
+          </article>
+        </section>
+
+        {/* 단짝 섹션 */}
+        <section className="flex flex-col w-full gap-5">
+          <h2 className="text-lg font-semibold text-gray-450">나의 단짝</h2>
+          <article className="h-[60px] p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex items-center justify-between">
+            <h3 className="sr-only">단짝 관리</h3>
+            <p className="text-base font-medium text-gray-450">5명</p>
+            <nav aria-label="단짝 관리">
+              <Link
+                to="/mypage/buddy-management"
+                aria-label="단짝 관리 페이지로 이동"
+              >
+                <span className="text-base font-semibold text-blue-500">
+                  관리
+                </span>
+              </Link>
+            </nav>
+          </article>
+        </section>
+
+        {/* 단짝 찾기 섹션 */}
+        <section className="flex flex-col w-full gap-5">
+          <h2 className="text-lg font-semibold text-gray-450">단짝 찾기</h2>
+          <form
+            onSubmit={handleSubmit}
+            className="h-[60px] p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex items-center justify-between focus-within:ring-1 focus-within:ring-blue-300"
+            aria-labelledby="buddy-search-label"
+          >
+            <label
+              id="buddy-search-label"
+              htmlFor="buddy-search-input"
+              className="sr-only"
+            >
+              단짝 검색
+            </label>
+            <input
+              type="text"
+              id="buddy-search-input"
+              placeholder="사용자의 아이디를 입력하세요"
+              className="flex-1 text-base font-medium outline-none text-gray-450 placeholder:text-gray-300"
+            />
+            <button
+              type="submit"
+              className="text-base font-semibold text-blue-500 "
+              aria-label="단짝 검색"
+            >
+              검색
+            </button>
+            <Toaster />
+          </form>
+        </section>
+      </div>
+    </>
   );
 };
 
-export default Register;
+export default Mypage;

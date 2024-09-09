@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DirectionRight } from '@/assets/icons/direction';
 import { TopHeader } from '@/components';
 import pb from '@/api/pb'; // PocketBase API 연결
@@ -6,6 +6,19 @@ import { toast } from 'react-hot-toast';
 
 const MypageSetting = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const authData = localStorage.getItem('pocketbase_auth');
+
+    if (authData) {
+      const parsedData = JSON.parse(authData);
+      const userModel = parsedData.model;
+      const storedUsername = userModel.username;
+
+      setUsername(storedUsername);
+    }
+  });
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -64,7 +77,7 @@ const MypageSetting = () => {
             >
               닉네임 변경
             </h2>
-            <p className="text-base font-medium text-gray-300">두팔</p>
+            <p className="text-base font-medium text-gray-300">{username}</p>
           </div>
           <button type="button" aria-label="닉네임 변경">
             <DirectionRight
