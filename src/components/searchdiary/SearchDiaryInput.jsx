@@ -25,9 +25,6 @@ const SearchDiaryInput = () => {
         <DirectionLeft className=" fill-black" />
       </button>
       <div className="flex w-full px-4 py-[10px] border-gray-200 border bg-white rounded-lg items-center ">
-        <label htmlFor="diary-search" className="sr-only">
-          한줄 일기 검색
-        </label>
         <input
           id="diary-search"
           type="text"
