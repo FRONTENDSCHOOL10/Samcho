@@ -7,7 +7,7 @@ export { default as Chart } from './chart/Chart.jsx';
 export { default as ChartMoreList } from './chart/ChartMoreList.jsx';
 
 // diary
-export { default as DetailDiary } from './diary/DetailDiary.jsx';
+// export { default as DetailDiary } from './diary/DetailDiary.jsx';
 
 // mypage
 export { default as BuddyManagement } from './mypage/BuddyManagement.jsx';
