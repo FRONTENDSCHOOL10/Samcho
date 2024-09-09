@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const sizes = {
+  xs: 'px-3 py-1 text-sm max-h-[41px]',
   small: 'max-w-[110px] h-[55px] px-5 py-[18px]',
   large: 'w-full h-[55px] px-[126px] py-2',
 };
@@ -17,6 +18,7 @@ const baseClasses =
   'rounded-xl font-bold flex justify-center items-center shadow-light';
 
 const Button = ({
+  buttonType = 'button',
   text = '레이블',
   size = 'small',
   type = 'primary',
@@ -44,6 +46,7 @@ const Button = ({
 
   return (
     <button
+      type={buttonType}
       disabled={type === 'disabled'}
       className={combinedClasses}
       {...props}
@@ -54,8 +57,9 @@ const Button = ({
 };
 
 Button.propTypes = {
+  buttonType: PropTypes.string,
   text: PropTypes.string,
-  size: PropTypes.oneOf(['small', 'large']),
+  size: PropTypes.oneOf(['xs', 'small', 'large']),
   type: PropTypes.oneOf(['primary', 'secondary', 'disabled', 'red']),
   to: PropTypes.string,
   className: PropTypes.string,

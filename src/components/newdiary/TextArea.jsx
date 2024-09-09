@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-const TextArea = () => {
-  const [text, setText] = useState('');
+const TextArea = ({ text, setText }) => {
   const textarea = useRef(null);
 
   const onChange = (e) => {
@@ -32,6 +32,11 @@ const TextArea = () => {
       />
     </div>
   );
+};
+
+TextArea.propTypes = {
+  text: PropTypes.string,
+  setText: PropTypes.func,
 };
 
 export default TextArea;
