@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Accordion,
   SelectMood,
@@ -9,12 +9,14 @@ import {
   TopHeader,
   WeatherWithIcon,
   SelectPicture,
+  Button,
 } from '@/components';
 import emotions from '@/assets/icons/emotions/emotions';
 import weathers from '@/assets/icons/weather/weathers';
 import pb from '@/api/pb';
 
 export const Component = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { date } = location.state || {};
 
@@ -54,26 +56,36 @@ export const Component = () => {
     return;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append('user', userId);
     formData.append('date', defaultTitle);
     formData.append('mood', selectedMood);
-    formData.append('emotion', JSON.stringify(selectedEmotions)); // 배열을 JSON 문자열로 변환
-    formData.append('weather', JSON.stringify(selectedWeathers)); // 배열을 JSON 문자열로 변환
+    selectedEmotions.forEach((emotion) => {
+      formData.append('emotion', emotion);
+    });
+    selectedWeathers.forEach((weather) => {
+      formData.append('weather', weather);
+    });
     formData.append('content', text);
     if (picture) {
       formData.append('picture', picture);
     }
 
-    try {
-      const createdRecord = await pb.collection('diary').create(formData);
-      console.log('Record created:', createdRecord);
-    } catch (error) {
-      console.error('Error creating record:', error);
-    }
+    toast
+      .promise(pb.collection('diary').create(formData), {
+        loading: '일기 저장 중...',
+        success: '일기 작성을 완료했습니다!',
+        error: '일기 작성에 실패했습니다...',
+      })
+      .then(() => {
+        navigate('/');
+      })
+      .catch((error) => {
+        console.error('[Error] 일기작성: ', error);
+      });
   };
 
   return (
@@ -105,7 +117,9 @@ export const Component = () => {
         </Accordion>
         <TextArea text={text} setText={setText} />
         <SelectPicture picture={picture} setPicture={setPicture} />
-        <button type="submit">저장</button>
+        <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
+          <Button buttonType="submit" text="작성완료" size="large" />
+        </footer>
       </form>
     </section>
   );
