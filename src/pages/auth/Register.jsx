@@ -8,8 +8,11 @@ import {
   validateNickname,
   validatePassword,
 } from '@/utils';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -150,26 +153,27 @@ const Register = () => {
     }
 
     if (formIsValid) {
-      try {
-        const data = {
-          username,
-          email,
-          name,
-          password,
-          passwordConfirm,
-          emailVisibility: true,
-        };
-        console.log(data);
+      const data = {
+        username,
+        email,
+        name,
+        password,
+        passwordConfirm,
+        emailVisibility: true,
+      };
 
-        await pb.collection('users').create(data);
-
-        toast.success('회원가입이 완료되었습니다.');
-      } catch (err) {
-        toast.error('회원가입 중 오류가 발생했습니다.');
-        console.error(err);
-      }
-    } else {
-      toast.error('입력하지 않은 필드값이 존재합니다.');
+      toast
+        .promise(pb.collection('users').create(data), {
+          loading: '회원가입 시도 중...',
+          success: '회원가입을 완료했습니다!',
+          error: '회원가입에 실패했습니다...',
+        })
+        .then(() => {
+          navigate('/login');
+        })
+        .catch((error) => {
+          console.error('[Error] 회원가입: ', error);
+        });
     }
   };
 

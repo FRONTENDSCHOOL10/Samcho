@@ -54,14 +54,14 @@ export const routes = [
             path: 'detail/:id',
             lazy: () => import('@/pages/diary/DetailDiary'),
           },
-          { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],
       },
     ],
   },
-  { path: '/login', element: <Login /> },
-  { path: '/register', element: <Register /> },
+  { path: 'diary/new', lazy: () => import('@/pages/diary/NewDiary') },
+  { path: 'login', element: <Login /> },
+  { path: 'register', element: <Register /> },
   { path: '*', element: <ErrorPage /> },
 ];
 
