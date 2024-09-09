@@ -48,7 +48,7 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
             aria-label="일기 검색"
             onClick={handleSearchClick}
           >
-            <Search aria-hidden="true" />
+            <Search aria-hidden="true" className=" text-gray-450" />
           </button>
           <Link to={'/home/notification'} title="알림">
             <Notification className=" fill-gray-450" aria-hidden="true" />
