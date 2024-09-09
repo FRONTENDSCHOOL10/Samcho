@@ -14,11 +14,11 @@ export { default as BuddyManagement } from './mypage/BuddyManagement.jsx';
 export { default as Mypage } from './mypage/Mypage.jsx';
 export { default as MyPageSetting } from './mypage/MyPageSetting.jsx';
 export { default as PhotoGallery } from './mypage/PhotoGallery.jsx';
+export { default as BuddyCard } from '../pages/mypage/BuddyCard.jsx';
 
 // common
-export { default as Home } from './Home.jsx';
-export { default as Post } from './Post.jsx';
 export { default as ErrorPage } from './ErrorPage.jsx';
-
-// notification
+export { default as Home } from './Home.jsx';
 export { default as Notification } from './Notification.jsx';
+export { default as Post } from './Post.jsx';
+export { default as SearchDiary } from './SearchDiary.jsx';
