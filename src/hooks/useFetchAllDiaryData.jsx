@@ -42,7 +42,7 @@ const useFetchAllDiaryData = () => {
     };
 
     getData();
-  }, [navigate]);
+  }, [navigate, userId]);
 
   return { diaryData, loading };
 };

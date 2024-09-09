@@ -22,7 +22,6 @@ const useFetchMonthlyDiaryData = (selectedMonth) => {
           expand: 'user',
         });
 
-        console.log(records);
         const formattedData = records.items.map(
           ({ date, id, mood, emotion, weather, picture, content }) => ({
             date: date.split(' ')[0],
