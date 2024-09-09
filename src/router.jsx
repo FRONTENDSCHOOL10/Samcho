@@ -4,7 +4,6 @@ import {
   BuddyManagement,
   Chart,
   ChartMoreList,
-  DetailDiary,
   ErrorPage,
   Home,
   Login,
@@ -16,7 +15,7 @@ import {
   Register,
 } from './pages';
 
-/**@type {import('react-router-dom').RouteObject[]} */
+/*@type {import('react-router-dom').RouteObject[]}*/
 export const routes = [
   {
     path: '/',
@@ -51,7 +50,10 @@ export const routes = [
       {
         path: 'diary',
         children: [
-          { path: 'detail/:id', element: <DetailDiary /> },
+          {
+            path: 'detail/:id',
+            lazy: () => import('@/pages/diary/DetailDiary'),
+          },
           { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],
