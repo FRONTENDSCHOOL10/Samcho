@@ -1,9 +1,9 @@
-import React from 'react';
 import { PropTypes } from 'prop-types';
 import { differenceInDays, format } from 'date-fns';
+import { memo } from 'react';
 import pb from '@/api/pb';
 
-const BuddyCard = React.memo(({ buddyName, startDate, buddyId, onDelete }) => {
+const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
   const daysDifference = differenceInDays(
     format(new Date(), 'yyyy-MM-dd'),
     startDate
@@ -45,7 +45,7 @@ const BuddyCard = React.memo(({ buddyName, startDate, buddyId, onDelete }) => {
       </div>
     </div>
   );
-});
+};
 
 BuddyCard.propTypes = {
   buddyName: PropTypes.string.isRequired,
@@ -54,4 +54,4 @@ BuddyCard.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-export default BuddyCard;
+export default memo(BuddyCard);

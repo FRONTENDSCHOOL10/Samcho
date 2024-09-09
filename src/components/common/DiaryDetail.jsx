@@ -21,7 +21,7 @@ const DiaryDetail = ({ diaryDetail }) => {
   );
 
   return (
-    <article className="w-full bg-white rounded-[10px] shadow-light px-[25px] py-5 mt-[30px] ">
+    <article className="w-full bg-white rounded-[10px] shadow-light p-[0.9375rem] mt-[30px] ">
       <h2 className="sr-only">{`${weekday}요일 감정 일기`}</h2>
       <div className="flex justify-end gap-[15px]">
         <button type="button" aria-label="일기 수정">
@@ -45,14 +45,15 @@ const DiaryDetail = ({ diaryDetail }) => {
           </span>
         </div>
 
-        <div className="flex items-center justify-center w-full gap-2 align-center">
+        <div className="flex flex-wrap items-center justify-center w-full gap-2 align-center">
           {combinedIcons.map((item, idx) => (
             <img
               key={idx}
               className="inline-block object-contain w-10 h-10 bg-white rounded-full"
               alt={item}
               src={emotions[item] || weathers[item]}
-            ></img>
+              loading="lazy"
+            />
           ))}
         </div>
 
@@ -60,8 +61,9 @@ const DiaryDetail = ({ diaryDetail }) => {
           <>
             <img
               src={`${baseImageUrl}/${diaryDetail.id}/${diaryDetail.picture}`}
-              className="w-full rounded-xl bg-blue-50"
-              alt={`${diaryDetail.date}의 사진`}
+              className="object-cover w-full rounded-lg bg-blue-50 aspect-square"
+              alt={`${diaryDetail.date}일에 기록된 사진`}
+              loading="lazy"
             />
             <p className="text-sm font-medium leading-normal text-blue-500">
               {diaryDetail.content}
