@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
+import useFetchBuddyData from '@/hooks/useFetchBuddyData';
 
 const Mypage = () => {
+  const { buddyData, loading } = useFetchBuddyData();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
 
@@ -27,6 +29,9 @@ const Mypage = () => {
     toast.dismiss();
     toast.error('Here is your toast.');
   };
+
+  const buddyCount = buddyData.length;
+
   return (
     <>
       <TopHeader title="내정보" />
@@ -89,7 +94,9 @@ const Mypage = () => {
           <h2 className="text-lg font-semibold text-gray-450">나의 단짝</h2>
           <article className="h-[60px] p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex items-center justify-between">
             <h3 className="sr-only">단짝 관리</h3>
-            <p className="text-base font-medium text-gray-450">5명</p>
+            <p className="text-base font-medium text-gray-450">
+              {loading ? '로딩 중...' : `${buddyCount}명`}
+            </p>
             <nav aria-label="단짝 관리">
               <Link
                 to="/mypage/buddy-management"
