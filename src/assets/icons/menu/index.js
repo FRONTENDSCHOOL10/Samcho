@@ -6,5 +6,16 @@ import Delete from './delete.svg?react';
 import Edit from './edit.svg?react';
 import Notification from './notification.svg?react';
 import Close from './close.svg?react';
+import History from './history.svg?react';
 
-export { Calendar2, Filter, List, Search, Delete, Edit, Notification, Close };
+export {
+  Calendar2,
+  Filter,
+  List,
+  Search,
+  Delete,
+  Edit,
+  Notification,
+  Close,
+  History,
+};
