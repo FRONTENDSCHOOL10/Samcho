@@ -152,6 +152,7 @@ const Register = () => {
             onChange={handleChange}
             error={!!errors.password}
             errorMessage={errors.password}
+            isViewIcon={true}
           />
           <Input
             label="비밀번호 확인"
@@ -161,6 +162,7 @@ const Register = () => {
             onChange={handleChange}
             error={!!errors.passwordConfirm}
             errorMessage={errors.passwordConfirm}
+            isViewIcon={true}
           />
         </div>
         <Toaster />

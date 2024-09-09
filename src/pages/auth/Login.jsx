@@ -56,16 +56,17 @@ const Login = () => {
           <Input
             label="아이디"
             type="text"
-            id="username"
+            id="login_username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
           <Input
             label="비밀번호"
             type="password"
-            id="password"
+            id="login_password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            isViewIcon="true"
           />
         </div>
         <Toaster />
