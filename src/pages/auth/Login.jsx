@@ -66,7 +66,7 @@ const Login = () => {
             id="login_password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            isViewIcon="true"
+            isViewIcon={true}
           />
         </div>
         <Toaster />
