@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -108,4 +108,4 @@ TopNavigation.propTypes = {
   setSelectedMood: PropTypes.func,
 };
 
-export default TopNavigation;
+export default memo(TopNavigation);
