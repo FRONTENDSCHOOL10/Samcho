@@ -13,16 +13,17 @@ const SearchDiary = () => {
   }, [history]);
 
   const handleAddHistory = (term) => {
-    if (!history.includes(term) && term.trim() !== '') {
-      setHistory((prevHistory) => {
-        const updatedHistory = [term, ...prevHistory];
+    if (term === '') return;
+    setHistory((prevHistory) => {
+      const updatedHistory = prevHistory.filter((item) => item !== term);
 
-        if (updatedHistory.length > 10) {
-          updatedHistory.pop();
-        }
-        return updatedHistory;
-      });
-    }
+      updatedHistory.unshift(term);
+
+      if (updatedHistory.length > 10) {
+        updatedHistory.pop();
+      }
+      return updatedHistory;
+    });
   };
 
   const handleClearHistory = () => {
