@@ -16,22 +16,17 @@ const Chart = () => {
 
   return (
     <section className="flex flex-col gap-5 pb-[80px]">
-      {/* 상단 헤더 */}
       <TopHeader title="분석보고서" />
 
-      {/* 월 선택 컴포넌트 */}
       <YearMonth
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
       />
 
-      {/* 감정 차트 */}
-      <MoodChart selectedMonth={selectedMonth} />
+      <MoodChart />
 
-      {/* 감정 분포 차트 */}
-      <MoodDistributionChart selectedMonth={selectedMonth} />
+      <MoodDistributionChart />
 
-      {/* 감정 랭킹 */}
       <EmotionRanking selectedMonth={selectedMonth} />
     </section>
   );

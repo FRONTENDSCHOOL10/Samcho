@@ -12,7 +12,7 @@ const EmotionRankCard = ({ text, count, rank, image }) => {
       <div className="flex flex-col items-center justify-center gap-1">
         <img
           src={image}
-          alt={`Emotion: ${text}`} // alt 속성에 감정 텍스트 포함
+          alt={`${text}`} // alt 속성에 감정 텍스트 포함
           className="w-[50px] h-[50px] rounded-full object-cover"
         />
         <p className="text-sm font-semibold text-blue" aria-hidden="true">
