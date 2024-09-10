@@ -1,7 +1,9 @@
 import { DirectionLeft } from '@/assets/icons/direction';
 import { Close, Search } from '@/assets/icons/menu';
 import { useFetchAllDiaryData } from '@/hooks';
-import { useState } from 'react';
+import { debounce } from 'lodash';
+import PropTypes from 'prop-types';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DiaryCard } from '..';
 
@@ -18,35 +20,50 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
     navigate('/');
   };
 
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      if (value && !loading) {
+        const result = diaryData.filter((diary) =>
+          diary.content.includes(value)
+        );
+
+        setSearchResults(result);
+        setIsSearched(true);
+        addHistory(value);
+      }
+    }, 400),
+    [loading, diaryData, addHistory]
+  );
+
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
     setIsSearched(false);
+
+    if (value.trim() === '') {
+      setSearchResults([]);
+    } else {
+      debouncedSearch(value);
+    }
   };
 
   const handleClear = () => {
     setInputValue('');
     setSearchResults([]);
     setIsSearched(false);
-  };
-
-  const handleSearch = () => {
-    if (inputValue && !loading) {
-      setIsSearched(false);
-
-      const result = diaryData.filter((diary) =>
-        diary.content.includes(inputValue)
-      );
-      setSearchResults(result);
-      setIsSearched(true);
-      addHistory(inputValue);
-    }
+    debouncedSearch.cancel();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSearch();
+    debouncedSearch(inputValue);
   };
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   return (
     <>
@@ -84,11 +101,12 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
       {searchResults.length > 0 && inputValue ? (
         <div className="flex flex-col gap-5 mt-5">
           {searchResults.map((diary) => (
-            <DiaryCard key={diary.id} date={diary.date} />
+            <DiaryCard key={diary.id} diary={diary} />
           ))}
         </div>
       ) : (
-        isSearched && (
+        isSearched &&
+        inputValue && (
           <p className="mt-[30px] font-semibold text-center text-gray-300 whitespace-pre-wrap">
             {emptyPhrase}
           </p>
@@ -96,6 +114,12 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
       )}
     </>
   );
+};
+
+SearchDiaryInput.propTypes = {
+  inputValue: PropTypes.string.isRequired,
+  setInputValue: PropTypes.func.isRequired,
+  addHistory: PropTypes.func.isRequired,
 };
 
 export default SearchDiaryInput;
