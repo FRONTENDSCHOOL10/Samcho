@@ -1,13 +1,71 @@
+import { useEffect, useState } from 'react';
 import { MoodDistribution } from '../index';
+import pb from '@/api/pb'; // PocketBase import
 
-const MoodDistributionChart = () => {
-  const moodData = [
-    { mood: '행복', ratio: 40, color: 'bg-blue-50' },
-    { mood: '기쁨', ratio: 20, color: 'bg-blue-200' },
-    { mood: '보통', ratio: 20, color: 'bg-blue-400' },
-    { mood: '나쁨', ratio: 10, color: 'bg-blue-700' },
-    { mood: '슬픔', ratio: 10, color: 'bg-gray-300' },
-  ];
+const MoodDistributionChart = ({ selectedMonth }) => {
+  const [moodData, setMoodData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMoodData = async () => {
+      try {
+        // 선택된 월의 diary 데이터 가져오기
+        const diaryData = await pb.collection('diary').getFullList({
+          filter: `date >= '${selectedMonth}-01' && date <= '${selectedMonth}-31'`,
+        });
+
+        console.log(diaryData);
+        // 기분 데이터 추출 및 비율 계산
+        const moodCount = diaryData.reduce((acc, item) => {
+          const mood = item.mood; // 기분 데이터
+          if (mood) {
+            acc[mood] = (acc[mood] || 0) + 1;
+          }
+          return acc;
+        }, {});
+
+        const totalEntries = Object.values(moodCount).reduce(
+          (sum, count) => sum + count,
+          0
+        );
+
+        const moodData = Object.entries(moodCount).map(([mood, count]) => ({
+          mood,
+          ratio: ((count / totalEntries) * 100).toFixed(0),
+          color: getMoodColor(mood),
+        }));
+
+        setMoodData(moodData);
+      } catch (error) {
+        console.error(`Error fetching mood data: ${error.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMoodData();
+  }, [selectedMonth]);
+
+  const getMoodColor = (mood) => {
+    switch (mood) {
+      case '행복':
+        return 'bg-blue-50';
+      case '기쁨':
+        return 'bg-blue-200';
+      case '보통':
+        return 'bg-blue-400';
+      case '나쁨':
+        return 'bg-blue-700';
+      case '슬픔':
+        return 'bg-gray-300';
+      default:
+        return 'bg-blue-50';
+    }
+  };
+
+  if (loading) {
+    return <p>로딩 중...</p>;
+  }
 
   return (
     <article className="w-full p-[15px] rounded-[0.625rem] bg-white flex flex-col gap-6 shadow-light">
