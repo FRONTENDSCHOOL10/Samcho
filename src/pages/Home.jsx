@@ -16,7 +16,7 @@ const Home = ({ viewMode: initialViewMode }) => {
   const [selectedMonth, setSelectedMonth] = useState(() =>
     format(new Date(), 'yyyy-MM')
   );
-
+  console.log(selectedMonth);
   useEffect(() => {
     if (location.pathname.includes('list')) {
       setViewMode('list');
