@@ -73,7 +73,7 @@ const Home = ({ viewMode: initialViewMode }) => {
           <main className="flex flex-col gap-5">
             {diaryData.length > 0 ? (
               diaryData.map((diary) => (
-                <DiaryCard key={diary.id} date={diary.date} />
+                <DiaryCard key={diary.id} diary={diary} />
               ))
             ) : (
               <p className="mt-5 font-semibold text-center text-gray-300">
