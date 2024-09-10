@@ -1,9 +1,16 @@
 import { SearchDiaryHistory, SearchDiaryInput } from '@/components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const SearchDiary = () => {
   const [inputValue, setInputValue] = useState('');
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState(() => {
+    const savedHistory = localStorage.getItem('searchHistory');
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('searchHistory', JSON.stringify(history));
+  }, [history]);
 
   const handleAddHistory = (term) => {
     if (!history.includes(term) && term.trim() !== '') {
@@ -20,6 +27,7 @@ const SearchDiary = () => {
 
   const handleClearHistory = () => {
     setHistory([]);
+    localStorage.removeItem('searchHistory');
   };
 
   return (
