@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { SearchDiaryHistoryItem } from '..';
 
 const SearchDiaryHistory = ({ history, clearHistory }) => {
@@ -30,6 +31,11 @@ const SearchDiaryHistory = ({ history, clearHistory }) => {
       )}
     </section>
   );
+};
+
+SearchDiaryHistory.propTypes = {
+  history: PropTypes.arrayOf(PropTypes.string).isRequired,
+  clearHistory: PropTypes.func.isRequired,
 };
 
 export default SearchDiaryHistory;
