@@ -1,20 +1,16 @@
 import { DirectionLeft } from '@/assets/icons/direction';
 import { Close, Search } from '@/assets/icons/menu';
-import { useFetchAllDiaryData } from '@/hooks';
-import { groupByMonth } from '@/utils';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DiaryCard } from '..';
 
-const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
-  const { diaryData, loading } = useFetchAllDiaryData();
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearched, setIsSearched] = useState(false);
-
+const SearchDiaryInput = ({
+  inputValue,
+  setInputValue,
+  onDiarySearch,
+  setIsSearched,
+  setSearchResults,
+}) => {
   const navigate = useNavigate();
-
-  const emptyPhrase = `"${inputValue}" 검색 결과가 없어요.\n다른 단어로 검색하는 건 어떨까요?`;
 
   const handleBackClick = () => {
     navigate('/');
@@ -24,95 +20,59 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
     const value = e.target.value;
     setInputValue(value);
     setIsSearched(false);
-    setSearchResults([]);
+    setSearchResults({});
   };
 
   const handleClear = () => {
     setInputValue('');
-    setSearchResults([]);
+    setSearchResults({});
     setIsSearched(false);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (inputValue && !loading) {
-      const result = diaryData.filter((diary) =>
-        diary.content.includes(inputValue)
-      );
-
-      const groupedResults = groupByMonth(result);
-
-      setSearchResults(groupedResults);
-      setIsSearched(true);
-      addHistory(inputValue);
-    }
+    onDiarySearch(inputValue);
   };
 
   return (
-    <>
-      <form className="flex gap-4 pt-5" onSubmit={handleSubmit}>
-        <button type="button" aria-label="뒤로 가기" onClick={handleBackClick}>
-          <DirectionLeft className=" fill-black" />
-        </button>
-        <div className="flex w-full px-4 py-[10px] border-gray-200 border bg-white rounded-lg items-center ">
-          <input
-            id="diary-search"
-            type="text"
-            placeholder="한줄 일기 검색"
-            value={inputValue}
-            onChange={handleChange}
-            className="w-full pr-4 font-semibold outline-none text-gray-450 placeholder:text-gray-200 placeholder:font-normal"
-          />
-          <div className="flex gap-4">
-            {inputValue && (
-              <button
-                type="button"
-                onClick={handleClear}
-                aria-label="검색어 초기화"
-              >
-                <Close className="w-3 h-3 fill-gray-400" />
-              </button>
-            )}
-
-            <button type="submit" aria-label="검색 실행">
-              <Search className="w-5 h-5 text-blue" />
+    <form className="flex gap-4 pt-5" onSubmit={handleSubmit}>
+      <button type="button" aria-label="뒤로 가기" onClick={handleBackClick}>
+        <DirectionLeft className=" fill-black" />
+      </button>
+      <div className="flex w-full px-4 py-[10px] border-gray-200 border bg-white rounded-lg items-center ">
+        <input
+          id="diary-search"
+          type="text"
+          placeholder="한줄 일기 검색"
+          value={inputValue}
+          onChange={handleChange}
+          className="w-full pr-4 font-semibold outline-none text-gray-450 placeholder:text-gray-200 placeholder:font-normal"
+        />
+        <div className="flex gap-4">
+          {inputValue && (
+            <button
+              type="button"
+              onClick={handleClear}
+              aria-label="검색어 초기화"
+            >
+              <Close className="w-3 h-3 fill-gray-400" />
             </button>
-          </div>
+          )}
+          <button type="submit" aria-label="검색 실행">
+            <Search className="w-5 h-5 text-blue" />
+          </button>
         </div>
-      </form>
-
-      {Object.keys(searchResults).length > 0 && inputValue ? (
-        <main className="flex flex-col">
-          {Object.keys(searchResults).map((yearMonth) => (
-            <section key={yearMonth} className="my-5">
-              <h2 className="font-semibold text-center text-gray-450">
-                {yearMonth}
-              </h2>
-              {searchResults[yearMonth].map((diary) => (
-                <div key={diary.id} className="mt-5">
-                  <DiaryCard diary={diary} />
-                </div>
-              ))}
-            </section>
-          ))}
-        </main>
-      ) : (
-        isSearched &&
-        inputValue && (
-          <p className="mt-[30px] font-semibold text-center text-gray-300 whitespace-pre-wrap">
-            {emptyPhrase}
-          </p>
-        )
-      )}
-    </>
+      </div>
+    </form>
   );
 };
 
 SearchDiaryInput.propTypes = {
   inputValue: PropTypes.string.isRequired,
   setInputValue: PropTypes.func.isRequired,
-  addHistory: PropTypes.func.isRequired,
+  onDiarySearch: PropTypes.func.isRequired,
+  setIsSearched: PropTypes.func.isRequired,
+  setSearchResults: PropTypes.func.isRequired,
 };
 
 export default SearchDiaryInput;
