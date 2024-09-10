@@ -45,7 +45,7 @@ const DiaryCard = ({ diary, type = 'icons' }) => {
 
   return (
     <article className="flex flex-col w-full gap-2">
-      <h2 className="sr-only">{`${date} 작성한 일기`}</h2>
+      <h3 className="sr-only">{`${date} 작성한 일기`}</h3>
       {dateOrIcons}
       <div className="flex flex-col w-full p-4 bg-white h-fit rounded-[0.625rem] shadow-light gap-4">
         <div className="flex flex-row items-center justify-between">
