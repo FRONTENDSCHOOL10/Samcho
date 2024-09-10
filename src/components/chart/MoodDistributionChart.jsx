@@ -1,52 +1,38 @@
 import { useEffect, useState } from 'react';
-import { MoodDistribution } from '../index';
-import pb from '@/api/pb'; // PocketBase import
+import { MoodDistribution } from '@/components';
+import { useFetchMonthlyDiaryData } from '@/hooks';
 
 const MoodDistributionChart = ({ selectedMonth }) => {
+  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth); // 커스텀 훅 사용
   const [moodData, setMoodData] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  console.log(selectedMonth);
+  console.log(diaryData);
+
   useEffect(() => {
-    const fetchMoodData = async () => {
-      try {
-        // 선택된 월의 diary 데이터 가져오기
-        const diaryData = await pb.collection('diary').getFullList({
-          filter: `date >= '${selectedMonth}-01' && date <= '${selectedMonth}-31'`,
-          requestKey: null,
-        });
+    if (!loading && diaryData) {
+      // 기분 데이터 추출 및 비율 계산
+      const moodCount = diaryData.reduce((acc, item) => {
+        const mood = item.mood; // 기분 데이터
+        if (mood) {
+          acc[mood] = (acc[mood] || 0) + 1;
+        }
+        return acc;
+      }, {});
 
-        console.log(diaryData);
-        // 기분 데이터 추출 및 비율 계산
-        const moodCount = diaryData.reduce((acc, item) => {
-          const mood = item.mood; // 기분 데이터
-          if (mood) {
-            acc[mood] = (acc[mood] || 0) + 1;
-          }
-          return acc;
-        }, {});
+      const totalEntries = Object.values(moodCount).reduce(
+        (sum, count) => sum + count,
+        0
+      );
 
-        const totalEntries = Object.values(moodCount).reduce(
-          (sum, count) => sum + count,
-          0
-        );
+      const moodData = Object.entries(moodCount).map(([mood, count]) => ({
+        mood,
+        ratio: ((count / totalEntries) * 100).toFixed(0),
+        color: getMoodColor(mood),
+      }));
 
-        const moodData = Object.entries(moodCount).map(([mood, count]) => ({
-          mood,
-          ratio: ((count / totalEntries) * 100).toFixed(0),
-          color: getMoodColor(mood),
-        }));
-
-        setMoodData(moodData);
-      } catch (error) {
-        console.error(`Error fetching mood data: ${error.message}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMoodData();
-  }, [selectedMonth]);
+      setMoodData(moodData);
+    }
+  }, [loading, diaryData]);
 
   const getMoodColor = (mood) => {
     switch (mood) {
