@@ -2,6 +2,7 @@ import { Calendar, Chart, Letter, Pencil, User } from '@/assets/icons/gnb';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Button } from '../';
+import { memo } from 'react';
 
 const Footer = () => {
   const currentUrl = useLocation().pathname;
@@ -41,4 +42,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default memo(Footer);

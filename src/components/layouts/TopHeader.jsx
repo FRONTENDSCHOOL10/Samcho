@@ -1,6 +1,7 @@
 import { DirectionLeft } from '@/assets/icons/direction';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { memo } from 'react';
 
 const TopHeader = ({ title, isShowIcon = false }) => {
   const navigate = useNavigate();
@@ -31,4 +32,4 @@ TopHeader.propTypes = {
   isShowIcon: PropTypes.bool,
 };
 
-export default TopHeader;
+export default memo(TopHeader);
