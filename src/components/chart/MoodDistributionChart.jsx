@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import { MoodDistribution } from '@/components';
-import { useFetchMonthlyDiaryData } from '@/hooks';
 
-const MoodDistributionChart = ({ selectedMonth }) => {
-  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth); // 커스텀 훅 사용
+const MoodDistributionChart = ({ diaryData, loading }) => {
+  // 커스텀 훅 사용
   const [moodData, setMoodData] = useState([]);
-
-  console.log(diaryData);
 
   useEffect(() => {
     if (!loading && diaryData) {
@@ -26,13 +23,13 @@ const MoodDistributionChart = ({ selectedMonth }) => {
 
       const moodData = Object.entries(moodCount).map(([mood, count]) => ({
         mood,
-        ratio: ((count / totalEntries) * 100).toFixed(0),
+        ratio: ((count / totalEntries) * 100).toFixed(0), // 문자열로 변환됨
         color: getMoodColor(mood),
       }));
 
       setMoodData(moodData);
     }
-  }, [loading, diaryData]);
+  }, [diaryData, loading]);
 
   const getMoodColor = (mood) => {
     switch (mood) {
@@ -63,7 +60,8 @@ const MoodDistributionChart = ({ selectedMonth }) => {
       <ul className="flex flex-row items-center self-stretch justify-between">
         {moodData.map((data) => (
           <li key={data.mood} className="list-none">
-            <MoodDistribution mood={data.mood} ratio={data.ratio} />
+            <MoodDistribution mood={data.mood} ratio={Number(data.ratio)} />{' '}
+            {/* 숫자로 변환 */}
           </li>
         ))}
       </ul>
@@ -72,7 +70,7 @@ const MoodDistributionChart = ({ selectedMonth }) => {
         {moodData.map((data) => (
           <div
             key={data.mood}
-            style={{ width: `${data.ratio}%` }}
+            style={{ width: `${data.ratio}%` }} // 문자열로 설정됨
             className={`${data.color} h-full`}
           ></div>
         ))}

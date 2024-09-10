@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { EmotionRankCard } from '@/components';
-import { useFetchMonthlyDiaryData } from '@/hooks';
-import emotions from '@/assets/icons/emotions/emotions'; // 감정 이미지 import
+import emotions from '@/assets/icons/emotions/emotions';
 
-const EmotionRanking = ({ selectedMonth }) => {
-  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth); // 커스텀 훅 사용
+const EmotionRanking = ({ diaryData, loading }) => {
   const [rankingsData, setRankingsData] = useState([]);
 
   useEffect(() => {
@@ -23,7 +21,7 @@ const EmotionRanking = ({ selectedMonth }) => {
         .map(([emotion, count]) => ({
           emotion,
           count,
-          image: emotions[emotion] || '/default-image-path.png', // 감정 이미지 경로 추가
+          image: emotions[emotion] || '/default-image-path.png',
         }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 3)
@@ -34,7 +32,7 @@ const EmotionRanking = ({ selectedMonth }) => {
 
       setRankingsData(renderData);
     }
-  }, [loading, diaryData]);
+  }, [diaryData, loading]);
 
   if (loading) {
     return <p>로딩 중...</p>; // 로딩 중 표시
@@ -58,7 +56,7 @@ const EmotionRanking = ({ selectedMonth }) => {
         <h2 className="text-base font-semibold text-gray-600">감정랭킹</h2>
         <Link
           to="/chart/more"
-          state={{ selectedMonth }} // Pass selectedMonth to the more page
+          state={{ diaryData }}
           aria-label="감정 랭킹 더보기"
           className="text-sm font-semibold text-gray-300"
         >
@@ -69,7 +67,7 @@ const EmotionRanking = ({ selectedMonth }) => {
       <div className="flex justify-around gap-5">
         {rankingsData.map((rankItem) => (
           <EmotionRankCard
-            key={rankItem.rank} // 감정보다는 순위가 고유함
+            key={rankItem.rank}
             text={rankItem.emotion}
             count={rankItem.count}
             rank={rankItem.rank}

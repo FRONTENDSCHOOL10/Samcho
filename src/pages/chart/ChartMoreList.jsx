@@ -2,18 +2,14 @@ import { useState, useEffect } from 'react';
 import { IconRankMoreList, ToggleButton, TopHeader } from '@/components';
 import emotions from '@/assets/icons/emotions/emotions';
 import { useLocation } from 'react-router-dom';
-import { format } from 'date-fns';
-import { useFetchMonthlyDiaryData } from '@/hooks';
 
 const ChartMoreList = () => {
   const location = useLocation();
-  const selectedMonth =
-    location.state?.selectedMonth || format(new Date(), 'yyyy-MM');
-
-  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth);
+  const { diaryData } = location.state || {}; // state에서 diaryData를 받음
 
   const [activeButton, setActiveButton] = useState('기록 수 많은 순');
   const [rankingsData, setRankingsData] = useState([]);
+  const [loading, setLoading] = useState(false); // 로딩 상태를 false로 초기화
 
   const handleToggle = (buttonText) => {
     setActiveButton(buttonText);
@@ -25,12 +21,19 @@ const ChartMoreList = () => {
       : 'bg-white text-blue-500 border-gray-200 font-medium';
 
   useEffect(() => {
-    if (!loading && diaryData) {
+    const fetchRankingsData = () => {
+      if (!diaryData) {
+        console.error('No diary data available');
+        return;
+      }
+
       const rank = diaryData.reduce((acc, item) => {
         const emotionsArray = item.emotion || [];
+
         emotionsArray.forEach((emotion) => {
           acc[emotion] = (acc[emotion] || 0) + 1;
         });
+
         return acc;
       }, {});
 
@@ -38,18 +41,22 @@ const ChartMoreList = () => {
         .map(([emotion, count]) => ({
           emotion,
           count,
-          image: emotions[emotion] || '/default-image-path.png', // 이미지 경로 처리
+          image: emotions[emotion],
         }))
         .sort((a, b) =>
           activeButton === '기록 수 많은 순'
             ? b.count - a.count
             : a.count - b.count
         )
-        .slice(0, 10);
+        .slice(0, 10); // 상위 10개만 선택
 
       setRankingsData(rankingsArray);
-    }
-  }, [loading, diaryData, activeButton]);
+      setLoading(false); // 로딩 완료
+    };
+
+    setLoading(true); // 로딩 시작
+    fetchRankingsData();
+  }, [diaryData, activeButton]);
 
   if (loading) {
     return <p>로딩 중...</p>;
