@@ -38,9 +38,9 @@ export { default as WeatherWithIcon } from './newdiary/WeatherWithIcon.jsx';
 export { default as NotificationCard } from './notification/NotificationCard.jsx';
 
 // search diary
-// export { default as SearchDiaryHistory } from './searchdiary/SearchDiaryHistory.jsx';
-// export { default as SearchDiaryHistoryItem } from './searchdiary/SearchDiaryHistoryItem.jsx';
-// export { default as SearchDiaryInput } from './searchdiary/SearchDiaryInput.jsx';
+export { default as SearchDiaryHistory } from './searchdiary/SearchDiaryHistory.jsx';
+export { default as SearchDiaryHistoryItem } from './searchdiary/SearchDiaryHistoryItem.jsx';
+export { default as SearchDiaryInput } from './searchdiary/SearchDiaryInput.jsx';
 
 // buddy
 export { default as BuddyCard } from './buddy/BuddyCard.jsx';

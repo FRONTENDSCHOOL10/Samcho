@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { TopHeader, BuddyCard } from '@/components';
+import { BuddyCard, TopHeader } from '@/components';
 import useFetchBuddyData from '@/hooks/useFetchBuddyData';
 
 const BuddyManagement = () => {

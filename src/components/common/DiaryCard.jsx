@@ -1,11 +1,16 @@
 import PropTypes from 'prop-types';
 import { Delete, Edit, Share } from '@/assets/icons/diarylist';
 import moods from '@/assets/icons/mood/moods';
+import emotions from '@/assets/icons/emotions/emotions';
+import weathers from '@/assets/icons/weather/weathers';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
 
-const DiaryCard = ({ date, type = 'icons' }) => {
+const DiaryCard = ({ diary, type = 'icons' }) => {
+  const { id, date, mood, emotion, weather, picture, content } = diary;
+  const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
+
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const day = format(new Date(date), 'dd E', { locale: ko });
@@ -44,9 +49,9 @@ const DiaryCard = ({ date, type = 'icons' }) => {
       {dateOrIcons}
       <div className="flex flex-col w-full p-4 bg-white h-fit rounded-[0.625rem] shadow-light gap-4">
         <div className="flex flex-row items-center justify-between">
-          <div className="flex flex-row items-center justify-center gap-1 w-fit">
+          <div className="flex flex-row items-center justify-center gap-3">
             <img
-              src={moods['행복']}
+              src={moods[mood]}
               width={30}
               height={30}
               alt="행복"
@@ -61,71 +66,47 @@ const DiaryCard = ({ date, type = 'icons' }) => {
             role="group"
             aria-label="기록한 감정 및 날씨"
           >
-            <img
-              src="/icons/weathers/rainy.png"
-              alt="비"
-              className="w-6 h-6"
-              aria-label="비 아이콘"
-            />
-            <img
-              src="/icons/weathers/rainy.png"
-              alt="비"
-              className="w-6 h-6"
-              aria-label="비 아이콘"
-            />
-            <img
-              src="/icons/weathers/rainy.png"
-              alt="비"
-              className="w-6 h-6"
-              aria-label="비 아이콘"
-            />
-            <img
-              src="/icons/weathers/rainy.png"
-              alt="비"
-              className="w-6 h-6"
-              aria-label="비 아이콘"
-            />
-            <img
-              src="/icons/weathers/rainy.png"
-              alt="비"
-              className="w-6 h-6"
-              aria-label="비 아이콘"
-            />
-            <img
-              src="/icons/weathers/rainy.png"
-              alt="비"
-              className="w-6 h-6"
-              aria-label="비 아이콘"
-            />
-            <img
-              src="/icons/weathers/rainy.png"
-              alt="비"
-              className="w-6 h-6"
-              aria-label="비 아이콘"
-            />
+            {[...emotion, ...weather].map((item, idx) => (
+              <img
+                key={idx}
+                className="inline-block object-contain bg-white rounded-full"
+                width={24}
+                height={24}
+                alt={item}
+                title={item}
+                src={emotions[item] || weathers[item]}
+                loading="lazy"
+              />
+            ))}
           </div>
         </div>
         <div className="flex flex-row gap-3">
-          {!isImageLoaded && (
-            <div className="min-w-[100px] min-h-[80px] rounded-[0.625rem] skeleton"></div>
+          {!picture ? (
+            <div className="min-w-[100px] max-w-[100px] min-h-[100px] rounded-[0.625rem] bg-gray-100 text-xs content-center text-center font-medium text-gray-450">
+              등록된
+              <br />
+              사진이 없어요...
+            </div>
+          ) : (
+            <>
+              {!isImageLoaded && (
+                <div className="min-w-[100px] min-h-[100px] rounded-[0.625rem] skeleton"></div>
+              )}
+              <img
+                src={`${baseImageUrl}/${id}/${picture}`}
+                alt={`${date} 사진`}
+                className={`min-w-[100px] min-h-[80px] rounded-[0.625rem] ${
+                  !isImageLoaded ? 'hidden' : 'block'
+                }`}
+                width={100}
+                height={100}
+                onLoad={() => setIsImageLoaded(true)}
+                aria-label={`${date}일에 기록한 사진`}
+              />
+            </>
           )}
-          <img
-            src="https://picsum.photos/600/400"
-            alt={date}
-            className={`max-w-[100px] max-h-[80px] rounded-[0.625rem] ${
-              !isImageLoaded ? 'hidden' : 'block'
-            }`}
-            onLoad={() => setIsImageLoaded(true)}
-            aria-label={`${date} 기록한 사진`}
-          />
           <p className="text-sm font-medium text-left custom-line-clamp-4">
-            한 여름 밤, 도심의 불빛이 반짝이는 고요한 거리에서 나는 산책을 했다.
-            가로등 아래에서 비치는 따스한 빛이 나를 감싸 안았다. 거리는
-            조용했지만, 마음속에는 소란한 생각들이 가득했다. 이 도시에서의 삶은
-            때로는 혼란스럽고 복잡하지만, 이런 순간에는 평온함을 찾을 수 있다.
-            길 끝에 다다르면 작은 공원이 있고, 그곳에서 나는 잠시 앉아 별을
-            바라보며 미래를 꿈꿨다. 밤하늘의 별빛은 희망을 상징하며, 나는 그
-            빛을 따라 나아가기로 결심했다.
+            {content}
           </p>
         </div>
       </div>
@@ -134,7 +115,15 @@ const DiaryCard = ({ date, type = 'icons' }) => {
 };
 
 DiaryCard.propTypes = {
-  date: PropTypes.string.isRequired,
+  diary: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    mood: PropTypes.string.isRequired,
+    emotion: PropTypes.array.isRequired,
+    weather: PropTypes.array.isRequired,
+    picture: PropTypes.string,
+    content: PropTypes.string.isRequired,
+  }).isRequired,
   type: PropTypes.oneOf(['icons', 'date']),
 };
 

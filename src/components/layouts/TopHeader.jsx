@@ -14,7 +14,7 @@ const TopHeader = ({ title, isShowIcon = false }) => {
       {isShowIcon && (
         <button
           type="button"
-          className="absolute left-0 cursor-pointer"
+          className="absolute left-0"
           aria-label="뒤로 가기"
           onClick={handleBackClick}
         >
