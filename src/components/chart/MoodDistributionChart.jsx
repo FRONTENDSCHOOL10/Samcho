@@ -6,12 +6,14 @@ const MoodDistributionChart = ({ selectedMonth }) => {
   const [moodData, setMoodData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  console.log(selectedMonth);
   useEffect(() => {
     const fetchMoodData = async () => {
       try {
         // 선택된 월의 diary 데이터 가져오기
         const diaryData = await pb.collection('diary').getFullList({
           filter: `date >= '${selectedMonth}-01' && date <= '${selectedMonth}-31'`,
+          requestKey: null,
         });
 
         console.log(diaryData);
