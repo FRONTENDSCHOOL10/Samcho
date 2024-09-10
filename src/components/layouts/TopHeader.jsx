@@ -12,7 +12,12 @@ const TopHeader = ({ title, isShowIcon = false }) => {
   return (
     <header className="pt-5 w-full max-w-[27.5rem] flex justify-center items-center text-lg font-semibold relative">
       {isShowIcon && (
-        <button type="button" aria-label="뒤로 가기" onClick={handleBackClick}>
+        <button
+          type="button"
+          className="absolute left-0"
+          aria-label="뒤로 가기"
+          onClick={handleBackClick}
+        >
           <DirectionLeft className="fill-black" aria-hidden="true" />
         </button>
       )}

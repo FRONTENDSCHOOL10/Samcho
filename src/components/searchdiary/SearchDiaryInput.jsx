@@ -1,13 +1,10 @@
 import { DirectionLeft } from '@/assets/icons/direction';
 import { Close, Search } from '@/assets/icons/menu';
 import { useFetchAllDiaryData } from '@/hooks';
-import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DiaryCard } from '..';
-
-const emptyPhrase = `검색 결과가 없어요.\n다른 단어로 검색하는 건 어떨까요?`;
 
 const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
   const { diaryData, loading } = useFetchAllDiaryData();
@@ -16,54 +13,35 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
 
   const navigate = useNavigate();
 
+  const emptyPhrase = `"${inputValue}" 검색 결과가 없어요.\n다른 단어로 검색하는 건 어떨까요?`;
+
   const handleBackClick = () => {
     navigate('/');
   };
 
-  const debouncedSearch = useCallback(
-    debounce((value) => {
-      if (value && !loading) {
-        const result = diaryData.filter((diary) =>
-          diary.content.includes(value)
-        );
-
-        setSearchResults(result);
-        setIsSearched(true);
-        addHistory(value);
-      }
-    }, 400),
-    [loading, diaryData, addHistory]
-  );
-
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    setIsSearched(false);
-
-    if (value.trim() === '') {
-      setSearchResults([]);
-    } else {
-      debouncedSearch(value);
-    }
   };
 
   const handleClear = () => {
     setInputValue('');
     setSearchResults([]);
     setIsSearched(false);
-    debouncedSearch.cancel();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    debouncedSearch(inputValue);
-  };
+    if (inputValue && !loading) {
+      const result = diaryData.filter((diary) =>
+        diary.content.includes(inputValue)
+      );
 
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, [debouncedSearch]);
+      setSearchResults(result);
+      setIsSearched(true);
+      addHistory(inputValue);
+    }
+  };
 
   return (
     <>
@@ -91,26 +69,23 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
               </button>
             )}
 
-            <button type="button" aria-label="검색 실행">
+            <button type="submit" aria-label="검색 실행">
               <Search className="w-5 h-5 text-blue" />
             </button>
           </div>
         </div>
       </form>
-
-      {searchResults.length > 0 && inputValue ? (
+      {searchResults.length > 0 && (
         <div className="flex flex-col gap-5 mt-5">
           {searchResults.map((diary) => (
             <DiaryCard key={diary.id} diary={diary} />
           ))}
         </div>
-      ) : (
-        isSearched &&
-        inputValue && (
-          <p className="mt-[30px] font-semibold text-center text-gray-300 whitespace-pre-wrap">
-            {emptyPhrase}
-          </p>
-        )
+      )}
+      {isSearched && searchResults.length <= 0 && (
+        <p className="mt-[30px] font-semibold text-center text-gray-300 whitespace-pre-wrap">
+          {emptyPhrase}
+        </p>
       )}
     </>
   );
