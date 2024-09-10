@@ -14,17 +14,17 @@ const NotificationCard = ({
   type = 'buddyRequest',
   buddyName = 'buddy',
   notificationTime,
+  onAccept, // 상위에서 수락 핸들러 전달받음
+  onReject, // 상위에서 거절 핸들러 전달받음
 }) => {
   const now = new Date();
 
-  // 'yyyy-MM-dd HH:mm:ss' 형식의 날짜 문자열을 Date 객체로 변환
   const parsedNotificationTime = parse(
     notificationTime,
     'yyyy-MM-dd HH:mm:ss',
     new Date()
   );
 
-  // 날짜가 유효한지 검사
   if (!isValid(parsedNotificationTime)) {
     return <div>잘못된 날짜 형식입니다.</div>;
   }
@@ -71,10 +71,18 @@ const NotificationCard = ({
       <div className="flex flex-row justify-between">
         <span className="text-sm font-medium text-gray-300">{timeAgoText}</span>
         <div className="flex flex-row gap-[10px]">
-          <button type="button" className="text-base font-bold text-blue-500">
+          <button
+            type="button"
+            className="text-base font-bold text-blue-500"
+            onClick={onAccept} // 수락 버튼 클릭 핸들러 실행
+          >
             수락
           </button>
-          <button type="button" className="text-base font-bold text-red">
+          <button
+            type="button"
+            className="text-base font-bold text-red"
+            onClick={onReject} // 거절 버튼 클릭 핸들러 실행
+          >
             거절
           </button>
         </div>
@@ -87,6 +95,8 @@ NotificationCard.propTypes = {
   type: PropTypes.oneOf(['buddyRequest', 'exchangeRequest']),
   buddyName: PropTypes.string,
   notificationTime: PropTypes.string.isRequired,
+  onAccept: PropTypes.func.isRequired, // 수락 핸들러
+  onReject: PropTypes.func.isRequired, // 거절 핸들러
 };
 
 export default NotificationCard;
