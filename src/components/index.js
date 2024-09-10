@@ -44,3 +44,4 @@ export { default as NotificationCard } from './notification/NotificationCard.jsx
 
 // buddy
 export { default as BuddyCard } from './buddy/BuddyCard.jsx';
+export { default as BuddySearch } from './buddy/BuddySearch.jsx';

@@ -1,16 +1,20 @@
-import { TopHeader } from '@/components';
+import { useState, useEffect } from 'react';
+import { TopHeader, BuddySearch } from '@/components';
 import { Link } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
 import toast from 'react-hot-toast';
-import { useEffect, useState } from 'react';
 import useFetchBuddyData from '@/hooks/useFetchBuddyData';
+import { useModal } from '@/hooks';
 
 const Mypage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-
   const { buddyData, loading } = useFetchBuddyData();
   const buddyCount = buddyData.length;
+
+  const { isOpen, openModal, closeModal } = useModal();
+  const [searchBuddy, setSearchBuddy] = useState('');
+  const [triggerSearch, setTriggerSearch] = useState(false);
 
   useEffect(() => {
     const authData = localStorage.getItem('pocketbase_auth');
@@ -24,12 +28,22 @@ const Mypage = () => {
       setUsername(storedUsername);
       setEmail(storedEmail);
     }
-  }, [setUsername]);
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSearchInputChange = (e) => {
+    setSearchBuddy(e.target.value);
+  };
+
+  const handleSearchClick = () => {
     toast.dismiss();
-    toast.error('Here is your toast.');
+
+    if (!searchBuddy.trim()) {
+      toast.error('아이디를 입력하세요.');
+      return;
+    }
+
+    setTriggerSearch(true);
+    openModal('searchModal');
   };
 
   return (
@@ -114,7 +128,6 @@ const Mypage = () => {
         <section className="flex flex-col w-full gap-5">
           <h2 className="text-lg font-semibold text-gray-450">단짝 찾기</h2>
           <form
-            onSubmit={handleSubmit}
             className="h-[60px] p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex items-center justify-between focus-within:ring-1 focus-within:ring-blue-300"
             aria-labelledby="buddy-search-label"
           >
@@ -130,17 +143,29 @@ const Mypage = () => {
               id="buddy-search-input"
               placeholder="사용자의 아이디를 입력하세요"
               className="flex-1 text-base font-medium outline-none text-gray-450 placeholder:text-gray-300"
+              value={searchBuddy}
+              onChange={handleSearchInputChange}
             />
             <button
-              type="submit"
-              className="text-base font-semibold text-blue-500 "
+              type="button"
+              className="text-base font-semibold text-blue-500"
               aria-label="단짝 검색"
+              onClick={handleSearchClick}
             >
               검색
             </button>
           </form>
         </section>
       </div>
+
+      {/* BuddySearch 모달 */}
+      <BuddySearch
+        isOpen={isOpen('searchModal')}
+        closeModal={() => closeModal('searchModal')}
+        searchBuddy={searchBuddy}
+        triggerSearch={triggerSearch} // 검색 실행 여부 전달
+        setTriggerSearch={setTriggerSearch} // 검색 실행 여부를 초기화하는 함수 전달
+      />
     </>
   );
 };
