@@ -2,8 +2,11 @@ import { Close, History } from '@/assets/icons/menu';
 import PropTypes from 'prop-types';
 
 const SearchDiaryHistoryItem = ({ history }) => {
-  return history.map((item) => (
-    <li key={item} className="flex items-center justify-between w-full">
+  return history.map((item, idx) => (
+    <li
+      key={`${item}-${idx}`}
+      className="flex items-center justify-between w-full"
+    >
       <div className="flex items-center gap-3">
         <History className="w-5 h-5 fill-gray-300" aria-hidden="true" />
         <p className="font-semibold text-gray-450">{item}</p>
