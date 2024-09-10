@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Calendar2,
   Filter,
@@ -13,8 +13,8 @@ import { Modal, Select } from '..';
 
 const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
   const [isCalendarView, setIsCalendarView] = useState(true);
-
   const { isOpen, openModal, closeModal } = useModal();
+  const navigate = useNavigate();
 
   const handleToggleIcon = () => {
     setIsCalendarView(!isCalendarView);
@@ -23,6 +23,10 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
 
   const handleFilterConfirm = () => {
     closeModal('filterModal');
+  };
+
+  const handleSearchClick = () => {
+    navigate('/home/search');
   };
 
   return (
@@ -38,9 +42,13 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
         >
           <Filter className=" fill-gray-450" aria-hidden="true" />
         </button>
-        <div className="flex gap-[10px]">
-          <button type="button" aria-label="검색">
-            <Search aria-hidden="true" />
+        <div className="flex gap-4">
+          <button
+            type="button"
+            aria-label="일기 검색"
+            onClick={handleSearchClick}
+          >
+            <Search aria-hidden="true" className=" text-gray-450" />
           </button>
           <Link to={'/home/notification'} title="알림">
             <Notification className=" fill-gray-450" aria-hidden="true" />

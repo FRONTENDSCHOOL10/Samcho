@@ -22,3 +22,6 @@ export { default as ErrorPage } from './ErrorPage.jsx';
 
 // notification
 export { default as Notification } from './Notification.jsx';
+
+// search
+export { default as SearchDiary } from './SearchDiary.jsx';
