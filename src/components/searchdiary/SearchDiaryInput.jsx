@@ -22,6 +22,8 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
+    setIsSearched(false);
+    setSearchResults([]);
   };
 
   const handleClear = () => {
@@ -75,17 +77,19 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
           </div>
         </div>
       </form>
-      {searchResults.length > 0 && (
+      {searchResults.length > 0 && inputValue ? (
         <div className="flex flex-col gap-5 mt-5">
           {searchResults.map((diary) => (
             <DiaryCard key={diary.id} diary={diary} />
           ))}
         </div>
-      )}
-      {isSearched && searchResults.length <= 0 && (
-        <p className="mt-[30px] font-semibold text-center text-gray-300 whitespace-pre-wrap">
-          {emptyPhrase}
-        </p>
+      ) : (
+        isSearched &&
+        inputValue && (
+          <p className="mt-[30px] font-semibold text-center text-gray-300 whitespace-pre-wrap">
+            {emptyPhrase}
+          </p>
+        )
       )}
     </>
   );
