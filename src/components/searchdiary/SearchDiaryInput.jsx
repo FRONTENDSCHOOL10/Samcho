@@ -1,6 +1,7 @@
 import { DirectionLeft } from '@/assets/icons/direction';
 import { Close, Search } from '@/assets/icons/menu';
 import { useFetchAllDiaryData } from '@/hooks';
+import { groupByMonth } from '@/utils';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -34,12 +35,15 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (inputValue && !loading) {
       const result = diaryData.filter((diary) =>
         diary.content.includes(inputValue)
       );
 
-      setSearchResults(result);
+      const groupedResults = groupByMonth(result);
+
+      setSearchResults(groupedResults);
       setIsSearched(true);
       addHistory(inputValue);
     }
@@ -77,12 +81,22 @@ const SearchDiaryInput = ({ inputValue, setInputValue, addHistory }) => {
           </div>
         </div>
       </form>
-      {searchResults.length > 0 && inputValue ? (
-        <div className="flex flex-col gap-5 mt-5">
-          {searchResults.map((diary) => (
-            <DiaryCard key={diary.id} diary={diary} />
+
+      {Object.keys(searchResults).length > 0 && inputValue ? (
+        <main className="flex flex-col">
+          {Object.keys(searchResults).map((yearMonth) => (
+            <section key={yearMonth} className="my-5">
+              <h2 className="font-semibold text-center text-gray-450">
+                {yearMonth}
+              </h2>
+              {searchResults[yearMonth].map((diary) => (
+                <div key={diary.id} className="mt-5">
+                  <DiaryCard diary={diary} />
+                </div>
+              ))}
+            </section>
           ))}
-        </div>
+        </main>
       ) : (
         isSearched &&
         inputValue && (
