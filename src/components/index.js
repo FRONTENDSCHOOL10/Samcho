@@ -8,7 +8,6 @@ export { default as Modal } from './common/Modal.jsx';
 export { default as PostCard } from './common/PostCard.jsx';
 export { default as Select } from './common/Select.jsx';
 export { default as ToggleButton } from './common/ToggleButton.jsx';
-export { default as ToggleTab } from './common/ToggleTab.jsx';
 export { default as YearMonth } from './common/YearMonth.jsx';
 
 // home

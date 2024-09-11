@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from '@/components';
 import pb from '@/api/pb'; // PocketBase API 가져오기
@@ -17,7 +17,7 @@ const BuddySearch = ({
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
   /* user collection에 해당 아이디가 있는지 검색 요청 보내는 함수 */
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     setLoading(true);
     setErrorMessage('');
     setUserData(null);
@@ -33,19 +33,20 @@ const BuddySearch = ({
         email: result.email,
       });
     } catch (error) {
+      console.error(error);
       setErrorMessage('해당 아이디를 가진 유저가 없습니다.');
     } finally {
       setLoading(false);
       setTriggerSearch(false);
     }
-  };
+  }, [searchBuddy, setTriggerSearch]);
 
   // 함수 실행
   useEffect(() => {
     if (triggerSearch && searchBuddy) {
       handleSearch();
     }
-  }, [triggerSearch, searchBuddy]);
+  }, [triggerSearch, searchBuddy, handleSearch]);
 
   /* 단짝 신청하기 함수 */
   const handleBuddyRequest = async () => {
@@ -78,6 +79,7 @@ const BuddySearch = ({
       toast.success('단짝 신청을 보냈습니다!');
     } catch (error) {
       toast.error('단짝 신청에 실패했습니다.');
+      console.error(error);
     }
   };
 

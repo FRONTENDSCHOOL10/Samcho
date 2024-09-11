@@ -1,33 +1,50 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
-import toast from 'react-hot-toast';
-import { useNavigate, useLocation } from 'react-router-dom';
+import pb from '@/api/pb';
+import emotions from '@/assets/icons/emotions/emotions';
+import weathers from '@/assets/icons/weather/weathers';
 import {
   Accordion,
+  Button,
   SelectMood,
+  SelectPicture,
   TextArea,
   TopHeader,
   WeatherWithIcon,
-  SelectPicture,
-  Button,
 } from '@/components';
-import emotions from '@/assets/icons/emotions/emotions';
-import weathers from '@/assets/icons/weather/weathers';
-import pb from '@/api/pb';
+import { useFetchDiaryDetail } from '@/hooks';
+import { format } from 'date-fns';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
 export const Component = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { date } = location.state || {};
+  const { date, diaryId } = location.state || {};
 
-  const defaultTitle = date || format(new Date(), 'yyyy-MM-dd');
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
+  const defaultTitle = date || format(new Date(), 'yyyy-MM-dd');
 
   const [selectedMood, setSelectedMood] = useState(null);
   const [selectedEmotions, setSelectedEmotions] = useState([]);
   const [selectedWeathers, setSelectedWeathers] = useState([]);
   const [text, setText] = useState('');
   const [picture, setPicture] = useState(null);
+
+  const { diaryDetail } = useFetchDiaryDetail(diaryId);
+
+  useEffect(() => {
+    if (diaryDetail) {
+      setSelectedMood(diaryDetail.mood);
+      setSelectedEmotions(diaryDetail.emotion || []);
+      setSelectedWeathers(diaryDetail.weather || []);
+      setText(diaryDetail.content);
+      if (diaryDetail.picture) {
+        setPicture(`${baseImageUrl}/${diaryDetail.id}/${diaryDetail.picture}`);
+      }
+    }
+  }, [diaryDetail]);
 
   const handleEmotionClick = (text) => {
     if (selectedEmotions.includes(text)) {
@@ -74,11 +91,19 @@ export const Component = () => {
       formData.append('picture', picture);
     }
 
+    const submitPromise = diaryId
+      ? pb.collection('diary').update(diaryId, formData)
+      : pb.collection('diary').create(formData);
+
     toast
-      .promise(pb.collection('diary').create(formData), {
-        loading: '일기 저장 중...',
-        success: '일기 작성을 완료했습니다!',
-        error: '일기 작성에 실패했습니다...',
+      .promise(submitPromise, {
+        loading: diaryId ? '일기 수정 중...' : '일기 저장 중...',
+        success: diaryId
+          ? '일기 수정을 완료했습니다!'
+          : '일기 작성을 완료했습니다!',
+        error: diaryId
+          ? '일기 수정에 실패했습니다...'
+          : '일기 작성에 실패했습니다...',
       })
       .then(() => {
         navigate('/');
@@ -118,7 +143,11 @@ export const Component = () => {
         <TextArea text={text} setText={setText} />
         <SelectPicture picture={picture} setPicture={setPicture} />
         <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
-          <Button buttonType="submit" text="작성완료" size="large" />
+          <Button
+            buttonType="submit"
+            text={diaryId ? '수정완료' : '작성완료'}
+            size="large"
+          />
         </footer>
       </form>
     </section>

@@ -11,11 +11,14 @@ const Home = ({ viewMode: initialViewMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [diaryData, setDiaryData] = useState([]);
   const [viewMode, setViewMode] = useState(initialViewMode || 'calendar');
   const [selectedMood, setSelectedMood] = useState('전체');
   const [selectedMonth, setSelectedMonth] = useState(() =>
     format(new Date(), 'yyyy-MM')
   );
+
+  const { diaryData: data, loading } = useFetchMonthlyDiaryData(selectedMonth);
 
   useEffect(() => {
     if (location.pathname.includes('list')) {
@@ -25,25 +28,31 @@ const Home = ({ viewMode: initialViewMode }) => {
     }
   }, [location.pathname]);
 
-  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth);
+  useEffect(() => {
+    setDiaryData(data);
+  }, [data]);
 
-  const filteredDiaryData = useMemo(() => {
+  const filteredMoodData = useMemo(() => {
     if (selectedMood === '전체') return diaryData;
     return diaryData.filter((diary) => diary.mood === selectedMood);
   }, [diaryData, selectedMood]);
 
   useEffect(() => {
-    if (selectedMood !== '전체' && filteredDiaryData.length === 0) {
+    if (selectedMood !== '전체' && filteredMoodData.length === 0) {
       toast.error(`${selectedMood} 기분의 일기가 없어요😥`, {
         duration: 3000,
       });
     }
-  }, [selectedMood, filteredDiaryData.length]);
+  }, [selectedMood, filteredMoodData.length]);
 
   const handleToggleView = () => {
     const newViewMode = viewMode === 'calendar' ? 'list' : 'calendar';
     setViewMode(newViewMode);
     navigate(`/home/${newViewMode}`);
+  };
+
+  const handleDiaryDelete = (id) => {
+    setDiaryData((prevData) => prevData.filter((diary) => diary.id !== id));
   };
 
   if (loading) {
@@ -82,14 +91,18 @@ const Home = ({ viewMode: initialViewMode }) => {
         />
         {viewMode === 'calendar' ? (
           <Calendar
-            diaryData={filteredDiaryData}
+            diaryData={filteredMoodData}
             selectedMonth={selectedMonth}
           />
         ) : (
           <main className="flex flex-col gap-5">
-            {filteredDiaryData.length > 0 ? (
-              filteredDiaryData.map((diary) => (
-                <DiaryCard key={diary.id} diary={diary} />
+            {filteredMoodData.length > 0 ? (
+              filteredMoodData.map((diary) => (
+                <DiaryCard
+                  key={diary.id}
+                  diary={diary}
+                  onDelete={handleDiaryDelete}
+                />
               ))
             ) : (
               <p className="mt-5 font-semibold text-center text-gray-300">
