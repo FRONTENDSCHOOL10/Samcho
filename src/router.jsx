@@ -52,14 +52,14 @@ export const routes = [
       {
         path: 'diary',
         children: [
-          {
-            path: 'detail/:id',
-            lazy: () => import('@/pages/diary/DetailDiary'),
-          },
           { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
         ],
       },
     ],
+  },
+  {
+    path: 'diary/detail/:id',
+    lazy: () => import('@/pages/diary/DetailDiary'),
   },
   { path: 'diary/new', lazy: () => import('@/pages/diary/NewDiary') },
   { path: 'login', element: <Login /> },

@@ -60,20 +60,26 @@ const BuddySearch = ({
 
     // 중복 신청 방지 : 이미 보낸 상대에게 다시 신청 X
     try {
-      const existingRequest = await pb.collection('notification').getFullList({
-        filter: `user = "${userData.id}" && counter_part = "${userId}"`, // 이미 신청한 기록이 있는지 확인
+      const existingRequest = await pb.collection('buddy').getFullList({
+        filter: `recipient = "${userData.id}" && requester = "${userId}" || recipient = "${userId}" && requester = "${userData.id}"`, // 이미 신청한 기록이 있는지 확인
       });
 
       if (existingRequest.length > 0) {
-        toast.error('이미 해당 사용자에게 단짝 신청을 보냈습니다.');
+        toast.error('이미 해당 사용자와 단짝 이거나 대기 상태입니다.');
         return;
       }
 
-      /* 새로운 단짝 데이터 PB에 생성 */
+      const buddy = await pb.collection('buddy').create({
+        recipient: userData.id,
+        requester: userId,
+        status: 'pending',
+      });
+
       await pb.collection('notification').create({
-        user: userData.id,
-        counter_part: userId,
+        recipient: userData.id,
+        requester: userId,
         type: '단짝',
+        type_id: buddy.id,
       });
 
       toast.success('단짝 신청을 보냈습니다!');

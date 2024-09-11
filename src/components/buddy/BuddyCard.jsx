@@ -2,6 +2,7 @@ import { PropTypes } from 'prop-types';
 import { differenceInDays, format } from 'date-fns';
 import { memo } from 'react';
 import pb from '@/api/pb';
+import toast from 'react-hot-toast';
 
 const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
   const daysDifference = differenceInDays(
@@ -14,15 +15,11 @@ const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
       const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
       const records = await pb.collection('buddy').getFullList({
-        filter: `(user = "${userId}" && buddy = "${buddyId}") || (user = "${buddyId}" && buddy = "${userId}")`,
+        filter: `recipient = "${buddyId}" && requester = "${userId}" || recipient = "${userId}" && requester = "${buddyId}"`,
       });
 
-      const deletePromises = records.map((record) =>
-        pb.collection('buddy').delete(record.id)
-      );
-
-      await Promise.all(deletePromises);
-
+      await pb.collection('buddy').delete(records[0].id);
+      toast.success('단짝을 멀리 보냈습니다.');
       onDelete(buddyId);
     } catch (error) {
       console.error('단짝 삭제 중 오류 발생:', error);

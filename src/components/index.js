@@ -9,6 +9,7 @@ export { default as PostCard } from './common/PostCard.jsx';
 export { default as Select } from './common/Select.jsx';
 export { default as ToggleButton } from './common/ToggleButton.jsx';
 export { default as YearMonth } from './common/YearMonth.jsx';
+export { default as CheckBox } from './common/CheckBox.jsx';
 
 // home
 export { default as Calendar } from './home/Calendar.jsx';

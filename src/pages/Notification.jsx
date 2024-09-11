@@ -1,21 +1,29 @@
 import { useState, useEffect } from 'react';
-import { TopHeader, NotificationCard } from '@/components';
+import { TopHeader, NotificationCard, Modal, CheckBox } from '@/components';
 import pb from '@/api/pb';
 import toast from 'react-hot-toast';
+import { useFetchAllDiaryData, useModal } from '@/hooks';
 
 const Notification = () => {
+  const userId = JSON.parse(localStorage.getItem('auth')).user.id;
+
   const [notificationData, setNotificationData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(true);
-  const userId = JSON.parse(localStorage.getItem('auth')).user.id;
+  const [checkedIndex, setCheckedIndex] = useState(null);
+  const [diary, setDiary] = useState('');
+  const [selectedNotification, setSelectedNotification] = useState(null);
+
+  const { isOpen, openModal, closeModal } = useModal();
+  const { diaryData } = useFetchAllDiaryData();
 
   useEffect(() => {
     const getData = async () => {
       try {
         const records = await pb.collection('notification').getFullList({
           sort: '-created',
-          filter: `user = "${userId}"`,
-          expand: 'counter_part',
+          filter: `recipient = "${userId}"`,
+          expand: 'requester',
         });
 
         setNotificationData(records);
@@ -37,38 +45,77 @@ const Notification = () => {
     }
   }, [userId]);
 
-  const handleBuddyAccept = async (notification) => {
+  const handleChange = (diary, index) => {
+    setCheckedIndex(index);
+    setDiary(diary);
+  };
+
+  const handleDiaryExchange = async () => {
+    const data = {
+      recipient_diary: diary,
+      status: 'accepted',
+    };
     try {
-      await pb.collection('notification').delete(notification.id);
-      await pb.collection('buddy').create({
-        user: userId,
-        buddy: notification.expand.counter_part.id,
-        status: 'accepted',
-      });
-      await pb.collection('buddy').create({
-        user: notification.expand.counter_part.id,
-        buddy: userId,
-        status: 'accepted',
-      });
+      await pb.collection('post').update(selectedNotification.type_id, data);
+      await pb.collection('notification').delete(selectedNotification.id);
 
       setNotificationData((prevData) =>
-        prevData.filter((item) => item.id !== notification.id)
+        prevData.filter((item) => item.id !== selectedNotification.id)
       );
-      toast.success('단짝 요청을 수락했습니다!');
+      toast.success('교환일기 신청이 수락 되었습니다.');
+      closeModal('diaryListModal');
     } catch (error) {
-      console.error('수락 처리 중 오류 발생: ', error);
+      console.error('[error] 교환일기 수락 실패: ', error);
+      toast.error('교환일기 수락에 실패했습니다.');
+    }
+  };
+
+  const handleBuddyAccept = async (notification) => {
+    if (notification.type === '교환일기') {
+      setSelectedNotification(notification);
+      openModal('diaryListModal');
+    } else {
+      try {
+        const data = {
+          status: 'accepted',
+        };
+
+        await pb.collection('buddy').update(notification.type_id, data);
+        await pb.collection('notification').delete(notification.id);
+
+        setNotificationData((prevData) =>
+          prevData.filter((item) => item.id !== notification.id)
+        );
+        toast.success('단짝 요청을 수락했습니다!');
+      } catch (error) {
+        console.error('수락 처리 중 오류 발생: ', error);
+      }
     }
   };
 
   const handleBuddyReject = async (notification) => {
-    try {
-      await pb.collection('notification').delete(notification.id);
-      setNotificationData((prevData) =>
-        prevData.filter((item) => item.id !== notification.id)
-      );
-      toast.success('단짝 요청을 거절했습니다.');
-    } catch (error) {
-      console.error('거절 처리 중 오류 발생: ', error);
+    if (notification.type === '교환일기') {
+      try {
+        await pb.collection('post').delete(notification.type_id);
+        await pb.collection('notification').delete(notification.id);
+        setNotificationData((prevData) =>
+          prevData.filter((item) => item.id !== notification.id)
+        );
+        toast.success('일기 교환 요청을 거절했습니다.');
+      } catch (error) {
+        console.error('거절 처리 중 오류 발생: ', error);
+      }
+    } else {
+      try {
+        await pb.collection('buddy').delete(notification.type_id);
+        await pb.collection('notification').delete(notification.id);
+        setNotificationData((prevData) =>
+          prevData.filter((item) => item.id !== notification.id)
+        );
+        toast.success('단짝 요청을 거절했습니다.');
+      } catch (error) {
+        console.error('거절 처리 중 오류 발생: ', error);
+      }
     }
   };
 
@@ -84,29 +131,54 @@ const Notification = () => {
 
   // 데이터가 로드되고 알림이 있을 때 알림 목록을 렌더링
   return (
-    <section className="flex flex-col gap-5 min-h-dvh pb-[80px]">
-      <TopHeader title="알림" isShowIcon />
-      <main className="flex flex-col gap-5">
-        {notificationData && notificationData.length > 0 ? (
-          notificationData.map((notification) => (
-            <NotificationCard
-              key={notification?.id}
-              buddyName={notification?.expand.counter_part.name}
-              notificationTime={notification?.created.slice(0, 19)}
-              type={
-                notification.type === '교환일기'
-                  ? 'exchangeRequest'
-                  : 'buddyRequest'
-              }
-              onAccept={() => handleBuddyAccept(notification)}
-              onReject={() => handleBuddyReject(notification)}
+    <>
+      <section className="flex flex-col gap-5 min-h-dvh pb-[80px]">
+        <TopHeader title="알림" isShowIcon />
+        <main className="flex flex-col gap-5">
+          {notificationData && notificationData.length > 0 ? (
+            notificationData.map((notification) => (
+              <NotificationCard
+                key={notification?.id}
+                buddyName={notification?.expand.requester.name}
+                notificationTime={notification?.created.slice(0, 19)}
+                type={
+                  notification.type === '교환일기'
+                    ? 'exchangeRequest'
+                    : 'buddyRequest'
+                }
+                onAccept={() => handleBuddyAccept(notification)}
+                onReject={() => handleBuddyReject(notification)}
+              />
+            ))
+          ) : (
+            <p>알림이 없습니다..!</p>
+          )}
+        </main>
+      </section>
+      <Modal
+        isOpen={isOpen('diaryListModal')}
+        closeModal={() => closeModal('diaryListModal')}
+      >
+        <div className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-gray-500">일기 리스트</h2>
+          {diaryData.map((diary, idx) => (
+            <CheckBox
+              key={diary.id}
+              label={diary.date}
+              checked={checkedIndex === idx}
+              onChange={() => handleChange(diary.id, idx)}
             />
-          ))
-        ) : (
-          <p>알림이 없습니다..!</p>
-        )}
-      </main>
-    </section>
+          ))}
+          <button
+            type="button"
+            className="py-2 font-medium text-white rounded-md bg-blue"
+            onClick={handleDiaryExchange}
+          >
+            교환
+          </button>
+        </div>
+      </Modal>
+    </>
   );
 };
 
