@@ -91,8 +91,9 @@ const Home = ({ viewMode: initialViewMode }) => {
         />
         {viewMode === 'calendar' ? (
           <Calendar
-            diaryData={filteredMoodData}
+            diaryData={diaryData}
             selectedMonth={selectedMonth}
+            selectedMood={selectedMood}
           />
         ) : (
           <main className="flex flex-col gap-5">
