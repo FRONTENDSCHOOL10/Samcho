@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { MoodDistribution } from '@/components';
 
@@ -77,6 +78,15 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
       </div>
     </article>
   );
+};
+
+MoodDistributionChart.propTypes = {
+  diaryData: PropTypes.arrayOf(
+    PropTypes.shape({
+      mood: PropTypes.string, // 각 항목의 mood가 문자열
+    })
+  ).isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default MoodDistributionChart;

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { EmotionRankCard } from '@/components';
@@ -80,6 +81,16 @@ const EmotionRanking = ({ diaryData, loading }) => {
       </footer>
     </article>
   );
+};
+
+EmotionRanking.propTypes = {
+  diaryData: PropTypes.arrayOf(
+    PropTypes.shape({
+      emotion: PropTypes.arrayOf(PropTypes.string),
+      date: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default EmotionRanking;
