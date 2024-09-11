@@ -3,15 +3,16 @@ import moods from '@/assets/icons/mood/moods';
 import { isFuture } from 'date-fns';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const FeelingCalendar = ({ day, mood, id, date }) => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClick = (e) => {
     const selectedDate = new Date(date);
 
     if (isFuture(selectedDate)) {
+      e.preventDefault();
       toast.error('미래의 일기는 아직 기록할 수 없어요!');
       return;
     }
@@ -25,7 +26,11 @@ const FeelingCalendar = ({ day, mood, id, date }) => {
 
   return (
     <div className="flex items-center flex-col gap-[7px]">
-      <button onClick={handleClick} type="button">
+      <Link
+        to={id ? `/diary/detail/${id}` : `/diary/new`}
+        onClick={handleClick}
+        state={id ? null : { date }}
+      >
         {mood ? (
           <img
             src={moods[mood]}
@@ -33,10 +38,9 @@ const FeelingCalendar = ({ day, mood, id, date }) => {
             className="w-[44px] h-[44px] cursor-pointer"
           />
         ) : (
-          // 추후 일기 해당 날짜 일기 작성으로 이동
           <DayCircle className="fill-blue-50 w-[44px] h-[44px] cursor-pointer" />
         )}
-      </button>
+      </Link>
       <span>{day}</span>
     </div>
   );
