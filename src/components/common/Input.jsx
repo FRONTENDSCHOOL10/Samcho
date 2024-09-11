@@ -29,7 +29,6 @@ const Input = ({
     setIsFocused(false);
     setHasValue(Boolean(value));
   };
-
   const handleChange = (e) => {
     setHasValue(Boolean(e.target.value));
 
@@ -52,6 +51,26 @@ const Input = ({
     ${isFocused ? 'text-blue-500' : 'text-gray-400'}
   `;
 
+  // 성공 메시지 조건 설정
+  const successMessages = {
+    username: renderSuccessMessage(
+      id === 'username' && !error && hasValue && duplicate,
+      '사용가능한 아이디입니다.'
+    ),
+    name: renderSuccessMessage(
+      id === 'name' && !error && hasValue && duplicate,
+      '사용가능한 닉네임입니다.'
+    ),
+    password: renderSuccessMessage(
+      type === 'password' && id === 'password' && !error && hasValue,
+      '사용가능한 비밀번호입니다.'
+    ),
+    passwordConfirm: renderSuccessMessage(
+      type === 'password' && id === 'passwordConfirm' && !error && hasValue,
+      '비밀번호가 일치합니다.'
+    ),
+  };
+
   return (
     <div className={`relative w-[242px] ${className}`}>
       <input
@@ -66,30 +85,14 @@ const Input = ({
       <label htmlFor={id} className={labelClasses}>
         {label}
       </label>
+
+      {/* 에러 메시지 */}
       {error && errorMessage && <p className={errorClasses}>{errorMessage}</p>}
-      {id === 'username' && !error && hasValue && duplicate && (
-        <p className="w-[242px] text-green-600 text-xs mt-1">
-          사용가능한 아이디입니다.
-        </p>
-      )}
-      {id === 'name' && !error && hasValue && duplicate && (
-        <p className="w-[242px] text-green-600 text-xs mt-1">
-          사용가능한 닉네임입니다.
-        </p>
-      )}
-      {type === 'password' && id === 'password' && !error && hasValue && (
-        <p className="w-[242px] text-green-600 text-xs mt-1">
-          사용가능한 비밀번호입니다.
-        </p>
-      )}
-      {type === 'password' &&
-        id === 'passwordConfirm' &&
-        !error &&
-        hasValue && (
-          <p className="w-[242px] text-green-600 text-xs mt-1">
-            비밀번호가 일치합니다.
-          </p>
-        )}
+
+      {/* 성공 메시지*/}
+      {successMessages[id]}
+
+      {/* 비밀번호 보기/숨기기 아이콘 */}
       {isViewIcon && (
         <button
           type="button"
@@ -105,6 +108,15 @@ const Input = ({
         </button>
       )}
     </div>
+  );
+};
+
+/* 성공 메세지 렌더링 함수 */
+const renderSuccessMessage = (condition, message) => {
+  return (
+    condition && (
+      <p className="w-[242px] text-green-600 text-xs mt-1">{message}</p>
+    )
   );
 };
 
