@@ -1,11 +1,11 @@
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
 import { useFetchMonthlyDiaryData } from '@/hooks';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useEffect, useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import toast from 'react-hot-toast';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Home = ({ viewMode: initialViewMode }) => {
   const navigate = useNavigate();
@@ -26,6 +26,19 @@ const Home = ({ viewMode: initialViewMode }) => {
   }, [location.pathname]);
 
   const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth);
+
+  const filteredDiaryData = useMemo(() => {
+    if (selectedMood === '전체') return diaryData;
+    return diaryData.filter((diary) => diary.mood === selectedMood);
+  }, [diaryData, selectedMood]);
+
+  useEffect(() => {
+    if (selectedMood !== '전체' && filteredDiaryData.length === 0) {
+      toast.error(`${selectedMood} 기분의 일기가 없어요😥`, {
+        duration: 3000,
+      });
+    }
+  }, [selectedMood, filteredDiaryData.length]);
 
   const handleToggleView = () => {
     const newViewMode = viewMode === 'calendar' ? 'list' : 'calendar';
@@ -68,11 +81,14 @@ const Home = ({ viewMode: initialViewMode }) => {
           className="py-5"
         />
         {viewMode === 'calendar' ? (
-          <Calendar diaryData={diaryData} selectedMonth={selectedMonth} />
+          <Calendar
+            diaryData={filteredDiaryData}
+            selectedMonth={selectedMonth}
+          />
         ) : (
           <main className="flex flex-col gap-5">
-            {diaryData.length > 0 ? (
-              diaryData.map((diary) => (
+            {filteredDiaryData.length > 0 ? (
+              filteredDiaryData.map((diary) => (
                 <DiaryCard key={diary.id} diary={diary} />
               ))
             ) : (
