@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { TopHeader, BuddySearch } from '@/components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
 import toast from 'react-hot-toast';
 import useFetchBuddyData from '@/hooks/useFetchBuddyData';
 import { useModal } from '@/hooks';
 
 const Mypage = () => {
-  const [username, setUsername] = useState('');
+  const [nickname, setNickName] = useState('');
+  const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const { buddyData } = useFetchBuddyData();
   const buddyCount = buddyData.length;
@@ -15,6 +16,7 @@ const Mypage = () => {
   const { isOpen, openModal, closeModal } = useModal();
   const [searchBuddy, setSearchBuddy] = useState('');
   const [triggerSearch, setTriggerSearch] = useState(false);
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   useEffect(() => {
     const authData = localStorage.getItem('pocketbase_auth');
@@ -22,10 +24,12 @@ const Mypage = () => {
     if (authData) {
       const parsedData = JSON.parse(authData);
       const userModel = parsedData.model;
-      const storedUsername = userModel.username;
+      const storedNickName = userModel.name;
+      const storedUserName = userModel.username;
       const storedEmail = userModel.email;
 
-      setUsername(storedUsername);
+      setNickName(storedNickName);
+      setUserName(storedUserName);
       setEmail(storedEmail);
     }
   }, []);
@@ -46,6 +50,12 @@ const Mypage = () => {
     openModal('searchModal');
   };
 
+  const handleNavigateToSetting = () => {
+    navigate('/mypage/setting', {
+      state: { nickname }, // state를 통해 데이터 전달
+    });
+  };
+
   return (
     <>
       <TopHeader title="내정보" />
@@ -56,14 +66,20 @@ const Mypage = () => {
           <div className="w-full flex items-center justify-between p-[0.9375rem] bg-white rounded-[10px] shadow-light">
             <div className="flex flex-col">
               <h3 className="text-base font-semibold text-gray-450">
-                {username}
+                {nickname}
+                <span className="mt-2 text-xs leading-3 text-gray-300">
+                  ({username})
+                </span>
               </h3>
               <p className="text-sm font-medium text-gray-400">{email}</p>
             </div>
             <nav aria-label="계정 관리">
-              <Link to="/mypage/setting" aria-label="계정 관리 페이지로 이동">
+              <button
+                onClick={handleNavigateToSetting} // 버튼 클릭 시 데이터와 함께 이동
+                aria-label="계정 관리 페이지로 이동"
+              >
                 <DirectionRight className="fill-black" />
-              </Link>
+              </button>
             </nav>
           </div>
         </section>
