@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TopHeader, BuddySearch } from '@/components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
 import toast from 'react-hot-toast';
 import useFetchBuddyData from '@/hooks/useFetchBuddyData';
@@ -16,14 +16,13 @@ const Mypage = () => {
   const { isOpen, openModal, closeModal } = useModal();
   const [searchBuddy, setSearchBuddy] = useState('');
   const [triggerSearch, setTriggerSearch] = useState(false);
-  const navigate = useNavigate(); // useNavigate 훅 사용
 
   useEffect(() => {
-    const authData = localStorage.getItem('pocketbase_auth');
+    const authData = localStorage.getItem('auth');
 
     if (authData) {
       const parsedData = JSON.parse(authData);
-      const userModel = parsedData.model;
+      const userModel = parsedData.user;
       const storedNickName = userModel.name;
       const storedUserName = userModel.username;
       const storedEmail = userModel.email;
@@ -50,12 +49,6 @@ const Mypage = () => {
     openModal('searchModal');
   };
 
-  const handleNavigateToSetting = () => {
-    navigate('/mypage/setting', {
-      state: { nickname }, // state를 통해 데이터 전달
-    });
-  };
-
   return (
     <>
       <TopHeader title="내정보" />
@@ -74,12 +67,13 @@ const Mypage = () => {
               <p className="text-sm font-medium text-gray-400">{email}</p>
             </div>
             <nav aria-label="계정 관리">
-              <button
-                onClick={handleNavigateToSetting} // 버튼 클릭 시 데이터와 함께 이동
+              <Link
+                to="/mypage/setting"
+                state={{ nickname }}
                 aria-label="계정 관리 페이지로 이동"
               >
                 <DirectionRight className="fill-black" />
-              </button>
+              </Link>
             </nav>
           </div>
         </section>
