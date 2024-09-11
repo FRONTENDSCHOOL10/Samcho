@@ -96,8 +96,12 @@ const Input = ({
           className="absolute right-0 top-3"
           onClick={handleToggle}
           aria-label={isHide ? '비밀번호 보기' : '비밀번호 숨기기'}
+          title={isHide ? '비밀번호 보기' : '비밀번호 숨기기'}
         >
-          <img src={isHide ? InvisibleIcon : VisibleIcon} aria-hidden="true" />
+          <img
+            src={isHide ? InvisibleIcon : VisibleIcon}
+            alt={isHide ? '비밀번호 숨김' : '비밀번호 표시'}
+          />
         </button>
       )}
     </div>
