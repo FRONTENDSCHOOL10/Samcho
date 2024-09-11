@@ -1,6 +1,6 @@
 import DayCircle from '@/assets/icons/daycircle/daycircle.svg?react';
 import moods from '@/assets/icons/mood/moods';
-import { isFuture } from 'date-fns';
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -19,9 +19,10 @@ const FeelingCalendar = ({
   }`;
 
   const handleClick = (e) => {
-    const selectedDate = new Date(date);
+    const selectedDate = format(new Date(date), 'yyyy-MM-dd');
+    const currentDate = format(new Date(), 'yyyy-MM-dd');
 
-    if (isFuture(selectedDate)) {
+    if (currentDate < selectedDate) {
       e.preventDefault();
       toast.error('미래의 일기는 아직 기록할 수 없어요!');
       return;
