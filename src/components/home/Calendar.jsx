@@ -7,8 +7,9 @@ const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 const Calendar = ({
   diaryData = [],
   selectedMonth = format(new Date(), 'yyyy-MM'),
+  selectedMood,
 }) => {
-  const { weekRows } = useCalendar(diaryData, selectedMonth);
+  const { weekRows } = useCalendar(diaryData, selectedMonth, selectedMood);
 
   return (
     <table className="w-full border-separate border-spacing-y-5 border-spacing-x-0">
@@ -34,6 +35,7 @@ const Calendar = ({
 Calendar.propTypes = {
   diaryData: PropTypes.array,
   selectedMonth: PropTypes.string,
+  selectedMood: PropTypes.string,
 };
 
 export default Calendar;

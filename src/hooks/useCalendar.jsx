@@ -12,7 +12,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 const useCalendar = (
   diaryData,
-  selectedMonth = format(new Date(), 'yyyy-MM')
+  selectedMonth = format(new Date(), 'yyyy-MM'),
+  selectedMood = '전체'
 ) => {
   const [currentDate, setCurrentDate] = useState(
     new Date(`${selectedMonth}-01`)
@@ -56,6 +57,8 @@ const useCalendar = (
         const dayDiary = diaryData.find(
           (diary) => diary.date === formattedDate
         );
+        const hasDiaryWithDifferentMood =
+          dayDiary && dayDiary.mood !== selectedMood && selectedMood !== '전체';
 
         days.push({
           key: dayIdx,
@@ -66,6 +69,7 @@ const useCalendar = (
                 mood={dayDiary ? dayDiary.mood : undefined}
                 date={formattedDate}
                 id={dayDiary ? dayDiary.id : ''}
+                hasDiaryWithDifferentMood={hasDiaryWithDifferentMood}
               />
             </td>
           ),
@@ -76,7 +80,7 @@ const useCalendar = (
     }
 
     return weeks;
-  }, [diaryData, firstDayOfCalendar, weeksInMonth, month]);
+  }, [diaryData, firstDayOfCalendar, weeksInMonth, month, selectedMood]);
 
   return { weekRows, currentDate, setCurrentDate };
 };
