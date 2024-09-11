@@ -4,7 +4,7 @@ import pb from '@/api/pb';
 import toast from 'react-hot-toast';
 
 const Notification = () => {
-  const [notificationData, setNotificationData] = useState([]);
+  const [notificationData, setNotificationData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
@@ -19,11 +19,12 @@ const Notification = () => {
         });
 
         setNotificationData(records);
-        console.log(records);
+        setLoading(false);
       } catch (error) {
         if (error.status === 0) return;
-        setErrorMessage(error);
-      } finally {
+        setErrorMessage(
+          error.message || '데이터를 불러오는 중 오류가 발생했습니다.'
+        );
         setLoading(false);
       }
     };
@@ -38,23 +39,18 @@ const Notification = () => {
 
   const handleBuddyAccept = async (notification) => {
     try {
-      // notification 컬렉션에서 데이터 삭제
       await pb.collection('notification').delete(notification.id);
-
-      // buddy 컬렉션에 데이터 추가 (쌍방 데이터)
       await pb.collection('buddy').create({
         user: userId,
         buddy: notification.expand.counter_part.id,
         status: 'accepted',
       });
-
       await pb.collection('buddy').create({
         user: notification.expand.counter_part.id,
         buddy: userId,
         status: 'accepted',
       });
 
-      // UI에서 해당 알림 카드 제거
       setNotificationData((prevData) =>
         prevData.filter((item) => item.id !== notification.id)
       );
@@ -66,42 +62,49 @@ const Notification = () => {
 
   const handleBuddyReject = async (notification) => {
     try {
-      // notification 컬렉션에서 데이터 삭제
       await pb.collection('notification').delete(notification.id);
-
-      // UI에서 해당 알림 카드 제거
       setNotificationData((prevData) =>
         prevData.filter((item) => item.id !== notification.id)
       );
-
       toast.success('단짝 요청을 거절했습니다.');
     } catch (error) {
       console.error('거절 처리 중 오류 발생: ', error);
     }
   };
 
+  // 로딩 중일 때 로딩 메시지 표시
   if (loading) {
-    return <p>로딩 중...</p>; // 데이터를 불러오는 동안 표시되는 메시지
+    return <p>로딩 중...</p>;
   }
 
+  // 에러가 발생하면 에러 메시지 표시
+  if (errorMessage) {
+    return <p>{errorMessage}</p>;
+  }
+
+  // 데이터가 로드되고 알림이 있을 때 알림 목록을 렌더링
   return (
     <section className="flex flex-col gap-5 min-h-dvh pb-[80px]">
       <TopHeader title="알림" isShowIcon />
       <main className="flex flex-col gap-5">
-        {notificationData.map((notification) => (
-          <NotificationCard
-            key={notification?.id}
-            buddyName={notification?.expand.counter_part.name}
-            notificationTime={notification?.created.slice(0, 19)}
-            type={
-              notification.type === '교환일기'
-                ? 'exchangeRequest'
-                : 'buddyRequest'
-            }
-            onAccept={() => handleBuddyAccept(notification)} // 수락 클릭 핸들러
-            onReject={() => handleBuddyReject(notification)} // 거절 클릭 핸들러
-          />
-        ))}
+        {notificationData && notificationData.length > 0 ? (
+          notificationData.map((notification) => (
+            <NotificationCard
+              key={notification?.id}
+              buddyName={notification?.expand.counter_part.name}
+              notificationTime={notification?.created.slice(0, 19)}
+              type={
+                notification.type === '교환일기'
+                  ? 'exchangeRequest'
+                  : 'buddyRequest'
+              }
+              onAccept={() => handleBuddyAccept(notification)}
+              onReject={() => handleBuddyReject(notification)}
+            />
+          ))
+        ) : (
+          <p>알림이 없습니다..!</p>
+        )}
       </main>
     </section>
   );
