@@ -9,7 +9,7 @@ import { useModal } from '@/hooks';
 const Mypage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const { buddyData, loading } = useFetchBuddyData();
+  const { buddyData } = useFetchBuddyData();
   const buddyCount = buddyData.length;
 
   const { isOpen, openModal, closeModal } = useModal();

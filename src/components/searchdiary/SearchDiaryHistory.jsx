@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types';
 import { SearchDiaryHistoryItem } from '..';
 
-const SearchDiaryHistory = ({ history, clearHistory }) => {
+const SearchDiaryHistory = ({
+  history,
+  onClearHistory,
+  onDeleteHistoryItem,
+  onClickHistoryItem,
+}) => {
   return (
     <section aria-labelledby="search-history-title">
       <div className="flex items-center justify-between w-full my-5">
@@ -13,7 +18,7 @@ const SearchDiaryHistory = ({ history, clearHistory }) => {
             type="button"
             className="text-sm font-medium text-gray-400"
             aria-label="기록 전체 삭제"
-            onClick={clearHistory}
+            onClick={onClearHistory}
           >
             전체 삭제
           </button>
@@ -22,7 +27,12 @@ const SearchDiaryHistory = ({ history, clearHistory }) => {
 
       {history.length > 0 ? (
         <ul className="flex flex-col gap-5 px-3">
-          <SearchDiaryHistoryItem key={history} history={history} />
+          <SearchDiaryHistoryItem
+            key={history}
+            history={history}
+            onDeleteHistoryItem={onDeleteHistoryItem}
+            onClickHistoryItem={onClickHistoryItem}
+          />
         </ul>
       ) : (
         <p className="mt-10 font-normal text-center text-gray-300">
@@ -34,8 +44,10 @@ const SearchDiaryHistory = ({ history, clearHistory }) => {
 };
 
 SearchDiaryHistory.propTypes = {
-  history: PropTypes.arrayOf(PropTypes.string).isRequired,
-  clearHistory: PropTypes.func.isRequired,
+  history: PropTypes.array.isRequired,
+  onClearHistory: PropTypes.func.isRequired,
+  onDeleteHistoryItem: PropTypes.func.isRequired,
+  onClickHistoryItem: PropTypes.func.isRequired,
 };
 
 export default SearchDiaryHistory;

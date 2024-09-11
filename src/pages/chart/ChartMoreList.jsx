@@ -1,20 +1,15 @@
 import { useState, useEffect } from 'react';
 import { IconRankMoreList, ToggleButton, TopHeader } from '@/components';
-import pb from '@/api/pb';
 import emotions from '@/assets/icons/emotions/emotions';
 import { useLocation } from 'react-router-dom';
-import { format } from 'date-fns';
 
 const ChartMoreList = () => {
   const location = useLocation();
-
-  // Link에서 넘겨받은 selectedMonth를 받음, 없을 경우 현재 월을 기본값으로 설정
-  const selectedMonth =
-    location.state?.selectedMonth || format(new Date(), 'yyyy-MM');
+  const { diaryData } = location.state || {}; // state에서 diaryData를 받음
 
   const [activeButton, setActiveButton] = useState('기록 수 많은 순');
   const [rankingsData, setRankingsData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // 로딩 상태를 false로 초기화
 
   const handleToggle = (buttonText) => {
     setActiveButton(buttonText);
@@ -26,45 +21,42 @@ const ChartMoreList = () => {
       : 'bg-white text-blue-500 border-gray-200 font-medium';
 
   useEffect(() => {
-    const fetchRankingsData = async () => {
-      try {
-        const diaryData = await pb.collection('diary').getFullList({
-          filter: `date >= '${selectedMonth}-01' && date <= '${selectedMonth}-31'`,
+    const fetchRankingsData = () => {
+      if (!diaryData) {
+        console.error('No diary data available');
+        return;
+      }
+
+      const rank = diaryData.reduce((acc, item) => {
+        const emotionsArray = item.emotion || [];
+
+        emotionsArray.forEach((emotion) => {
+          acc[emotion] = (acc[emotion] || 0) + 1;
         });
 
-        const rank = diaryData.reduce((acc, item) => {
-          const emotionsArray = item.emotion || [];
+        return acc;
+      }, {});
 
-          emotionsArray.forEach((emotion) => {
-            acc[emotion] = (acc[emotion] || 0) + 1;
-          });
+      const rankingsArray = Object.entries(rank)
+        .map(([emotion, count]) => ({
+          emotion,
+          count,
+          image: emotions[emotion],
+        }))
+        .sort((a, b) =>
+          activeButton === '기록 수 많은 순'
+            ? b.count - a.count
+            : a.count - b.count
+        )
+        .slice(0, 10); // 상위 10개만 선택
 
-          return acc;
-        }, {});
-
-        const rankingsArray = Object.entries(rank)
-          .map(([emotion, count]) => ({
-            emotion,
-            count,
-            image: emotions[emotion],
-          }))
-          .sort((a, b) =>
-            activeButton === '기록 수 많은 순'
-              ? b.count - a.count
-              : a.count - b.count
-          )
-          .slice(0, 10); // 상위 10개만 선택
-
-        setRankingsData(rankingsArray);
-      } catch (error) {
-        console.error('Error fetching rankings:', error);
-      } finally {
-        setLoading(false);
-      }
+      setRankingsData(rankingsArray);
+      setLoading(false); // 로딩 완료
     };
 
+    setLoading(true); // 로딩 시작
     fetchRankingsData();
-  }, [selectedMonth, activeButton]);
+  }, [diaryData, activeButton]);
 
   if (loading) {
     return <p>로딩 중...</p>;

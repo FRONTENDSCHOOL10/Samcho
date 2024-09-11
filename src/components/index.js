@@ -8,7 +8,6 @@ export { default as Modal } from './common/Modal.jsx';
 export { default as PostCard } from './common/PostCard.jsx';
 export { default as Select } from './common/Select.jsx';
 export { default as ToggleButton } from './common/ToggleButton.jsx';
-export { default as ToggleTab } from './common/ToggleTab.jsx';
 export { default as YearMonth } from './common/YearMonth.jsx';
 
 // home
@@ -41,6 +40,7 @@ export { default as NotificationCard } from './notification/NotificationCard.jsx
 export { default as SearchDiaryHistory } from './searchdiary/SearchDiaryHistory.jsx';
 export { default as SearchDiaryHistoryItem } from './searchdiary/SearchDiaryHistoryItem.jsx';
 export { default as SearchDiaryInput } from './searchdiary/SearchDiaryInput.jsx';
+export { default as SearchDiaryResult } from './searchdiary/SearchDiaryResult.jsx';
 
 // buddy
 export { default as BuddyCard } from './buddy/BuddyCard.jsx';
