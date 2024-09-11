@@ -15,9 +15,7 @@ const useFetchAllDiaryData = () => {
       try {
         const records = await pb.collection('diary').getFullList({
           filter: `user = "${userId}"`,
-          // 현재, pb 서버에 임의의 db를 넣느라 임의로 정렬 설정 해 놓음.
-          // 추후 `-created` 등 변경 필요!!
-          sort: 'date',
+          sort: '-date',
         });
 
         const formattedData = records.map(
