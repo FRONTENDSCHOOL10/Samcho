@@ -38,7 +38,7 @@ const Mypage = () => {
     toast.dismiss();
 
     if (!searchBuddy.trim()) {
-      toast.error('아이디를 입력하세요.');
+      toast.error('아이디 혹은 닉네임을 입력하세요.');
       return;
     }
 
@@ -141,7 +141,7 @@ const Mypage = () => {
             <input
               type="text"
               id="buddy-search-input"
-              placeholder="사용자의 아이디를 입력하세요"
+              placeholder="사용자의 아이디 혹은 닉네임을 입력하세요"
               className="flex-1 text-base font-medium outline-none text-gray-450 placeholder:text-gray-300"
               value={searchBuddy}
               onChange={handleSearchInputChange}
