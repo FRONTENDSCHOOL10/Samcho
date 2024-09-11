@@ -41,6 +41,7 @@ export { default as NotificationCard } from './notification/NotificationCard.jsx
 export { default as SearchDiaryHistory } from './searchdiary/SearchDiaryHistory.jsx';
 export { default as SearchDiaryHistoryItem } from './searchdiary/SearchDiaryHistoryItem.jsx';
 export { default as SearchDiaryInput } from './searchdiary/SearchDiaryInput.jsx';
+export { default as SearchDiaryResult } from './searchdiary/SearchDiaryResult.jsx';
 
 // buddy
 export { default as BuddyCard } from './buddy/BuddyCard.jsx';
