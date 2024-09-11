@@ -3,10 +3,20 @@ import moods from '@/assets/icons/mood/moods';
 import { isFuture } from 'date-fns';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-const FeelingCalendar = ({ day, mood, id, date }) => {
-  const navigate = useNavigate();
+const FeelingCalendar = ({
+  day,
+  mood,
+  date,
+  id,
+  hasDiaryWithDifferentMood,
+}) => {
+  const hasDiaryWithDifferentMoodClasses = `${
+    hasDiaryWithDifferentMood
+      ? 'text-blue-500 font-semibold w-8 bg-opacity-7 flex justify-center items-center bg-blue-50 rounded-xl'
+      : ''
+  }`;
 
   const handleClick = (e) => {
     const selectedDate = new Date(date);
@@ -15,12 +25,6 @@ const FeelingCalendar = ({ day, mood, id, date }) => {
       e.preventDefault();
       toast.error('미래의 일기는 아직 기록할 수 없어요!');
       return;
-    }
-
-    if (id) {
-      navigate(`/diary/detail/${id}`);
-    } else {
-      navigate(`/diary/new`, { state: { date } });
     }
   };
 
@@ -31,22 +35,23 @@ const FeelingCalendar = ({ day, mood, id, date }) => {
         onClick={handleClick}
         state={id ? null : { date }}
       >
-        {mood ? (
+        {mood && !hasDiaryWithDifferentMood ? (
           <img src={moods[mood]} alt={mood} className="w-[44px] h-[44px]" />
         ) : (
-          <DayCircle className="fill-blue-50 w-[44px] h-[44px]" />
+          <DayCircle className="fill-blue-50 bg-opacity-5 w-[44px] h-[44px]" />
         )}
       </Link>
-      <span>{day}</span>
+      <span className={hasDiaryWithDifferentMoodClasses}>{day}</span>
     </div>
   );
 };
 
 FeelingCalendar.propTypes = {
-  day: PropTypes.number.isRequired,
+  day: PropTypes.number,
   mood: PropTypes.string,
-  id: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  id: PropTypes.string,
+  date: PropTypes.string,
+  hasDiaryWithDifferentMood: PropTypes.bool,
 };
 
 export default FeelingCalendar;
