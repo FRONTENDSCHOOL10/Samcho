@@ -7,7 +7,8 @@ import useFetchBuddyData from '@/hooks/useFetchBuddyData';
 import { useModal } from '@/hooks';
 
 const Mypage = () => {
-  const [username, setUsername] = useState('');
+  const [nickname, setNickName] = useState('');
+  const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const { buddyData } = useFetchBuddyData();
   const buddyCount = buddyData.length;
@@ -17,15 +18,17 @@ const Mypage = () => {
   const [triggerSearch, setTriggerSearch] = useState(false);
 
   useEffect(() => {
-    const authData = localStorage.getItem('pocketbase_auth');
+    const authData = localStorage.getItem('auth');
 
     if (authData) {
       const parsedData = JSON.parse(authData);
-      const userModel = parsedData.model;
-      const storedUsername = userModel.username;
+      const userModel = parsedData.user;
+      const storedNickName = userModel.name;
+      const storedUserName = userModel.username;
       const storedEmail = userModel.email;
 
-      setUsername(storedUsername);
+      setNickName(storedNickName);
+      setUserName(storedUserName);
       setEmail(storedEmail);
     }
   }, []);
@@ -56,12 +59,19 @@ const Mypage = () => {
           <div className="w-full flex items-center justify-between p-[0.9375rem] bg-white rounded-[10px] shadow-light">
             <div className="flex flex-col">
               <h3 className="text-base font-semibold text-gray-450">
-                {username}
+                {nickname}
+                <span className="mt-2 text-xs leading-3 text-gray-300">
+                  ({username})
+                </span>
               </h3>
               <p className="text-sm font-medium text-gray-400">{email}</p>
             </div>
             <nav aria-label="계정 관리">
-              <Link to="/mypage/setting" aria-label="계정 관리 페이지로 이동">
+              <Link
+                to="/mypage/setting"
+                state={{ nickname }}
+                aria-label="계정 관리 페이지로 이동"
+              >
                 <DirectionRight className="fill-black" />
               </Link>
             </nav>
