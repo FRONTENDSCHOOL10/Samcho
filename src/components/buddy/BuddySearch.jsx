@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from '@/components';
-import pb from '@/api/pb'; // PocketBase API 가져오기
-import toast from 'react-hot-toast'; // toast 알림 사용
+import pb from '@/api/pb';
+import toast from 'react-hot-toast';
 
 const BuddySearch = ({
   isOpen,
@@ -25,16 +25,16 @@ const BuddySearch = ({
     try {
       const result = await pb
         .collection('users')
-        .getFirstListItem(`username="${searchBuddy}"`);
+        .getFirstListItem(`username="${searchBuddy}" || name="${searchBuddy}"`);
 
       setUserData({
         id: result.id,
         username: result.username,
-        email: result.email,
+        name: result.name, // 닉네임 데이터
       });
     } catch (error) {
       console.error(error);
-      setErrorMessage('해당 아이디를 가진 유저가 없습니다.');
+      setErrorMessage('해당 아이디 혹은 닉네임을 가진 유저가 없습니다.');
     } finally {
       setLoading(false);
       setTriggerSearch(false);
@@ -104,15 +104,15 @@ const BuddySearch = ({
             <div className="flex flex-col">
               <p
                 className="text-base font-semibold text-gray-450"
-                aria-label="아이디"
+                aria-label="닉네임"
               >
-                {userData.username}
+                {userData.name}
               </p>
               <p
                 className="text-sm font-medium text-gray-400"
-                aria-label="이메일"
+                aria-label="아이디"
               >
-                {userData.email}
+                {userData.username}
               </p>
             </div>
             <button
@@ -126,7 +126,9 @@ const BuddySearch = ({
         ) : errorMessage ? (
           <p className="text-red-500">{errorMessage}</p>
         ) : (
-          <p className="text-gray-500">아이디로 유저를 검색하세요.</p>
+          <p className="text-gray-500">
+            아이디 혹은 닉네임으로 유저를 검색하세요.
+          </p>
         )}
       </section>
     </Modal>
