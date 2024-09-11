@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import CameraIcon from '@/assets/icons/diary/camera.svg';
 import PropTypes from 'prop-types';
 
@@ -6,16 +6,26 @@ const SelectPicture = ({ picture, setPicture }) => {
   const [preview, setPreview] = useState(null);
 
   useEffect(() => {
-    if (picture) {
+    const fetchImage = async (url) => {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const file = new File([blob], 'image.jpg', { type: blob.type });
+      setPicture(file);
+      setPreview(URL.createObjectURL(file));
+    };
+
+    if (picture instanceof File) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
       };
       reader.readAsDataURL(picture);
+    } else if (typeof picture === 'string') {
+      fetchImage(picture);
     } else {
       setPreview(null);
     }
-  }, [picture]);
+  }, [picture, setPicture]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -57,8 +67,8 @@ const SelectPicture = ({ picture, setPicture }) => {
 };
 
 SelectPicture.propTypes = {
-  picture: PropTypes.instanceOf(File),
+  picture: PropTypes.oneOfType([PropTypes.instanceOf(File), PropTypes.string]),
   setPicture: PropTypes.func.isRequired,
 };
 
-export default SelectPicture;
+export default memo(SelectPicture);

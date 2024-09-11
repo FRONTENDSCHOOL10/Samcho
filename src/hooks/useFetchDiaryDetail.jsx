@@ -10,6 +10,10 @@ const useFetchDiaryDetail = (diaryId) => {
   useEffect(() => {
     const getData = async () => {
       try {
+        if (!diaryId) {
+          return;
+        }
+
         const record = await pb.collection('diary').getOne(diaryId);
 
         setDiaryDetail({
