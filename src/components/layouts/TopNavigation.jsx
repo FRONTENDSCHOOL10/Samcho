@@ -13,6 +13,7 @@ import { Modal, Select } from '..';
 
 const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
   const [isCalendarView, setIsCalendarView] = useState(true);
+  const [tempMoodFilter, setTempMoodFilter] = useState(selectedMood);
   const { isOpen, openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
@@ -22,6 +23,7 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
   };
 
   const handleFilterConfirm = () => {
+    setSelectedMood(tempMoodFilter);
     closeModal('filterModal');
   };
 
@@ -84,8 +86,8 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
           </h2>
           <Select
             options={['전체', '행복', '기쁨', '보통', '나쁨', '슬픔']}
-            value={selectedMood}
-            onChange={(value) => setSelectedMood(value)}
+            value={tempMoodFilter}
+            onChange={(value) => setTempMoodFilter(value)}
           />
           <div className="flex justify-end">
             <button
