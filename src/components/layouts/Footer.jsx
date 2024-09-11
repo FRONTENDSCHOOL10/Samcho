@@ -1,7 +1,6 @@
 import { Calendar, Chart, Letter, Pencil, User } from '@/assets/icons/gnb';
 import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { Button } from '../';
 import { memo } from 'react';
 
 const Footer = () => {
@@ -9,14 +8,6 @@ const Footer = () => {
   const getLinkClassName = (path) => {
     return currentUrl.startsWith(path) ? 'fill-blue-500' : 'fill-gray-300';
   };
-
-  if (currentUrl.startsWith('/diary/detail')) {
-    return (
-      <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
-        <Button text="교환하기" size="large" />
-      </footer>
-    );
-  }
 
   return (
     <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5">

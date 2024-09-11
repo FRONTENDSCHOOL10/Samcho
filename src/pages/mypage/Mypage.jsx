@@ -57,14 +57,14 @@ const Mypage = () => {
         <section className="flex flex-col w-full gap-4">
           <h2 className="text-lg font-semibold text-gray-450">계정</h2>
           <div className="w-full flex items-center justify-between p-[0.9375rem] bg-white rounded-[10px] shadow-light">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-0.5">
               <h3 className="text-base font-semibold text-gray-450">
                 {nickname}
-                <span className="mt-2 text-xs leading-3 text-gray-300">
+                <span className="ml-0.5 text-sm text-gray-300 font-normal">
                   ({username})
                 </span>
               </h3>
-              <p className="text-sm font-medium text-gray-400">{email}</p>
+              <p className="text-sm font-medium text-gray-300">{email}</p>
             </div>
             <nav aria-label="계정 관리">
               <Link

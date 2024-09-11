@@ -15,17 +15,23 @@ const useFetchBuddyData = () => {
     const fetchBuddyData = async () => {
       try {
         const records = await pb.collection('buddy').getFullList({
-          filter: `user = "${userId}"`,
+          filter: `recipient = "${userId}" || requester = "${userId}"`,
           sort: '-created',
-          expand: 'buddy',
+          expand: 'recipient, requester',
         });
 
         if (isMounted) {
-          const formattedData = records.map((record) => ({
-            buddyId: record.buddy,
-            buddyName: record.expand.buddy?.name || 'Unknown',
-            created: record.created,
-          }));
+          const formattedData = records.map((record) => {
+            const buddy =
+              record.recipient === userId
+                ? record.expand.requester
+                : record.expand.recipient;
+            return {
+              buddyId: buddy.id,
+              buddyName: buddy.name,
+              created: record.created,
+            };
+          });
 
           setBuddyData(formattedData);
         }
