@@ -32,13 +32,9 @@ const FeelingCalendar = ({ day, mood, id, date }) => {
         state={id ? null : { date }}
       >
         {mood ? (
-          <img
-            src={moods[mood]}
-            alt={mood}
-            className="w-[44px] h-[44px] cursor-pointer"
-          />
+          <img src={moods[mood]} alt={mood} className="w-[44px] h-[44px]" />
         ) : (
-          <DayCircle className="fill-blue-50 w-[44px] h-[44px] cursor-pointer" />
+          <DayCircle className="fill-blue-50 w-[44px] h-[44px]" />
         )}
       </Link>
       <span>{day}</span>
