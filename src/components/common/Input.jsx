@@ -18,6 +18,7 @@ const Input = ({
   duplicate,
   isViewIcon = false,
   onChange,
+  form = {},
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -62,11 +63,14 @@ const Input = ({
       '사용가능한 닉네임입니다.'
     ),
     password: renderSuccessMessage(
-      type === 'password' && id === 'password' && !error && hasValue,
+      id === 'password' && !error && hasValue,
       '사용가능한 비밀번호입니다.'
     ),
     passwordConfirm: renderSuccessMessage(
-      type === 'password' && id === 'passwordConfirm' && !error && hasValue,
+      id === 'passwordConfirm' &&
+        !error &&
+        hasValue &&
+        (form.password || '') === (form.passwordConfirm || ''),
       '비밀번호가 일치합니다.'
     ),
   };
@@ -74,7 +78,7 @@ const Input = ({
   return (
     <div className={`relative w-[242px] ${className}`}>
       <input
-        type={type === 'password' ? (isHide ? 'password' : 'text') : type} // isHide 상태에 따라 type 변경
+        type={type === 'password' ? (isHide ? 'password' : 'text') : type}
         id={id}
         className={`${inputClasses} ${error ? 'border-red-500' : ''}`}
         onFocus={handleFocus}
@@ -130,6 +134,7 @@ Input.propTypes = {
   isViewIcon: PropTypes.bool,
   onChange: PropTypes.func,
   duplicate: PropTypes.bool,
+  form: PropTypes.object,
 };
 
 export default Input;
