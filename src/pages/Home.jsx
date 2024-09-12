@@ -43,7 +43,7 @@ const Home = ({ viewMode: initialViewMode }) => {
         duration: 3000,
       });
     }
-  }, [selectedMood, filteredMoodData.length]);
+  }, [selectedMood, filteredMoodData]);
 
   const handleToggleView = () => {
     const newViewMode = viewMode === 'calendar' ? 'list' : 'calendar';
@@ -54,11 +54,6 @@ const Home = ({ viewMode: initialViewMode }) => {
   const handleDiaryDelete = (id) => {
     setDiaryData((prevData) => prevData.filter((diary) => diary.id !== id));
   };
-
-  if (loading) {
-    console.log('로딩 중..');
-    // 추후 로딩 처리 로직을 가져오거나..등
-  }
 
   return (
     <>
@@ -89,11 +84,17 @@ const Home = ({ viewMode: initialViewMode }) => {
           setSelectedMonth={setSelectedMonth}
           className="py-5"
         />
-        {viewMode === 'calendar' ? (
+        {loading ? (
+          /* 임시 처리임 - 추후 로딩 스피너나 다른 UI로 변경할 것 */
+          <p className="mt-5 font-semibold text-center text-blue-500">
+            로딩 중입니다... ⏳
+          </p>
+        ) : viewMode === 'calendar' ? (
           <Calendar
             diaryData={diaryData}
             selectedMonth={selectedMonth}
             selectedMood={selectedMood}
+            loading={loading}
           />
         ) : (
           <main className="flex flex-col gap-5">

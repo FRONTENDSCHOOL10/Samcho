@@ -11,6 +11,7 @@ const FeelingCalendar = ({
   date,
   id,
   hasDiaryWithDifferentMood,
+  loading,
 }) => {
   const hasDiaryWithDifferentMoodClasses = `${
     hasDiaryWithDifferentMood
@@ -21,6 +22,12 @@ const FeelingCalendar = ({
   const handleClick = (e) => {
     const selectedDate = format(new Date(date), 'yyyy-MM-dd');
     const currentDate = format(new Date(), 'yyyy-MM-dd');
+
+    if (loading) {
+      e.preventDefault();
+      toast.error('데이터를 불러오는 중입니다. 잠시만 기다려주세요!');
+      return;
+    }
 
     if (currentDate < selectedDate) {
       e.preventDefault();
@@ -53,6 +60,7 @@ FeelingCalendar.propTypes = {
   id: PropTypes.string,
   date: PropTypes.string,
   hasDiaryWithDifferentMood: PropTypes.bool,
+  loading: PropTypes.bool,
 };
 
 export default FeelingCalendar;

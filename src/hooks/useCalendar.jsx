@@ -1,4 +1,3 @@
-import { FeelingCalendar } from '@/components';
 import {
   addDays,
   format,
@@ -47,13 +46,17 @@ const useCalendar = (
 
       for (let dayIdx = 0; dayIdx < 7; dayIdx++) {
         const day = addDays(firstDayOfCalendar, weekIdx * 7 + dayIdx);
+        const formattedDate = format(day, 'yyyy-MM-dd');
 
         if (getMonth(day) !== month) {
-          days.push({ key: dayIdx, component: <td key={dayIdx}></td> });
+          days.push({
+            key: dayIdx,
+            date: formattedDate,
+            isCurrentMonth: false,
+          });
           continue;
         }
 
-        const formattedDate = format(day, 'yyyy-MM-dd');
         const dayDiary = diaryData.find(
           (diary) => diary.date === formattedDate
         );
@@ -62,17 +65,12 @@ const useCalendar = (
 
         days.push({
           key: dayIdx,
-          component: (
-            <td key={dayIdx}>
-              <FeelingCalendar
-                day={parseInt(format(day, 'd'), 10)}
-                mood={dayDiary ? dayDiary.mood : undefined}
-                date={formattedDate}
-                id={dayDiary ? dayDiary.id : ''}
-                hasDiaryWithDifferentMood={hasDiaryWithDifferentMood}
-              />
-            </td>
-          ),
+          day,
+          isCurrentMonth: true,
+          mood: dayDiary ? dayDiary.mood : undefined,
+          date: formattedDate,
+          id: dayDiary ? dayDiary.id : '',
+          hasDiaryWithDifferentMood,
         });
       }
 
@@ -88,6 +86,8 @@ const useCalendar = (
 useCalendar.propTypes = {
   diaryData: PropTypes.array,
   selectedMonth: PropTypes.string,
+  selectedMood: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
 export default useCalendar;
