@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { MoodDistribution } from '@/components';
 
 const MoodDistributionChart = ({ diaryData, loading }) => {
-  // 커스텀 훅 사용
   const [moodData, setMoodData] = useState([]);
 
   useEffect(() => {
@@ -22,11 +21,19 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
         0
       );
 
-      const moodData = Object.entries(moodCount).map(([mood, count]) => ({
-        mood,
-        ratio: ((count / totalEntries) * 100).toFixed(0), // 문자열로 변환됨
-        color: getMoodColor(mood),
-      }));
+      const moods = ['행복', '기쁨', '보통', '나쁨', '슬픔'];
+
+      // 데이터 0일때도 화면에 렌더링 시킨다
+      const moodData = moods.map((mood) => {
+        const count = moodCount[mood] || 0;
+        const ratio =
+          totalEntries > 0 ? ((count / totalEntries) * 100).toFixed(0) : '0';
+        return {
+          mood,
+          ratio: parseInt(ratio, 10),
+          color: getMoodColor(mood),
+        };
+      });
 
       setMoodData(moodData);
     }
@@ -58,24 +65,31 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
       <h2 className="text-base font-semibold text-gray-450 h-[19px]">
         기분 분포
       </h2>
-      <ul className="flex flex-row items-center self-stretch justify-between">
-        {moodData.map((data) => (
-          <li key={data.mood} className="list-none">
-            <MoodDistribution mood={data.mood} ratio={Number(data.ratio)} />{' '}
-            {/* 숫자로 변환 */}
-          </li>
-        ))}
-      </ul>
-      {/* 막대 그래프 */}
-      <div className="w-full h-[33px] rounded-2xl flex overflow-hidden">
-        {moodData.map((data) => (
-          <div
-            key={data.mood}
-            style={{ width: `${data.ratio}%` }} // 문자열로 설정됨
-            className={`${data.color} h-full`}
-          ></div>
-        ))}
-      </div>
+      {!diaryData.length || !moodData.some((data) => data.ratio > 0) ? (
+        <span className="text-center text-gray-500 text-sm">
+          기분분포 데이터가 없어요!
+        </span>
+      ) : (
+        <>
+          <ul className="flex flex-row items-center self-stretch justify-between">
+            {moodData.map((data) => (
+              <li key={data.mood} className="list-none">
+                <MoodDistribution mood={data.mood} ratio={Number(data.ratio)} />{' '}
+              </li>
+            ))}
+          </ul>
+          {/* 막대 그래프 */}
+          <div className="w-full h-[33px] rounded-2xl flex overflow-hidden">
+            {moodData.map((data) => (
+              <div
+                key={data.mood}
+                style={{ width: `${data.ratio}%` }}
+                className={`flex-grow h-full ${data.color}`}
+              ></div>
+            ))}
+          </div>
+        </>
+      )}
     </article>
   );
 };
