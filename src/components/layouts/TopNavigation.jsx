@@ -85,7 +85,7 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
           />
           <div className="flex justify-end">
             <button
-              className="px-3 py-1 font-medium text-white bg-blue-500 rounded-md w-fit"
+              className="w-full py-1 font-medium text-white bg-blue-500 rounded-md"
               onClick={handleFilterConfirm}
               type="button"
             >

@@ -23,17 +23,31 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
 
       const moods = ['행복', '기쁨', '보통', '나쁨', '슬픔'];
 
-      // 데이터 0일때도 화면에 렌더링 시킨다
-      const moodData = moods.map((mood) => {
+      // 데이터 0일 때도 화면에 렌더링 시킨다
+      let moodData = moods.map((mood) => {
         const count = moodCount[mood] || 0;
         const ratio =
           totalEntries > 0 ? ((count / totalEntries) * 100).toFixed(0) : '0';
         return {
           mood,
           ratio: parseInt(ratio, 10),
+          displayRatio: parseInt(ratio, 10), // 화면에 표시될 비율
           color: getMoodColor(mood),
         };
       });
+
+      // 비율 합계를 100으로 조정
+      const totalRatio = moodData.reduce((acc, item) => acc + item.ratio, 0);
+      if (totalRatio !== 100) {
+        const difference = 100 - totalRatio;
+        moodData = moodData.map((item, index) => {
+          if (index === moodData.length - 1) {
+            // 마지막 항목에 차이를 더해 100%로 맞춤
+            return { ...item, ratio: item.ratio + difference };
+          }
+          return item;
+        });
+      }
 
       setMoodData(moodData);
     }
@@ -66,7 +80,7 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
         기분 분포
       </h2>
       {!diaryData.length || !moodData.some((data) => data.ratio > 0) ? (
-        <span className="text-center text-gray-500 text-sm">
+        <span className="text-sm text-center text-gray-500">
           기분분포 데이터가 없어요!
         </span>
       ) : (
@@ -74,17 +88,17 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
           <ul className="flex flex-row items-center self-stretch justify-between">
             {moodData.map((data) => (
               <li key={data.mood} className="list-none">
-                <MoodDistribution mood={data.mood} ratio={Number(data.ratio)} />{' '}
+                <MoodDistribution mood={data.mood} ratio={data.displayRatio} />
               </li>
             ))}
           </ul>
           {/* 막대 그래프 */}
-          <div className="w-full h-[33px] rounded-2xl flex overflow-hidden">
+          <div className="min-w-[370px] w-full h-[33px] rounded-2xl flex overflow-hidden flex-grow">
             {moodData.map((data) => (
               <div
                 key={data.mood}
                 style={{ width: `${data.ratio}%` }}
-                className={`flex-grow h-full ${data.color}`}
+                className={`h-full ${data.color}`}
               ></div>
             ))}
           </div>

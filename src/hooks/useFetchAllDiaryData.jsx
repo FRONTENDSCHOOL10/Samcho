@@ -34,9 +34,8 @@ const useFetchAllDiaryData = () => {
         if (error.status === 0) return;
         console.error('Data fetch error', error);
         navigate('/error');
-      } finally {
-        setLoading(false);
       }
+      setLoading(false);
     };
 
     getData();
