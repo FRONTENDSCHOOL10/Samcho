@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { memo } from 'react';
 
-const TopHeader = ({ title, isShowIcon = false }) => {
+const TopHeader = ({ title, isShowIcon = false, onBackClick }) => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate(-1);
+    if (onBackClick) {
+      onBackClick();
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -30,6 +34,7 @@ const TopHeader = ({ title, isShowIcon = false }) => {
 TopHeader.propTypes = {
   title: PropTypes.string.isRequired,
   isShowIcon: PropTypes.bool,
+  onBackClick: PropTypes.func,
 };
 
 export default memo(TopHeader);

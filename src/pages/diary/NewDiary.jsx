@@ -4,24 +4,31 @@ import weathers from '@/assets/icons/weather/weathers';
 import {
   Accordion,
   Button,
+  Modal,
   SelectMood,
   SelectPicture,
   TextArea,
   TopHeader,
   WeatherWithIcon,
 } from '@/components';
-import { useFetchDiaryDetail } from '@/hooks';
+import { useFetchDiaryDetail, useModal } from '@/hooks';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  unstable_usePrompt as usePrompt,
+} from 'react-router-dom';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
+const MODAL_MESSAGE = `작성 중인 내용이 저장되지 않아요. \n페이지를 벗어나시겠습니까?`;
 
 export const Component = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { date, diaryId } = location.state || {};
+  const { openModal, closeModal, isOpen } = useModal();
 
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
   const defaultTitle = date || format(new Date(), 'yyyy-MM-dd');
@@ -31,6 +38,7 @@ export const Component = () => {
   const [selectedWeathers, setSelectedWeathers] = useState([]);
   const [text, setText] = useState('');
   const [picture, setPicture] = useState(null);
+  const [isBlocking, setIsBlocking] = useState(false);
 
   const { diaryDetail } = useFetchDiaryDetail(diaryId);
 
@@ -45,6 +53,37 @@ export const Component = () => {
       }
     }
   }, [diaryDetail]);
+
+  // 사용자가 인풋 입력이나 감정 등 선택을 했는지 확인
+  const isAnyInputMade = useCallback(() => {
+    return (
+      selectedMood !== null ||
+      selectedEmotions.length > 0 ||
+      selectedWeathers.length > 0 ||
+      text.trim() !== '' ||
+      picture !== null
+    );
+  }, [
+    picture,
+    selectedMood,
+    selectedEmotions.length,
+    selectedWeathers.length,
+    text,
+  ]);
+
+  useEffect(() => {
+    setIsBlocking(isAnyInputMade());
+  }, [
+    selectedMood,
+    selectedEmotions,
+    selectedWeathers,
+    text,
+    picture,
+    isAnyInputMade,
+  ]);
+
+  // 페이지 벗어남을 감지하여 경고 메시지 띄우기
+  usePrompt(MODAL_MESSAGE, isBlocking);
 
   const handleEmotionClick = (text) => {
     if (selectedEmotions.includes(text)) {
@@ -106,6 +145,7 @@ export const Component = () => {
           : '일기 작성에 실패했습니다...',
       })
       .then(() => {
+        setIsBlocking(false); // 탐색 차단 해제
         navigate('/');
       })
       .catch((error) => {
@@ -113,10 +153,35 @@ export const Component = () => {
       });
   };
 
+  const handleBackClick = () => {
+    if (isAnyInputMade()) {
+      openModal('confirmLeave');
+    } else {
+      navigate(-1);
+    }
+  };
+
+  const handleCancel = () => {
+    closeModal('confirmLeave');
+  };
+
+  const handleConfirmLeave = () => {
+    closeModal('confirmLeave');
+    setIsBlocking(false); // 탐색 차단 해제
+    navigate(-1);
+  };
+
   return (
     <section className="flex flex-col gap-5 pb-[100px]">
-      <TopHeader title={defaultTitle} isShowIcon={true} />
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+      <TopHeader
+        title={defaultTitle}
+        isShowIcon={true}
+        onBackClick={handleBackClick}
+      />
+      <form
+        className="flex flex-col gap-5 overflow-y-hidden"
+        onSubmit={handleSubmit}
+      >
         <SelectMood isSelected={selectedMood} setSelected={setSelectedMood} />
         <Accordion open={true} title="감정" className="grid grid-cols-5 gap-4">
           {Object.entries(emotions).map(([key, src]) => (
@@ -150,6 +215,28 @@ export const Component = () => {
           />
         </footer>
       </form>
+
+      <Modal isOpen={isOpen('confirmLeave')} closeModal={handleCancel}>
+        <div className="flex flex-col gap-5">
+          <p className="text-center whitespace-pre-wrap">{MODAL_MESSAGE}</p>
+          <div className="flex items-center justify-center w-full gap-3">
+            <Button
+              type="secondary"
+              className="flex-1"
+              onClick={handleCancel}
+              text="취소"
+              aria-label="취소"
+            />
+            <Button
+              type="primary"
+              className="flex-1"
+              onClick={handleConfirmLeave}
+              text="뒤로가기"
+              aria-label="뒤로 가기"
+            />
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 };
