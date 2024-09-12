@@ -12,9 +12,15 @@
 }
 
 /* 글로벌 폰트 적용 */
+/* 전체 화면에서 세로 스크롤 비활성화 */
 body {
   height: 100%;
   font-family: 'Pretendard', sans-serif;
+
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
 }
 
 #root {
