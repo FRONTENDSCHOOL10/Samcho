@@ -13,6 +13,7 @@ import { pb } from '@/api';
 import toast from 'react-hot-toast';
 
 const DiaryCard = ({ diary, type = 'icons', onDelete }) => {
+  console.log('다이어리 카드 실행');
   const { id, date, mood, emotion, weather, picture, content, expand } = diary;
   const { isOpen, openModal, closeModal } = useModal();
 
