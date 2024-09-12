@@ -3,6 +3,7 @@ import { TopHeader, NotificationCard, Modal, CheckBox } from '@/components';
 import pb from '@/api/pb';
 import toast from 'react-hot-toast';
 import { useFetchAllDiaryData, useModal } from '@/hooks';
+import { formatDate } from 'date-fns';
 
 const Notification = () => {
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
@@ -140,7 +141,10 @@ const Notification = () => {
               <NotificationCard
                 key={notification?.id}
                 buddyName={notification?.expand.requester.name}
-                notificationTime={notification?.created.slice(0, 19)}
+                notificationTime={formatDate(
+                  notification?.created,
+                  'yyyy-MM-dd HH:mm:ss'
+                )}
                 type={
                   notification.type === '교환일기'
                     ? 'exchangeRequest'
