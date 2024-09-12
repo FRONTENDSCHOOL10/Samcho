@@ -3,7 +3,7 @@ import { TopHeader, BuddySearch } from '@/components';
 import { Link } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
 import toast from 'react-hot-toast';
-import { useModal, useFetchAllBuddyData } from '@/hooks';
+import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 
 const Mypage = () => {
   const [nickname, setNickName] = useState('');
@@ -11,6 +11,13 @@ const Mypage = () => {
   const [email, setEmail] = useState('');
   const { buddyData } = useFetchAllBuddyData();
   const buddyCount = buddyData.length;
+
+  //나의 데이터 카운트 렌더링
+  const { diaryData } = useFetchAllDiaryData();
+  const diaryCount = diaryData.length;
+  const photoCount = diaryData.reduce((count, entry) => {
+    return entry.picture ? count + 1 : count;
+  }, 0);
 
   const { isOpen, openModal, closeModal } = useModal();
   const [searchBuddy, setSearchBuddy] = useState('');
@@ -86,13 +93,13 @@ const Mypage = () => {
                 기록한 하루
               </h3>
               <p className="text-sm font-medium text-gray-400 self-left">
-                1234개
+                {diaryCount}개
               </p>
             </article>
             <article className="w-full p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex flex-col gap-2">
               <h3 className="text-base font-medium text-gray-450">올린 사진</h3>
               <p className="text-sm font-medium text-gray-400 self-left">
-                1234개
+                {photoCount}개
               </p>
             </article>
           </div>
