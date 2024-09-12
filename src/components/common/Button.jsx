@@ -34,7 +34,6 @@ const Button = ({
     return (
       <Link
         to={to}
-        role="button"
         aria-disabled={type === 'disabled'}
         className={combinedClasses}
         {...props}

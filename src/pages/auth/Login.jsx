@@ -94,6 +94,7 @@ const Login = () => {
                 type="primary"
                 text="로그인"
                 className="flex-1"
+                aria-disabled={username === '' || password === ''}
               />
             </div>
           </form>
