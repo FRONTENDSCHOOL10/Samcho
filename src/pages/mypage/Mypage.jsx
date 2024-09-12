@@ -19,9 +19,6 @@ const Mypage = () => {
     return entry.picture ? count + 1 : count;
   }, 0);
 
-  console.log(diaryCount);
-  console.log(photoCount);
-
   const { isOpen, openModal, closeModal } = useModal();
   const [searchBuddy, setSearchBuddy] = useState('');
   const [triggerSearch, setTriggerSearch] = useState(false);
