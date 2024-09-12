@@ -9,8 +9,8 @@ const Post = () => {
 
   useEffect(() => {
     const getPost = async () => {
+      console.log('데이터 통신 시작');
       try {
-        console.log('데이터 받아올게 ㄱㄷ');
         const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
         const records = await pb.collection('post').getFullList({
@@ -28,15 +28,15 @@ const Post = () => {
         });
 
         setPosts(diary);
-        console.log('진짜 다 끝남');
+        console.log('데이터 통신 끝나고 상태에도 추가했음');
       } catch (error) {
         if (error.status === 0) return;
         setError(true);
         console.error('Data fetch error', error);
-      } finally {
-        console.log('나 finally임');
-        setLoading(false);
       }
+
+      // 여기 아래는 위에가 다 끝나고 실행
+      setLoading(false);
     };
 
     getPost();

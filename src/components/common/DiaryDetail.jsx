@@ -64,6 +64,7 @@ const DiaryDetail = ({ diaryDetail }) => {
       });
 
       toast.success('일기 교환 신청을 보냈습니다!');
+      closeModal('buddyListModal');
     } catch (error) {
       toast.error('일기 교환 신청에 실패했습니다.');
       console.error(error);
