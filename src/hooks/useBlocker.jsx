@@ -50,7 +50,7 @@ const useBlocker = (when, alertOptions) => {
         showCloseButton={false}
       >
         <div className="flex flex-col gap-5">
-          <p className="text-center whitespace-pre-wrap">
+          <p className="font-medium text-center text-gray-500 whitespace-pre-wrap">
             {alertOptions?.message}
           </p>
           <div className="flex items-center justify-center w-full gap-3">
@@ -59,12 +59,14 @@ const useBlocker = (when, alertOptions) => {
               text="취소"
               onClick={handleReset}
               className="flex-1"
+              aria-label="취소"
             />
             <Button
               type="primary"
               text="뒤로가기"
               onClick={handleProceed}
               className="flex-1"
+              aria-label="이전 페이지로 가기"
             />
           </div>
         </div>
