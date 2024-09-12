@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import pb from '@/api/pb';
 import { useNavigate } from 'react-router-dom';
 
-const useFetchBuddyData = () => {
+const useFetchAllBuddyData = () => {
   const [buddyData, setBuddyData] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const useFetchBuddyData = () => {
     const fetchBuddyData = async () => {
       try {
         const records = await pb.collection('buddy').getFullList({
-          filter: `recipient = "${userId}" || requester = "${userId}"`,
+          filter: `(recipient = "${userId}" || requester = "${userId}") && status = "accepted"`,
           sort: '-created',
           expand: 'recipient, requester',
         });
@@ -57,4 +57,4 @@ const useFetchBuddyData = () => {
   return { buddyData, loading };
 };
 
-export default useFetchBuddyData;
+export default useFetchAllBuddyData;
