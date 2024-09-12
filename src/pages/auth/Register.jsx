@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Input } from '@/components';
-import pb from '@/api/pb';
 import toast from 'react-hot-toast';
+import pb from '@/api/pb';
 import {
   validateEmail,
   validateUsername,
@@ -9,10 +9,12 @@ import {
   validatePassword,
 } from '@/utils';
 import { useNavigate } from 'react-router-dom';
+import useCheckAvailability from '@/hooks/useCheckAvailability'; // 추가
 
 const Register = () => {
   const navigate = useNavigate();
 
+  // 폼 상태
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -21,81 +23,43 @@ const Register = () => {
     passwordConfirm: '',
   });
 
+  // 에러 상태
   const [errors, setErrors] = useState({});
-  const [duplicate, setDuplicate] = useState({ username: false, name: false });
 
-  const checkAvailability = async (e, field) => {
-    toast.dismiss();
+  // 중복 확인 관련 훅 사용
+  const { duplicate, checkAvailability, resetDuplicate } =
+    useCheckAvailability();
 
-    switch (field) {
-      case 'username':
-        if (!validateUsername(form.username)) {
-          toast.error('아이디 형식이 올바르지 않습니다.');
-          return;
-        }
-
-        try {
-          const existingUser = await pb
-            .collection('users')
-            .getFirstListItem(`username="${form.username}"`);
-
-          if (existingUser) {
-            toast.error('이미 존재하는 아이디 입니다.');
-            setDuplicate({ ...duplicate, username: false });
-          }
-        } catch (error) {
-          if (error.status === 404) {
-            // 404 에러인 경우, 유저가 없다는 뜻이므로 success toast 출력
-            toast.success('사용 가능한 아이디 입니다!');
-            setDuplicate({ ...duplicate, username: true });
-            return;
-          } else {
-            throw error; // 다른 에러는 다시 throw하여 catch로 넘김
-          }
-        }
-        break;
-
-      case 'name':
-        if (!validateNickname(form.name)) {
-          toast.error('닉네임 형식이 올바르지 않습니다.');
-          return;
-        }
-
-        try {
-          const existingUser = await pb
-            .collection('users')
-            .getFirstListItem(`name="${form.name}"`);
-
-          if (existingUser) {
-            toast.error('이미 존재하는 닉네임 입니다!');
-            setDuplicate({ ...duplicate, name: false });
-          }
-        } catch (error) {
-          if (error.status === 404) {
-            // 404 에러인 경우, 닉네임이 없다는 뜻이므로 success toast 출력
-            toast.success('사용 가능한 닉네임 입니다!');
-            setDuplicate({ ...duplicate, name: true });
-            return;
-          } else {
-            throw error; // 다른 에러는 다시 throw하여 catch로 넘김
-          }
-        }
-        break;
-
-      default:
-        toast.error('알 수 없는 필드입니다.');
-        break;
-    }
-  };
-
+  // 입력 시 실시간 유효성 검증
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setForm({ ...form, [id]: value });
 
-    validateField(id, value);
+    // 아이디나 닉네임이 변경될 경우 중복 상태 초기화
+    if (id === 'username' || id === 'name') {
+      resetDuplicate(id);
+    }
+
+    setForm((prevForm) => {
+      const updatedForm = { ...prevForm, [id]: value };
+
+      // 실시간 유효성 검사
+      validateField(id, value, updatedForm);
+
+      // 비밀번호 변경 시 비밀번호 확인도 다시 검사
+      if (id === 'password' || id === 'passwordConfirm') {
+        validateField(
+          'passwordConfirm',
+          updatedForm.passwordConfirm,
+          updatedForm
+        );
+      }
+
+      return updatedForm;
+    });
   };
 
-  const validateField = (id, value) => {
+  // 유효성 검증을 통한 메세지 표시
+  const validateField = (id, value, updatedForm = form) => {
     let error = '';
 
     switch (id) {
@@ -114,67 +78,72 @@ const Register = () => {
           error = '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.';
         break;
       case 'passwordConfirm':
-        if (value !== form.password) error = '비밀번호가 일치하지 않습니다.';
+        if (value !== updatedForm.password)
+          error = '비밀번호가 일치하지 않습니다.';
         break;
       default:
         break;
     }
 
-    setErrors({ ...errors, [id]: error });
+    setErrors((prevErrors) => ({ ...prevErrors, [id]: error }));
   };
 
+  // 최종 유효성 검증 및 회원가입 데이터 제출
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, email, name, password, passwordConfirm } = form;
 
-    // 중복 토스트 제거
     toast.dismiss();
 
     let formIsValid = true;
-    let missingFields = false;
-
-    const fieldKeys = Object.keys(form);
     const newErrors = {};
 
-    fieldKeys.forEach((field) => {
-      if (!form[field]) {
-        missingFields = true;
-        newErrors[field] = '해당 필드를 입력해 주세요.';
-      }
+    Object.keys(form).forEach((field) => {
       validateField(field, form[field]);
-      if (errors[field]) formIsValid = false;
+      if (errors[field]) {
+        formIsValid = false;
+        newErrors[field] = errors[field];
+      }
     });
 
     setErrors(newErrors);
 
-    if (missingFields) {
-      toast.error('입력하지 않은 필드값이 존재합니다.');
+    if (!formIsValid) {
+      toast.error('입력된 정보가 유효하지 않습니다.');
       return;
     }
 
-    if (formIsValid) {
-      const data = {
-        username,
-        email,
-        name,
-        password,
-        passwordConfirm,
-        emailVisibility: true,
-      };
-
-      toast
-        .promise(pb.collection('users').create(data), {
-          loading: '회원가입 시도 중...',
-          success: '회원가입을 완료했습니다!',
-          error: '회원가입에 실패했습니다...',
-        })
-        .then(() => {
-          navigate('/login');
-        })
-        .catch((error) => {
-          console.error('[Error] 회원가입: ', error);
-        });
+    if (!duplicate.username) {
+      toast.error('아이디 중복 확인을 해주세요.');
+      return;
     }
+
+    if (!duplicate.name) {
+      toast.error('닉네임 중복 확인을 해주세요.');
+      return;
+    }
+
+    const data = {
+      username,
+      email,
+      name,
+      password,
+      passwordConfirm,
+      emailVisibility: true,
+    };
+
+    toast
+      .promise(pb.collection('users').create(data), {
+        loading: '회원가입 시도 중...',
+        success: '회원가입을 완료했습니다!',
+        error: '회원가입에 실패했습니다...',
+      })
+      .then(() => {
+        navigate('/login');
+      })
+      .catch((error) => {
+        console.error('[Error] 회원가입: ', error);
+      });
   };
 
   return (
@@ -200,7 +169,7 @@ const Register = () => {
               type="secondary"
               size="xs"
               text="중복 확인"
-              onClick={(e) => checkAvailability(e, 'username')}
+              onClick={() => checkAvailability('username', form.username)}
               className="!rounded-md"
             />
           </div>
@@ -230,7 +199,7 @@ const Register = () => {
               size="xs"
               type="secondary"
               text="중복 확인"
-              onClick={(e) => checkAvailability(e, 'name')}
+              onClick={() => checkAvailability('name', form.name)}
               className="!rounded-md"
             />
           </div>
