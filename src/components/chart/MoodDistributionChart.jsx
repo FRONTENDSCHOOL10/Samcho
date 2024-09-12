@@ -84,7 +84,7 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
               <div
                 key={data.mood}
                 style={{ width: `${data.ratio}%` }}
-                className={`h-full ${data.color}`}
+                className={`flex-grow h-full ${data.color}`}
               ></div>
             ))}
           </div>
