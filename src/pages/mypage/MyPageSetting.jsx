@@ -9,13 +9,17 @@ import useModal from '@/hooks/useModal';
 const MypageSetting = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  //바인딩
   const [name, setName] = useState('');
   const [newNickname, setNewNickname] = useState('');
+
+  // 기능관련
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // 모달관련
   const { isOpen, openModal, closeModal } = useModal();
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   // 위치 상태에서 닉네임을 설정합니다.
   useEffect(() => {
@@ -47,17 +51,16 @@ const MypageSetting = () => {
 
     setIsLoading(true);
     try {
-      await pb
-        .collection('users')
-        .update(pb.authStore.model.id, { name: newNickname });
-
       // localstora auth에도 nickname 값 세팅시키기
       const authData = localStorage.getItem('auth');
-      if (authData) {
-        const parsedData = JSON.parse(authData);
-        parsedData.user.name = newNickname;
-        localStorage.setItem('auth', JSON.stringify(parsedData));
-      }
+
+      const parsedData = JSON.parse(authData);
+      const userId = parsedData.user.id;
+
+      await pb.collection('users').update(userId, { name: newNickname });
+
+      parsedData.user.name = newNickname;
+      localStorage.setItem('auth', JSON.stringify(parsedData));
 
       setName(newNickname);
       toast.success('닉네임이 수정되었어요!');
@@ -91,6 +94,24 @@ const MypageSetting = () => {
       }
     }
   }, [newNickname]);
+
+  //회원 탈퇴 기능 관련함수
+  const handleDeleteAccount = useCallback(async () => {
+    setIsLoading(true);
+
+    const authData = localStorage.getItem('auth');
+    const parsedData = JSON.parse(authData);
+    const userId = parsedData.user.id;
+
+    await pb.collection('users').delete(userId);
+
+    pb.authStore.clear();
+    localStorage.setItem('auth', JSON.stringify(defaultAuthData));
+
+    navigate('/login');
+
+    toast.success('계정이 성공적으로 삭제되었습니다.');
+  }, [navigate]);
 
   return (
     <section className="flex flex-col justify-between min-h-dvh pb-[80px]">
@@ -130,6 +151,7 @@ const MypageSetting = () => {
           <span className="text-lg font-bold text-blue-500">로그아웃</span>
         </button>
         <button
+          onClick={() => setShowConfirmDelete(true)}
           className="w-full px-5 py-[15px] bg-red rounded-[10px] shadow-light flex justify-center items-center"
           aria-label="회원 탈퇴 버튼"
           disabled={isLoading}
@@ -138,6 +160,7 @@ const MypageSetting = () => {
         </button>
       </div>
 
+      {/* 닉네임 변경 모달 */}
       <Modal
         isOpen={isOpen('nicknameModal')}
         closeModal={() => closeModal('nicknameModal')}
@@ -174,6 +197,32 @@ const MypageSetting = () => {
           >
             {isLoading ? '업데이트 중...' : '닉네임 변경'}
           </button>
+        </div>
+      </Modal>
+
+      {/* 회원탈퇴 모달 */}
+      <Modal
+        isOpen={showConfirmDelete}
+        closeModal={() => setShowConfirmDelete(false)}
+      >
+        <div className="flex flex-col gap-4 p-4">
+          <h3 className="text-lg font-semibold">계정 삭제 확인</h3>
+          <p className="text-base">정말로 계정을 삭제하시겠습니까?</p>
+          <div className="flex gap-4 justify-center">
+            <button
+              onClick={handleDeleteAccount}
+              className="bg-red-500 bg-red  text-white p-2 rounded-md"
+              disabled={isLoading}
+            >
+              탈퇴
+            </button>
+            <button
+              onClick={() => setShowConfirmDelete(false)}
+              className="bg-gray-500 text-white p-2 rounded-md"
+            >
+              취소
+            </button>
+          </div>
         </div>
       </Modal>
     </section>
