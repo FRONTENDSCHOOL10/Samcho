@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BuddyCard, TopHeader } from '@/components';
-import useFetchBuddyData from '@/hooks/useFetchBuddyData';
+import { useFetchAllBuddyData } from '@/hooks';
 import { format } from 'date-fns';
 
 const BuddyManagement = () => {
-  const { buddyData, loading } = useFetchBuddyData();
+  const { buddyData, loading } = useFetchAllBuddyData();
   const [buddies, setBuddies] = useState(buddyData);
 
   useEffect(() => {

@@ -3,14 +3,13 @@ import { TopHeader, BuddySearch } from '@/components';
 import { Link } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
 import toast from 'react-hot-toast';
-import useFetchBuddyData from '@/hooks/useFetchBuddyData';
-import { useModal } from '@/hooks';
+import { useModal, useFetchAllBuddyData } from '@/hooks';
 
 const Mypage = () => {
   const [nickname, setNickName] = useState('');
   const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
-  const { buddyData } = useFetchBuddyData();
+  const { buddyData } = useFetchAllBuddyData();
   const buddyCount = buddyData.length;
 
   const { isOpen, openModal, closeModal } = useModal();

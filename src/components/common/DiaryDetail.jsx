@@ -4,7 +4,7 @@ import moods from '@/assets/icons/mood/moods';
 import weathers from '@/assets/icons/weather/weathers';
 import PropTypes from 'prop-types';
 import { Button, CheckBox, Modal } from '..';
-import { useModal, useFetchBuddyData } from '@/hooks';
+import { useModal, useFetchAllBuddyData } from '@/hooks';
 import { useState, memo } from 'react';
 import toast from 'react-hot-toast';
 import { pb } from '@/api';
@@ -29,7 +29,7 @@ const DiaryDetail = ({ diaryDetail }) => {
   const [buddy, setBuddy] = useState('');
 
   const { isOpen, openModal, closeModal } = useModal();
-  const { buddyData } = useFetchBuddyData();
+  const { buddyData } = useFetchAllBuddyData();
 
   if (!diaryDetail) return;
 
