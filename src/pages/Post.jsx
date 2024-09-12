@@ -9,7 +9,6 @@ const Post = () => {
 
   useEffect(() => {
     const getPost = async () => {
-      console.log('데이터 통신 시작');
       try {
         const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
@@ -28,14 +27,12 @@ const Post = () => {
         });
 
         setPosts(diary);
-        console.log('데이터 통신 끝나고 상태에도 추가했음');
       } catch (error) {
         if (error.status === 0) return;
         setError(true);
         console.error('Data fetch error', error);
       }
 
-      // 여기 아래는 위에가 다 끝나고 실행
       setLoading(false);
     };
 
@@ -58,7 +55,7 @@ const Post = () => {
         )}
         {posts.length === 0 && !loading && (
           <p className="font-medium text-center text-gray-300">
-            교환일기 데이터 없음.
+            단짝과 교환한 일기가 존재하지 않아요!
           </p>
         )}
         {posts.map((post) => (

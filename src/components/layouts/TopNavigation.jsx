@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Calendar2,
   Filter,
@@ -15,7 +15,6 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [tempMoodFilter, setTempMoodFilter] = useState(selectedMood);
   const { isOpen, openModal, closeModal } = useModal();
-  const navigate = useNavigate();
 
   const handleToggleIcon = () => {
     setIsCalendarView(!isCalendarView);
@@ -27,10 +26,6 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
     closeModal('filterModal');
   };
 
-  const handleSearchClick = () => {
-    navigate('/home/search');
-  };
-
   return (
     <>
       <nav
@@ -40,18 +35,15 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
         <button
           type="button"
           aria-label="일기 필터"
+          title="일기 필터"
           onClick={() => openModal('filterModal')}
         >
           <Filter className=" fill-gray-450" aria-hidden="true" />
         </button>
         <div className="flex gap-4">
-          <button
-            type="button"
-            aria-label="일기 검색"
-            onClick={handleSearchClick}
-          >
+          <Link to="/home/search" aria-label="일기 검색" title="일기 검색">
             <Search aria-hidden="true" className=" text-gray-450" />
-          </button>
+          </Link>
           <Link to={'/home/notification'} title="알림">
             <Notification className=" fill-gray-450" aria-hidden="true" />
           </Link>
@@ -60,6 +52,7 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
             <button
               type="button"
               aria-label="일기 리스트 형식으로 보기"
+              title="리스트 형식"
               onClick={handleToggleIcon}
             >
               <List className="fill-gray-450" aria-hidden="true" />
@@ -68,6 +61,7 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
             <button
               type="button"
               aria-label="일기 캘린더 형식으로 보기"
+              title="캘린더 형식"
               onClick={handleToggleIcon}
             >
               <Calendar2 className="fill-gray-450" aria-hidden="true" />
