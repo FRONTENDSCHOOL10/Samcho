@@ -110,17 +110,21 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     ]
   );
 
-  const deleteDiary = useCallback(async (id, onDelete, closeModal) => {
-    closeModal('deleteModal');
-    try {
-      await pb.collection('diary').delete(id);
-      toast.success('일기 삭제가 완료되었습니다.');
-      if (onDelete) onDelete(id); // 상태 업데이트
-    } catch (error) {
-      toast.error('일기 삭제 중 오류가 발생했습니다.');
-      console.error('[error] 다이어리 삭제 실패: ', error);
-    }
-  }, []);
+  const deleteDiary = useCallback(
+    async (id, closeModal, onDelete) => {
+      closeModal('deleteModal');
+      try {
+        await pb.collection('diary').delete(id);
+        toast.success('일기 삭제가 완료되었습니다.');
+        if (onDelete) onDelete(id); // 상태 업데이트
+      } catch (error) {
+        toast.error('일기 삭제 중 오류가 발생했습니다.');
+        console.error('[error] 다이어리 삭제 실패: ', error);
+      }
+      if (!onDelete) navigate('/');
+    },
+    [navigate]
+  );
 
   const exchangeDiary = useCallback(
     async (buddy, closeModal) => {
