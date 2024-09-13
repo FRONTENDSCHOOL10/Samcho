@@ -11,17 +11,20 @@ const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 const DiaryDetail = ({ diaryDetail }) => {
+  console.log('다이어리 디테일');
   const dateObj = new Date(diaryDetail.date);
   const day = dateObj.getDate();
   const weekday = WEEK_DAYS[dateObj.getDay()];
   const dateFormatted = `${day} ${weekday}`;
 
   const combinedIcons = [...diaryDetail.emotion, ...diaryDetail.weather].slice(
-    0.7
+    0,
+    7
   );
 
   const [checkedIndex, setCheckedIndex] = useState(null);
   const [buddy, setBuddy] = useState('');
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const { isOpen, openModal, closeModal } = useModal();
   const { buddyData } = useFetchAllBuddyData();
@@ -32,6 +35,10 @@ const DiaryDetail = ({ diaryDetail }) => {
   const handleChange = (buddyId, index) => {
     setCheckedIndex(index);
     setBuddy(buddyId);
+  };
+
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
   };
 
   return (
@@ -74,11 +81,16 @@ const DiaryDetail = ({ diaryDetail }) => {
 
           {diaryDetail.picture ? (
             <>
+              {!isImageLoaded && (
+                <div className="w-full rounded-lg aspect-square skeleton" />
+              )}
               <img
                 src={`${baseImageUrl}/${diaryDetail.id}/${diaryDetail.picture}`}
-                className="object-cover w-full rounded-lg bg-blue-50 aspect-square"
+                className={`object-cover w-full rounded-lg aspect-square ${
+                  isImageLoaded ? 'block' : 'hidden'
+                }`}
                 alt={`${diaryDetail.date}일에 기록된 사진`}
-                loading="lazy"
+                onLoad={handleImageLoad}
               />
               <p className="text-sm font-medium leading-normal text-blue-500">
                 {diaryDetail.content}
