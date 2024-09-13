@@ -1,7 +1,7 @@
 import { DirectionLeft } from '@/assets/icons/direction';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 import { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const TopHeader = ({ title, isShowIcon = false }) => {
   const navigate = useNavigate();
@@ -30,7 +30,6 @@ const TopHeader = ({ title, isShowIcon = false }) => {
 TopHeader.propTypes = {
   title: PropTypes.string.isRequired,
   isShowIcon: PropTypes.bool,
-  onBackClick: PropTypes.func,
 };
 
 export default memo(TopHeader);
