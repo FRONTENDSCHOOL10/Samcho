@@ -10,8 +10,7 @@ import {
   TopHeader,
   WeatherWithIcon,
 } from '@/components';
-import { useFetchDiaryDetail } from '@/hooks';
-import useBlocker from '@/hooks/useBlocker';
+import { useFetchDiaryDetail, useBlocker } from '@/hooks';
 import { format } from 'date-fns';
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
