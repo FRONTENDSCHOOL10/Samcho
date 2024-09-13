@@ -175,7 +175,7 @@ const DiaryCard = ({ diary, buddyData, type = 'icons', onDelete }) => {
             <button
               type="button"
               className="px-3 py-1 text-white bg-blue-500 rounded-md"
-              onClick={() => deleteDiary(diary.id, onDelete, closeModal)}
+              onClick={() => deleteDiary(diary.id, closeModal, onDelete)}
             >
               예
             </button>

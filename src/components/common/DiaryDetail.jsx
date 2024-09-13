@@ -3,9 +3,10 @@ import { Delete, Edit } from '@/assets/icons/menu';
 import moods from '@/assets/icons/mood/moods';
 import weathers from '@/assets/icons/weather/weathers';
 import PropTypes from 'prop-types';
-import { Button, BuddyListModal } from '..';
+import { Button, BuddyListModal, Modal } from '..';
 import { useModal, useFetchAllBuddyData, useDiaryActions } from '@/hooks';
 import { useState, memo } from 'react';
+import { Link } from 'react-router-dom';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -28,7 +29,7 @@ const DiaryDetail = ({ diaryDetail }) => {
 
   const { isOpen, openModal, closeModal } = useModal();
   const { buddyData } = useFetchAllBuddyData();
-  const { exchangeDiary } = useDiaryActions(diaryDetail);
+  const { deleteDiary, exchangeDiary } = useDiaryActions(diaryDetail);
 
   if (!diaryDetail) return;
 
@@ -46,11 +47,20 @@ const DiaryDetail = ({ diaryDetail }) => {
       <article className="w-full bg-white rounded-[10px] shadow-light p-[0.9375rem] mt-[30px] ">
         <h2 className="sr-only">{`${weekday}요일 감정 일기`}</h2>
         <div className="flex justify-end gap-[15px]">
-          <button type="button" aria-label="일기 수정" title="일기 수정">
+          <Link
+            to="/diary/new"
+            state={{ date: diaryDetail.date, diaryId: diaryDetail.id }}
+            aria-label="일기 수정"
+            title="일기 수정"
+          >
             <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
-          </button>
+          </Link>
           <button type="button" aria-label="일기 삭제" title="일기 삭제">
-            <Delete className="w-5 h-5 fill-gray-400" aria-hidden="true" />
+            <Delete
+              className="w-5 h-5 fill-gray-400"
+              aria-hidden="true"
+              onClick={() => openModal('deleteModal')}
+            />
           </button>
         </div>
 
@@ -110,6 +120,33 @@ const DiaryDetail = ({ diaryDetail }) => {
           onClick={() => openModal('buddyListModal')}
         />
       </footer>
+      <Modal
+        isOpen={isOpen('deleteModal')}
+        closeModal={() => closeModal('deleteModal')}
+      >
+        <div className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-gray-500">일기삭제</h2>
+          <p className="font-medium text-gray-500">
+            <strong>{diaryDetail.date}</strong> 일기를 삭제 하시겠습니까?
+          </p>
+          <div className="flex flex-row justify-end w-full gap-2">
+            <button
+              type="button"
+              className="px-3 py-1 text-white rounded-md bg-red"
+              onClick={() => closeModal('deleteModal')}
+            >
+              아니오
+            </button>
+            <button
+              type="button"
+              className="px-3 py-1 text-white bg-blue-500 rounded-md"
+              onClick={() => deleteDiary(diaryDetail.id, closeModal)}
+            >
+              예
+            </button>
+          </div>
+        </div>
+      </Modal>
       <BuddyListModal
         isOpen={isOpen('buddyListModal')}
         closeModal={() => closeModal('buddyListModal')}
