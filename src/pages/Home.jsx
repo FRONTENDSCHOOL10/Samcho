@@ -1,5 +1,5 @@
 import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
-import { useFetchMonthlyDiaryData } from '@/hooks';
+import { useFetchMonthlyDiaryData, useFetchAllBuddyData } from '@/hooks';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useEffect, useMemo, useState } from 'react';
@@ -19,6 +19,7 @@ const Home = ({ viewMode: initialViewMode }) => {
   );
 
   const { diaryData: data, loading } = useFetchMonthlyDiaryData(selectedMonth);
+  const { buddyData } = useFetchAllBuddyData();
 
   useEffect(() => {
     if (location.pathname.includes('list')) {
@@ -103,6 +104,7 @@ const Home = ({ viewMode: initialViewMode }) => {
                 <DiaryCard
                   key={diary.id}
                   diary={diary}
+                  buddyData={buddyData}
                   onDelete={handleDiaryDelete}
                 />
               ))

@@ -10,6 +10,7 @@ export { default as Select } from './common/Select.jsx';
 export { default as ToggleButton } from './common/ToggleButton.jsx';
 export { default as YearMonth } from './common/YearMonth.jsx';
 export { default as CheckBox } from './common/CheckBox.jsx';
+export { default as BuddyListModal } from './common/BuddyListModal.jsx';
 
 // home
 export { default as Calendar } from './home/Calendar.jsx';

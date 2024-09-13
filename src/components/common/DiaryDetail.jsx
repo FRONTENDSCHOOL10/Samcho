@@ -3,24 +3,19 @@ import { Delete, Edit } from '@/assets/icons/menu';
 import moods from '@/assets/icons/mood/moods';
 import weathers from '@/assets/icons/weather/weathers';
 import PropTypes from 'prop-types';
-import { Button, CheckBox, Modal } from '..';
-import { useModal, useFetchAllBuddyData } from '@/hooks';
+import { Button, BuddyListModal } from '..';
+import { useModal, useFetchAllBuddyData, useDiaryActions } from '@/hooks';
 import { useState, memo } from 'react';
-import toast from 'react-hot-toast';
-import { pb } from '@/api';
 
+const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
 const DiaryDetail = ({ diaryDetail }) => {
-  const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
-  const userId = JSON.parse(localStorage.getItem('auth'))?.user?.id;
-
   const dateObj = new Date(diaryDetail.date);
   const day = dateObj.getDate();
   const weekday = WEEK_DAYS[dateObj.getDay()];
   const dateFormatted = `${day} ${weekday}`;
 
-  // 감정 아이콘 최대 5개,  날씨 아이콘 최대 5개
   const combinedIcons = [...diaryDetail.emotion, ...diaryDetail.weather].slice(
     0.7
   );
@@ -30,6 +25,7 @@ const DiaryDetail = ({ diaryDetail }) => {
 
   const { isOpen, openModal, closeModal } = useModal();
   const { buddyData } = useFetchAllBuddyData();
+  const { exchangeDiary } = useDiaryActions(diaryDetail);
 
   if (!diaryDetail) return;
 
@@ -38,49 +34,16 @@ const DiaryDetail = ({ diaryDetail }) => {
     setBuddy(buddyId);
   };
 
-  const handleExchange = async () => {
-    try {
-      const existingRequest = await pb.collection('notification').getFullList({
-        filter: `recipient = "${buddy}" && requester = "${userId}" && type = "교환일기"`,
-      });
-
-      if (existingRequest.length > 0) {
-        toast.error('이미 해당 사용자와 교환중인 일기가 있습니다.');
-        return;
-      }
-
-      const post = await pb.collection('post').create({
-        recipient: buddy,
-        requester: userId,
-        requester_diary: diaryDetail.id,
-        status: 'pending',
-      });
-
-      await pb.collection('notification').create({
-        recipient: buddy,
-        requester: userId,
-        type: '교환일기',
-        type_id: post.id,
-      });
-
-      toast.success('일기 교환 신청을 보냈습니다!');
-      closeModal('buddyListModal');
-    } catch (error) {
-      toast.error('일기 교환 신청에 실패했습니다.');
-      console.error(error);
-    }
-  };
-
   return (
     <>
       <article className="w-full bg-white rounded-[10px] shadow-light p-[0.9375rem] mt-[30px] ">
         <h2 className="sr-only">{`${weekday}요일 감정 일기`}</h2>
         <div className="flex justify-end gap-[15px]">
-          <button type="button" aria-label="일기 수정">
-            <Edit className="w-5 h-5 fill-gray-400" />
+          <button type="button" aria-label="일기 수정" title="일기 수정">
+            <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
           </button>
-          <button type="button" aria-label="일기 삭제">
-            <Delete className="w-5 h-5 fill-gray-400" />
+          <button type="button" aria-label="일기 삭제" title="일기 삭제">
+            <Delete className="w-5 h-5 fill-gray-400" aria-hidden="true" />
           </button>
         </div>
 
@@ -135,29 +98,14 @@ const DiaryDetail = ({ diaryDetail }) => {
           onClick={() => openModal('buddyListModal')}
         />
       </footer>
-      <Modal
+      <BuddyListModal
         isOpen={isOpen('buddyListModal')}
         closeModal={() => closeModal('buddyListModal')}
-      >
-        <div className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold text-gray-500">단짝 리스트</h2>
-          {buddyData.map((buddy, idx) => (
-            <CheckBox
-              key={buddy.buddyId}
-              label={buddy.buddyName}
-              checked={checkedIndex === idx}
-              onChange={() => handleChange(buddy.buddyId, idx)}
-            />
-          ))}
-          <button
-            type="button"
-            className="py-2 font-medium text-white rounded-md bg-blue"
-            onClick={handleExchange}
-          >
-            교환신청
-          </button>
-        </div>
-      </Modal>
+        buddyData={buddyData}
+        checkedIndex={checkedIndex}
+        handleChange={handleChange}
+        handleExchange={() => exchangeDiary(buddy, closeModal)}
+      />
     </>
   );
 };
