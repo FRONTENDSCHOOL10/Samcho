@@ -1,11 +1,14 @@
 import { pb } from '@/api';
 import { DiaryCard, TopHeader } from '@/components';
 import { useState, useEffect } from 'react';
+import { useFetchAllBuddyData } from '@/hooks';
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const { buddyData } = useFetchAllBuddyData();
 
   useEffect(() => {
     const getPost = async () => {
@@ -59,7 +62,12 @@ const Post = () => {
           </p>
         )}
         {posts.map((post) => (
-          <DiaryCard key={post.id} diary={post} type="date" />
+          <DiaryCard
+            key={post.id}
+            diary={post}
+            buddyData={buddyData}
+            type="date"
+          />
         ))}
       </main>
     </section>

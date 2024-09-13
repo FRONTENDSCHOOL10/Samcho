@@ -93,7 +93,7 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
             ))}
           </ul>
           {/* 막대 그래프 */}
-          <div className="min-w-[370px] w-full h-[33px] rounded-2xl flex overflow-hidden flex-grow">
+          <div className="w-full h-[33px] rounded-2xl flex overflow-hidden flex-grow">
             {moodData.map((data) => (
               <div
                 key={data.mood}

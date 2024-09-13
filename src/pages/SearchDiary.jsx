@@ -3,12 +3,13 @@ import {
   SearchDiaryInput,
   SearchDiaryResult,
 } from '@/components';
-import { useFetchAllDiaryData } from '@/hooks';
+import { useFetchAllDiaryData, useFetchAllBuddyData } from '@/hooks';
 import { groupByMonth } from '@/utils';
 import { useEffect, useState } from 'react';
 
 const SearchDiary = () => {
   const { diaryData, loading } = useFetchAllDiaryData();
+  const { buddyData } = useFetchAllBuddyData();
 
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResults] = useState({});
@@ -67,7 +68,7 @@ const SearchDiary = () => {
     handleDiarySearch(historyItem);
   };
   return (
-    <>
+    <section className="pb-[60px]">
       <h1 className="sr-only">한줄 일기 검색</h1>
       <SearchDiaryInput
         inputValue={inputValue}
@@ -85,11 +86,12 @@ const SearchDiary = () => {
         />
       )}
       <SearchDiaryResult
+        buddyData={buddyData}
         inputValue={inputValue}
         searchResults={searchResults}
         isSearched={isSearched}
       />
-    </>
+    </section>
   );
 };
 

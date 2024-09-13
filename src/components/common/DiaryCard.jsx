@@ -7,34 +7,25 @@ import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { Modal } from '..';
-import { useModal } from '@/hooks';
-import { pb } from '@/api';
-import toast from 'react-hot-toast';
+import { Modal, BuddyListModal } from '..';
+import { useModal, useDiaryActions } from '@/hooks';
+const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
-const DiaryCard = ({ diary, type = 'icons', onDelete }) => {
-  console.log('다이어리 카드 실행');
+const DiaryCard = ({ diary, buddyData, type = 'icons', onDelete }) => {
   const { id, date, mood, emotion, weather, picture, content, expand } = diary;
-  const { isOpen, openModal, closeModal } = useModal();
-
-  const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
-
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const day = format(new Date(date), 'dd E', { locale: ko });
 
-  const handleDiaryDelete = async () => {
-    closeModal('deleteModal');
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [checkedIndex, setCheckedIndex] = useState(null);
+  const [buddy, setBuddy] = useState('');
 
-    try {
-      await pb.collection('diary').delete(id);
-    } catch (error) {
-      toast.error('일기 삭제 중 오류가 발생했습니다.');
-      console.error('[error] 다이어리 삭제 실패: ', error);
-    } finally {
-      toast.success('일기 삭제가 완료되었습니다.');
-      onDelete(id); // 상태 업데이트
-    }
+  const { isOpen, openModal, closeModal } = useModal();
+  const { deleteDiary, exchangeDiary } = useDiaryActions(diary);
+
+  const handleChange = (buddyId, index) => {
+    setCheckedIndex(index);
+    setBuddy(buddyId);
   };
 
   const formattedDate =
@@ -58,7 +49,12 @@ const DiaryCard = ({ diary, type = 'icons', onDelete }) => {
         role="group"
         aria-label="일기 관리"
       >
-        <button type="button" aria-label="일기 공유" title="일기 공유">
+        <button
+          type="button"
+          aria-label="일기 교환"
+          title="일기 교환"
+          onClick={() => openModal('buddyListModal')}
+        >
           <Share aria-hidden={true} />
         </button>
         <Link
@@ -77,6 +73,14 @@ const DiaryCard = ({ diary, type = 'icons', onDelete }) => {
         >
           <Delete aria-hidden={true} />
         </button>
+        <BuddyListModal
+          isOpen={isOpen('buddyListModal')}
+          closeModal={() => closeModal('buddyListModal')}
+          buddyData={buddyData}
+          checkedIndex={checkedIndex}
+          handleChange={handleChange}
+          handleExchange={() => exchangeDiary(buddy, closeModal)}
+        />
       </div>
     );
 
@@ -171,7 +175,7 @@ const DiaryCard = ({ diary, type = 'icons', onDelete }) => {
             <button
               type="button"
               className="px-3 py-1 text-white bg-blue-500 rounded-md"
-              onClick={handleDiaryDelete}
+              onClick={() => deleteDiary(diary.id, onDelete, closeModal)}
             >
               예
             </button>
@@ -193,6 +197,12 @@ DiaryCard.propTypes = {
     content: PropTypes.string.isRequired,
     expand: PropTypes.object,
   }).isRequired,
+  buddyData: PropTypes.arrayOf(
+    PropTypes.shape({
+      buddyId: PropTypes.string.isRequired,
+      buddyName: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   type: PropTypes.oneOf(['icons', 'date']),
   onDelete: PropTypes.func,
 };
