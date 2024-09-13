@@ -43,6 +43,13 @@ const Mypage = () => {
     setSearchBuddy(e.target.value);
   };
 
+  const handleEnter = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearchClick();
+    }
+  };
+
   const handleSearchClick = () => {
     toast.dismiss();
 
@@ -161,6 +168,7 @@ const Mypage = () => {
               className="flex-1 text-base font-medium outline-none text-gray-450 placeholder:text-gray-300"
               value={searchBuddy}
               onChange={handleSearchInputChange}
+              onKeyDown={handleEnter}
             />
             <button
               type="button"
