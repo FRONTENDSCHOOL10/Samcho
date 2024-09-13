@@ -17,29 +17,30 @@ const BuddyManagement = () => {
     );
   }, []);
 
-  if (loading) {
-    return <p>로딩중...</p>;
-  }
-
   return (
     <section className="min-h-dvh pb-[80px]">
       <TopHeader title="단짝 관리" isShowIcon={true}></TopHeader>
       <main className="flex flex-col gap-5 mt-5">
         <h2 className="sr-only">단짝 리스트</h2>
-
-        {buddies.length > 0 ? (
-          buddies.map(({ buddyName, created, buddyId }) => (
-            <BuddyCard
-              key={buddyId}
-              buddyName={buddyName}
-              startDate={format(new Date(created), 'yyyy-MM-dd')}
-              buddyId={buddyId}
-              onDelete={handleDelete}
-            />
-          ))
-        ) : (
-          <p>단짝이 없습니다..!</p>
+        {loading && (
+          <p className="font-medium text-center text-gray-300">
+            단짝 데이터 불러오는 중...
+          </p>
         )}
+        {buddies.length === 0 && !loading && (
+          <p className="font-medium text-center text-gray-300">
+            아직 단짝이 존재하지 않아요!
+          </p>
+        )}
+        {buddies.map(({ buddyName, created, buddyId }) => (
+          <BuddyCard
+            key={buddyId}
+            buddyName={buddyName}
+            startDate={format(new Date(created), 'yyyy-MM-dd')}
+            buddyId={buddyId}
+            onDelete={handleDelete}
+          />
+        ))}
       </main>
     </section>
   );
