@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { BuddyCard, TopHeader } from '@/components';
 import { useFetchAllBuddyData } from '@/hooks';
-import { format } from 'date-fns';
+import { formatDate } from 'date-fns';
 
 const BuddyManagement = () => {
   const { buddyData, loading } = useFetchAllBuddyData();
@@ -36,7 +36,7 @@ const BuddyManagement = () => {
           <BuddyCard
             key={buddyId}
             buddyName={buddyName}
-            startDate={format(new Date(created), 'yyyy-MM-dd')}
+            startDate={formatDate(created, 'yyyy-MM-dd HH:mm:ss')}
             buddyId={buddyId}
             onDelete={handleDelete}
           />

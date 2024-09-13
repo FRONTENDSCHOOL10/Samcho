@@ -1,14 +1,13 @@
 import { PropTypes } from 'prop-types';
-import { differenceInDays, format } from 'date-fns';
+import { differenceInDays, differenceInHours } from 'date-fns';
 import { memo } from 'react';
 import pb from '@/api/pb';
 import toast from 'react-hot-toast';
 
 const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
-  const daysDifference = differenceInDays(
-    format(new Date(), 'yyyy-MM-dd'),
-    startDate
-  );
+  const hoursDifference = differenceInHours(new Date(), new Date(startDate));
+
+  const daysDifference = differenceInDays(new Date(), new Date(startDate));
 
   const handleDelete = async () => {
     try {
@@ -30,7 +29,11 @@ const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
     <div className="flex justify-between bg-white py-[13px] px-[18px] rounded-[14px] shadow-light items-center">
       <p className="text-lg font-medium">{buddyName}</p>
       <div className="flex flex-row gap-[15px] items-center">
-        <p className="font-medium text-gray-300">{`${daysDifference}일 째 단짝 중`}</p>
+        <p className="font-medium text-gray-300">
+          {hoursDifference < 24
+            ? `${hoursDifference}시간 째 단짝 중`
+            : `${daysDifference}일 째 단짝 중`}
+        </p>
         <button
           type="button"
           aria-label={`${buddyName}님과 절교 `}
