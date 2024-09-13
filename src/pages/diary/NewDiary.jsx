@@ -11,11 +11,11 @@ import {
   WeatherWithIcon,
 } from '@/components';
 import { useFetchDiaryDetail } from '@/hooks';
+import useBlocker from '@/hooks/useBlocker';
 import { format } from 'date-fns';
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useBlocker from '@/hooks/useBlocker'; // useBlocker 훅을 가져옵니다
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 const BLOCK_MESSAGE = `작성 중인 내용이 저장되지 않아요. \n페이지를 벗어나시겠습니까?`;
