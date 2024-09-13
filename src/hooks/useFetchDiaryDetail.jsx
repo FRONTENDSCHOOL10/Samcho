@@ -8,12 +8,12 @@ const useFetchDiaryDetail = (diaryId) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!diaryId) {
+      return;
+    }
+
     const getData = async () => {
       try {
-        if (!diaryId) {
-          return;
-        }
-
         const record = await pb.collection('diary').getOne(diaryId);
 
         setDiaryDetail({
