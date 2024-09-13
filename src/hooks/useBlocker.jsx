@@ -13,10 +13,17 @@ const useBlocker = (when, alertOptions) => {
   const currentLocation = useLocation();
   const { isOpen, openModal, closeModal } = useModal();
 
+  // 새로고침 방지를 위한 beforeunload 이벤트 핸들러
+  const handleBeforeUnload = useCallback((e) => {
+    e.preventDefault();
+    e.returnValue = ''; // 경고 메시지 표시
+  }, []);
+
   const handleProceed = useCallback(() => {
     proceed();
     closeModal('confirmLeave');
-  }, [proceed, closeModal]);
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [proceed, closeModal, handleBeforeUnload]);
 
   const handleReset = useCallback(() => {
     reset();
@@ -33,6 +40,18 @@ const useBlocker = (when, alertOptions) => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [when, state, currentLocation, nextLocation]);
+
+  useEffect(() => {
+    if (when) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    } else {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [when, handleBeforeUnload]);
 
   useEffect(() => {
     if (state === 'blocked') {

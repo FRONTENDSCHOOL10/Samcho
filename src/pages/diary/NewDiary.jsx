@@ -48,6 +48,7 @@ export const Component = () => {
     }
   }, [diaryDetail]);
 
+  // 사용자가 인풋 입력 or 아이콘 선택을 했는지 확인
   const isAnyInputMade = useCallback(() => {
     return (
       selectedMood !== null ||
