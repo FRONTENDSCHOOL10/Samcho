@@ -1,9 +1,11 @@
-import DayCircle from '@/assets/icons/daycircle/daycircle.svg?react';
+import DayCircle2 from '@/assets/icons/daycircle/daycircle2.svg?react';
 import moods from '@/assets/icons/mood/moods';
-import { format } from 'date-fns';
+import { format, isToday } from 'date-fns';
 import PropTypes from 'prop-types';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+
+const formatDate = (date) => format(new Date(date), 'yyyy-MM-dd');
 
 const FeelingCalendar = ({
   day,
@@ -13,16 +15,25 @@ const FeelingCalendar = ({
   hasDiaryWithDifferentMood,
   loading,
 }) => {
+  const isCurrentDay = isToday(new Date(date));
+  const selectedDate = formatDate(date);
+  const currentDate = formatDate(new Date());
+
+  const dayCircleClasses = `fill-blue-50 bg-opacity-5 w-11 h-11 ${
+    isCurrentDay ? `text-blue-300 stroke-current stroke-[4px]` : ''
+  }`;
+
   const hasDiaryWithDifferentMoodClasses = `${
     hasDiaryWithDifferentMood
-      ? 'text-blue-500 font-semibold w-8 bg-opacity-7 flex justify-center items-center bg-blue-50 rounded-xl'
+      ? 'flex items-center justify-center w-8 font-semibold text-blue-500 bg-opacity-7 bg-blue-50 rounded-xl'
       : ''
+  } ${isCurrentDay ? 'font-semibold text-blue' : ''}`;
+
+  const harumongImgClasses = `w-11 h-11 ${
+    isCurrentDay ? 'drop-shadow-[0_0_1px_#4d82be]' : ''
   }`;
 
   const handleClick = (e) => {
-    const selectedDate = format(new Date(date), 'yyyy-MM-dd');
-    const currentDate = format(new Date(), 'yyyy-MM-dd');
-
     if (loading) {
       e.preventDefault();
       toast.error('데이터를 불러오는 중입니다. 잠시만 기다려주세요!');
@@ -44,9 +55,9 @@ const FeelingCalendar = ({
         state={id ? null : { date }}
       >
         {mood && !hasDiaryWithDifferentMood ? (
-          <img src={moods[mood]} alt={mood} className="w-[44px] h-[44px]" />
+          <img src={moods[mood]} alt={mood} className={harumongImgClasses} />
         ) : (
-          <DayCircle className="fill-blue-50 bg-opacity-5 w-[44px] h-[44px]" />
+          <DayCircle2 className={dayCircleClasses} />
         )}
       </Link>
       <span className={hasDiaryWithDifferentMoodClasses}>{day}</span>
