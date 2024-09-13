@@ -7,7 +7,7 @@ const Modal = ({ isOpen, closeModal, children, showCloseButton = true }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-[1000] backdrop-blur-[1px]">
-      <div className="relative w-full max-w-[400px] p-4 bg-white rounded-lg shadow-lg">
+      <div className="relative max-w-[400px] w-[calc(100vw-40px)] p-4 bg-white rounded-lg shadow-lg">
         {showCloseButton && (
           <button
             onClick={closeModal}
