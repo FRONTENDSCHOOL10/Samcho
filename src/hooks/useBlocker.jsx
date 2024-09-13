@@ -16,7 +16,7 @@ const useBlocker = (when, alertOptions) => {
   // 새로고침 방지를 위한 beforeunload 이벤트 핸들러
   const handleBeforeUnload = useCallback((e) => {
     e.preventDefault();
-    e.returnValue = ''; // 경고 메시지 표시
+    e.returnValue = '';
   }, []);
 
   const handleProceed = useCallback(() => {
