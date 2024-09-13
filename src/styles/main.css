@@ -25,7 +25,7 @@ body {
   min-height: 100dvh;
   margin: 0 auto;
   padding: 0 20px;
-  background-color: #F1F5FA;
+  background-color: #f1f5fa;
 }
 
 summary::-webkit-details-marker {

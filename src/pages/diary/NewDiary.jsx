@@ -10,13 +10,14 @@ import {
   TopHeader,
   WeatherWithIcon,
 } from '@/components';
-import { useFetchDiaryDetail } from '@/hooks';
+import { useFetchDiaryDetail, useBlocker } from '@/hooks';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
+const BLOCK_MESSAGE = `작성 중인 내용이 저장되지 않아요. \n페이지를 벗어나시겠습니까?`;
 
 export const Component = () => {
   const navigate = useNavigate();
@@ -45,6 +46,21 @@ export const Component = () => {
       }
     }
   }, [diaryDetail]);
+
+  // 사용자가 인풋 입력 or 아이콘 선택을 했는지 확인
+  const isAnyInputMade = useCallback(() => {
+    return (
+      selectedMood !== null ||
+      selectedEmotions.length > 0 ||
+      selectedWeathers.length > 0 ||
+      text.trim() !== '' ||
+      picture !== null
+    );
+  }, [selectedMood, selectedEmotions, selectedWeathers, text, picture]);
+
+  const { renderPrompt } = useBlocker(isAnyInputMade, {
+    message: `${BLOCK_MESSAGE}`,
+  });
 
   const handleEmotionClick = (text) => {
     if (selectedEmotions.includes(text)) {
@@ -116,6 +132,7 @@ export const Component = () => {
   return (
     <section className="flex flex-col gap-5 pb-[100px]">
       <TopHeader title={defaultTitle} isShowIcon={true} />
+      {renderPrompt()} {/* 차단된 상태일 때 경고 메시지 표시 */}
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <SelectMood isSelected={selectedMood} setSelected={setSelectedMood} />
         <Accordion open={true} title="감정" className="grid grid-cols-5 gap-4">
