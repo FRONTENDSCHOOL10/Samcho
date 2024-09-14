@@ -120,11 +120,6 @@ const Notification = () => {
     }
   };
 
-  // 로딩 중일 때 로딩 메시지 표시
-  if (loading) {
-    return <p>로딩 중...</p>;
-  }
-
   // 에러가 발생하면 에러 메시지 표시
   if (errorMessage) {
     return <p>{errorMessage}</p>;
@@ -135,29 +130,37 @@ const Notification = () => {
     <>
       <section className="flex flex-col gap-5 min-h-dvh pb-[80px]">
         <TopHeader title="알림" isShowIcon />
-        <main className="flex flex-col gap-5">
-          {notificationData && notificationData.length > 0 ? (
-            notificationData.map((notification) => (
-              <NotificationCard
-                key={notification?.id}
-                buddyName={notification?.expand.requester.name}
-                notificationTime={formatDate(
-                  notification?.created,
-                  'yyyy-MM-dd HH:mm:ss'
-                )}
-                type={
-                  notification.type === '교환일기'
-                    ? 'exchangeRequest'
-                    : 'buddyRequest'
-                }
-                onAccept={() => handleBuddyAccept(notification)}
-                onReject={() => handleBuddyReject(notification)}
-              />
-            ))
-          ) : (
-            <p>알림이 없습니다..!</p>
-          )}
-        </main>
+        {!loading ? (
+          <main className="flex flex-col gap-5">
+            {notificationData && notificationData.length > 0 ? (
+              notificationData.map((notification) => (
+                <NotificationCard
+                  key={notification?.id}
+                  buddyName={notification?.expand.requester.name}
+                  notificationTime={formatDate(
+                    notification?.created,
+                    'yyyy-MM-dd HH:mm:ss'
+                  )}
+                  type={
+                    notification.type === '교환일기'
+                      ? 'exchangeRequest'
+                      : 'buddyRequest'
+                  }
+                  onAccept={() => handleBuddyAccept(notification)}
+                  onReject={() => handleBuddyReject(notification)}
+                />
+              ))
+            ) : (
+              <p className="font-medium text-center text-gray-300">
+                알림이 오지 않았어요!
+              </p>
+            )}
+          </main>
+        ) : (
+          <p className="font-medium text-center text-gray-300">
+            알림 데이터 불러오는 중...
+          </p>
+        )}
       </section>
       <Modal
         isOpen={isOpen('diaryListModal')}
