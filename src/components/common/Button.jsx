@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { memo } from 'react';
 
 const sizes = {
   xs: 'px-3 py-1 text-sm max-h-[41px]',
@@ -64,4 +65,4 @@ Button.propTypes = {
   className: PropTypes.string,
 };
 
-export default Button;
+export default memo(Button);
