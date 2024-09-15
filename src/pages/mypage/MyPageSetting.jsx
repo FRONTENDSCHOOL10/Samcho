@@ -168,31 +168,27 @@ const MypageSetting = () => {
         <div className="flex flex-col gap-4 p-4">
           <h3 className="text-lg font-semibold">닉네임 변경</h3>
           {/* 라벨 추가 */}
-          <label
-            id="nickname-input"
-            name="nickname-input"
-            className="sr-only"
-            htmlFor="nickname-input"
-          >
+          <label className="sr-only" htmlFor="nickname-input">
             새 닉네임 입력
           </label>
           <input
             type="text"
             value={newNickname}
             onChange={(e) => setNewNickname(e.target.value)}
-            className="border border-gray-300 p-2 rounded-md"
+            className="p-2 border border-gray-300 rounded-md"
             placeholder="새 닉네임 입력"
             aria-label="새 닉네임 입력"
+            id="nickname-input"
           />
           <button
             onClick={checkNicknameAvailability}
-            className="bg-gray-300 text-white p-2 rounded-md"
+            className="p-2 text-white bg-gray-300 rounded-md"
           >
             닉네임 중복 확인
           </button>
           <button
             onClick={handleUpdateNickname}
-            className="bg-blue-500 text-white p-2 rounded-md"
+            className="p-2 text-white bg-blue-500 rounded-md"
             disabled={isLoading || isNicknameAvailable === false}
           >
             {isLoading ? '업데이트 중...' : '닉네임 변경'}
@@ -205,20 +201,22 @@ const MypageSetting = () => {
         isOpen={showConfirmDelete}
         closeModal={() => setShowConfirmDelete(false)}
       >
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4">
           <h3 className="text-lg font-semibold">계정 삭제 확인</h3>
-          <p className="text-base">정말로 계정을 삭제하시겠습니까?</p>
-          <div className="flex gap-4 justify-center">
+          <p className="text-base">
+            정말로 계정을 <b>삭제</b>하시겠습니까?
+          </p>
+          <div className="flex justify-end gap-2">
             <button
               onClick={handleDeleteAccount}
-              className="bg-red-500 bg-red  text-white p-2 rounded-md"
+              className="px-[10px] py-[5px] text-white bg-red-500 rounded-md bg-red"
               disabled={isLoading}
             >
               탈퇴
             </button>
             <button
               onClick={() => setShowConfirmDelete(false)}
-              className="bg-gray-500 text-white p-2 rounded-md"
+              className="px-[10px] py-[5px] text-white bg-gray-500 rounded-md"
             >
               취소
             </button>
