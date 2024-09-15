@@ -1,8 +1,25 @@
 import PropTypes from 'prop-types';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
 
 const Modal = ({ isOpen, closeModal, children, showCloseButton = true }) => {
+  // ESC 버튼을 누를 경우 모달 창 닫기
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, closeModal]);
+
   if (!isOpen) return null;
 
   return (
