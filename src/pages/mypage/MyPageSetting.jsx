@@ -1,15 +1,16 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { Modal, TopHeader } from '@/components';
 import { DirectionRight } from '@/assets/icons/direction';
-import { defaultAuthData, pb } from '@/api';
+import { pb } from '@/api';
 import toast from 'react-hot-toast';
 import useModal from '@/hooks/useModal';
+import { authUtils } from '@/utils';
 
 const MypageSetting = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  //바인딩
+
+  // 유저 상태 관리
   const [name, setName] = useState('');
   const [newNickname, setNewNickname] = useState('');
 
@@ -23,17 +24,16 @@ const MypageSetting = () => {
 
   // 위치 상태에서 닉네임을 설정합니다.
   useEffect(() => {
-    if (location.state && location.state.nickname) {
-      setName(location.state.nickname);
-    }
-  }, [location.state]);
+    const { user } = authUtils.getAuth();
+    setName(user.name);
+  }, []);
 
   // 로그아웃 기능
   const handleLogout = useCallback(async () => {
     setIsLoading(true);
     try {
       pb.authStore.clear();
-      localStorage.setItem('auth', JSON.stringify(defaultAuthData));
+      authUtils.setDefaultAuthData();
       navigate('/login');
     } catch {
       toast.error('로그아웃 중 오류가 발생했습니다.');
@@ -51,22 +51,22 @@ const MypageSetting = () => {
 
     setIsLoading(true);
     try {
-      // localstora auth에도 nickname 값 세팅시키기
-      const authData = localStorage.getItem('auth');
+      // localStorage auth에도 nickname 값 세팅시키기
+      const userData = authUtils.getAuth();
 
-      const parsedData = JSON.parse(authData);
-      const userId = parsedData.user.id;
+      const userId = userData.user.id;
 
       await pb.collection('users').update(userId, { name: newNickname });
 
-      parsedData.user.name = newNickname;
-      localStorage.setItem('auth', JSON.stringify(parsedData));
+      userData.user.name = newNickname;
+      authUtils.setUpdateData(userData);
 
       setName(newNickname);
       toast.success('닉네임이 수정되었어요!');
       closeModal('nicknameModal');
-    } catch {
+    } catch (error) {
       toast.error('닉네임 업데이트 중 오류가 발생했습니다.');
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -99,14 +99,12 @@ const MypageSetting = () => {
   const handleDeleteAccount = useCallback(async () => {
     setIsLoading(true);
 
-    const authData = localStorage.getItem('auth');
-    const parsedData = JSON.parse(authData);
-    const userId = parsedData.user.id;
+    const { user } = authUtils.getAuth();
 
-    await pb.collection('users').delete(userId);
+    await pb.collection('users').delete(user.id);
 
     pb.authStore.clear();
-    localStorage.setItem('auth', JSON.stringify(defaultAuthData));
+    authUtils.setDefaultAuthData();
 
     navigate('/login');
 
@@ -200,25 +198,28 @@ const MypageSetting = () => {
       <Modal
         isOpen={showConfirmDelete}
         closeModal={() => setShowConfirmDelete(false)}
+        showCloseButton={false}
       >
-        <div className="flex flex-col gap-4">
-          <h3 className="text-lg font-semibold">계정 삭제 확인</h3>
-          <p className="text-base">
-            정말로 계정을 <b>삭제</b>하시겠습니까?
+        <div className="flex flex-col gap-5">
+          <h3 className="w-full text-lg font-semibold text-center">
+            계정 삭제 확인
+          </h3>
+          <p className="w-full text-base text-center">
+            정말로 <b className="text-red">회원탈퇴</b>를 진행 하시겠습니까?
           </p>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-center gap-3">
+            <button
+              onClick={() => setShowConfirmDelete(false)}
+              className="px-[10px] py-[5px] text-white bg-blue-500 rounded-md"
+            >
+              취소
+            </button>
             <button
               onClick={handleDeleteAccount}
               className="px-[10px] py-[5px] text-white bg-red-500 rounded-md bg-red"
               disabled={isLoading}
             >
               탈퇴
-            </button>
-            <button
-              onClick={() => setShowConfirmDelete(false)}
-              className="px-[10px] py-[5px] text-white bg-gray-500 rounded-md"
-            >
-              취소
             </button>
           </div>
         </div>

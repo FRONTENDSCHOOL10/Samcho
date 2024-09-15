@@ -4,39 +4,37 @@ import { Link } from 'react-router-dom';
 import { DirectionRight } from '@/assets/icons/direction';
 import toast from 'react-hot-toast';
 import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
+import { authUtils } from '@/utils';
 
 const Mypage = () => {
   const [nickname, setNickName] = useState('');
   const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
-  const { buddyData } = useFetchAllBuddyData();
-  const buddyCount = buddyData.length;
+  const [searchBuddy, setSearchBuddy] = useState('');
+  const [triggerSearch, setTriggerSearch] = useState(false);
 
-  //나의 데이터 카운트 렌더링
+  // 단짝 리스트 데이터 훅
+  const { buddyData } = useFetchAllBuddyData();
+
+  // 다이어리 데이터 훅
   const { diaryData } = useFetchAllDiaryData();
-  const diaryCount = diaryData.length;
   const photoCount = diaryData.reduce((count, entry) => {
     return entry.picture ? count + 1 : count;
   }, 0);
 
+  // 모달 제어 훅
   const { isOpen, openModal, closeModal } = useModal();
-  const [searchBuddy, setSearchBuddy] = useState('');
-  const [triggerSearch, setTriggerSearch] = useState(false);
 
   useEffect(() => {
-    const authData = localStorage.getItem('auth');
+    const getData = async () => {
+      const { user } = await authUtils.getAuth();
 
-    if (authData) {
-      const parsedData = JSON.parse(authData);
-      const userModel = parsedData.user;
-      const storedNickName = userModel.name;
-      const storedUserName = userModel.username;
-      const storedEmail = userModel.email;
+      setNickName(user.name);
+      setUserName(user.username);
+      setEmail(user.email);
+    };
 
-      setNickName(storedNickName);
-      setUserName(storedUserName);
-      setEmail(storedEmail);
-    }
+    getData();
   }, []);
 
   const handleSearchInputChange = (e) => {
@@ -80,11 +78,7 @@ const Mypage = () => {
               <p className="text-sm font-medium text-gray-300">{email}</p>
             </div>
             <nav aria-label="계정 관리">
-              <Link
-                to="/mypage/setting"
-                state={{ nickname }}
-                aria-label="계정 관리 페이지로 이동"
-              >
+              <Link to="/mypage/setting" aria-label="계정 관리 페이지로 이동">
                 <DirectionRight className="fill-black" />
               </Link>
             </nav>
@@ -100,7 +94,7 @@ const Mypage = () => {
                 기록한 하루
               </h3>
               <p className="text-sm font-medium text-gray-400 self-left">
-                {diaryCount}개
+                {diaryData?.length}개
               </p>
             </article>
             <article className="w-full p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex flex-col gap-2">
@@ -132,7 +126,7 @@ const Mypage = () => {
           <article className="h-[60px] p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex items-center justify-between">
             <h3 className="sr-only">단짝 관리</h3>
             <p className="text-base font-medium text-gray-450">
-              {buddyCount}명
+              {buddyData?.length}명
             </p>
             <nav aria-label="단짝 관리">
               <Link
