@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
-import { Modal, TopHeader } from '@/components';
+import { Modal, TopHeader, ConfirmModal } from '@/components';
 import { DirectionRight } from '@/assets/icons/direction';
 import { pb } from '@/api';
 import toast from 'react-hot-toast';
@@ -20,7 +20,6 @@ const MypageSetting = () => {
 
   // 모달관련
   const { isOpen, openModal, closeModal } = useModal();
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   // 위치 상태에서 닉네임을 설정합니다.
   useEffect(() => {
@@ -108,7 +107,7 @@ const MypageSetting = () => {
 
     navigate('/login');
 
-    toast.success('계정이 성공적으로 삭제되었습니다.');
+    toast.success('회원탈퇴가 성공적으로 처리되었습니다.');
   }, [navigate]);
 
   return (
@@ -131,7 +130,7 @@ const MypageSetting = () => {
           </div>
           <button
             type="button"
-            aria-label="닉네임 변경 버튼"
+            aria-label="닉네임 변경"
             onClick={() => openModal('nicknameModal')}
           >
             <DirectionRight className="w-5 h-5 fill-gray-600" aria-hidden />
@@ -141,17 +140,17 @@ const MypageSetting = () => {
 
       <div className="flex flex-col gap-2">
         <button
-          onClick={handleLogout}
+          onClick={() => openModal('logoutModal')}
           className="w-full px-5 py-[15px] bg-white rounded-[10px] shadow-light flex justify-center items-center"
-          aria-label="로그아웃 버튼"
+          aria-label="로그아웃"
           disabled={isLoading}
         >
           <span className="text-lg font-bold text-blue-500">로그아웃</span>
         </button>
         <button
-          onClick={() => setShowConfirmDelete(true)}
+          onClick={() => openModal('withdrawalModal')}
           className="w-full px-5 py-[15px] bg-red rounded-[10px] shadow-light flex justify-center items-center"
-          aria-label="회원 탈퇴 버튼"
+          aria-label="회원 탈퇴"
           disabled={isLoading}
         >
           <span className="text-lg font-bold text-white">회원탈퇴</span>
@@ -194,36 +193,23 @@ const MypageSetting = () => {
         </div>
       </Modal>
 
-      {/* 회원탈퇴 모달 */}
-      <Modal
-        isOpen={showConfirmDelete}
-        closeModal={() => setShowConfirmDelete(false)}
-        showCloseButton={false}
+      <ConfirmModal
+        isOpen={isOpen('logoutModal')}
+        closeModal={() => closeModal('logoutModal')}
+        title="로그아웃"
+        onConfirm={() => handleLogout()}
       >
-        <div className="flex flex-col gap-5">
-          <h3 className="w-full text-lg font-semibold text-center">
-            계정 삭제 확인
-          </h3>
-          <p className="w-full text-base text-center">
-            정말로 <b className="text-red">회원탈퇴</b>를 진행 하시겠습니까?
-          </p>
-          <div className="flex justify-center gap-3">
-            <button
-              onClick={() => setShowConfirmDelete(false)}
-              className="px-[10px] py-[5px] text-white bg-blue-500 rounded-md"
-            >
-              취소
-            </button>
-            <button
-              onClick={handleDeleteAccount}
-              className="px-[10px] py-[5px] text-white bg-red-500 rounded-md bg-red"
-              disabled={isLoading}
-            >
-              탈퇴
-            </button>
-          </div>
-        </div>
-      </Modal>
+        정말 로그아웃을 하시겠습니까?
+      </ConfirmModal>
+
+      <ConfirmModal
+        isOpen={isOpen('withdrawalModal')}
+        closeModal={() => closeModal('withdrawalModal')}
+        title="회원탈퇴"
+        onConfirm={() => handleDeleteAccount()}
+      >
+        정말 회원탈퇴를 하시겠습니까?
+      </ConfirmModal>
     </section>
   );
 };
