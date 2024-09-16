@@ -11,7 +11,13 @@ import { Modal, BuddyListModal } from '..';
 import { useModal, useDiaryActions } from '@/hooks';
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
-const DiaryCard = ({ diary, buddyData, type = 'icons', onDelete }) => {
+const DiaryCard = ({
+  diary,
+  buddyData,
+  type = 'icons',
+  onDelete,
+  exchange = false,
+}) => {
   const { id, date, mood, emotion, weather, picture, content, expand } = diary;
 
   const day = format(new Date(date), 'dd E', { locale: ko });
@@ -90,6 +96,7 @@ const DiaryCard = ({ diary, buddyData, type = 'icons', onDelete }) => {
       {dateOrIcons}
       <Link
         to={`/diary/detail/${id}`}
+        state={exchange}
         className="flex flex-col w-full p-4 bg-white h-fit rounded-[0.625rem] shadow-light gap-4"
       >
         <div className="flex flex-row items-center justify-between">
@@ -205,6 +212,7 @@ DiaryCard.propTypes = {
   ).isRequired,
   type: PropTypes.oneOf(['icons', 'date']),
   onDelete: PropTypes.func,
+  exchange: PropTypes.bool,
 };
 
 export default memo(DiaryCard);
