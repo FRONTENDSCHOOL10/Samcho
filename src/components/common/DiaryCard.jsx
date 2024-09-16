@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { Modal, BuddyListModal } from '..';
+import { ConfirmModal, BuddyListModal } from '..';
 import { useModal, useDiaryActions } from '@/hooks';
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -162,33 +162,16 @@ const DiaryCard = ({
           </p>
         </div>
       </Link>
-      <Modal
+      <ConfirmModal
         isOpen={isOpen('deleteModal')}
         closeModal={() => closeModal('deleteModal')}
+        title="일기삭제"
+        onConfirm={() =>
+          deleteDiary(diary.id, () => closeModal('deleteModal'), onDelete)
+        }
       >
-        <div className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold text-gray-500">일기삭제</h2>
-          <p className="font-medium text-gray-500">
-            <strong>{date}</strong> 일기를 삭제 하시겠습니까?
-          </p>
-          <div className="flex flex-row justify-end w-full gap-2">
-            <button
-              type="button"
-              className="px-3 py-1 text-white rounded-md bg-red"
-              onClick={() => closeModal('deleteModal')}
-            >
-              아니오
-            </button>
-            <button
-              type="button"
-              className="px-3 py-1 text-white bg-blue-500 rounded-md"
-              onClick={() => deleteDiary(diary.id, closeModal, onDelete)}
-            >
-              예
-            </button>
-          </div>
-        </div>
-      </Modal>
+        <strong>{date}</strong> 일기를 삭제 하시겠습니까?
+      </ConfirmModal>
     </article>
   );
 };
