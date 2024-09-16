@@ -11,7 +11,7 @@ export { default as ToggleButton } from './common/ToggleButton.jsx';
 export { default as YearMonth } from './common/YearMonth.jsx';
 export { default as CheckBox } from './common/CheckBox.jsx';
 export { default as BuddyListModal } from './common/BuddyListModal.jsx';
-
+export { default as ConfirmModal } from './common/ConfirmModal';
 // home
 export { default as Calendar } from './home/Calendar.jsx';
 export { default as FeelingCalendar } from './home/FeelingCalendar.jsx';
