@@ -1,11 +1,13 @@
 import { DiaryDetail, TopHeader } from '@/components';
 import { useFetchDiaryDetail } from '@/hooks';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 export const Component = () => {
   const { id } = useParams();
   const { diaryDetail, loading } = useFetchDiaryDetail(id);
+  const { state } = useLocation();
+
   const [diaryDate, setDiaryDate] = useState('');
 
   useEffect(() => {
@@ -15,10 +17,13 @@ export const Component = () => {
   }, [diaryDetail]);
 
   if (loading) {
-    console.log('로딩 중..');
-    {
-      /* 추후 로딩 처리 로직을 가져오거나..등 */
-    }
+    return (
+      <div className="flex items-center justify-center min-h-dvh">
+        <p className="font-medium text-gray-300 ">
+          하루몽이 일기를 가져오고 있어요...
+        </p>
+      </div>
+    );
   }
 
   if (!diaryDate) return;
@@ -26,7 +31,7 @@ export const Component = () => {
   return (
     <section className="min-h-dvh pb-[110px]">
       <TopHeader isShowIcon={true} title={diaryDate} />
-      <DiaryDetail diaryDetail={diaryDetail} />
+      <DiaryDetail diaryDetail={diaryDetail} exchange={state} />
     </section>
   );
 };

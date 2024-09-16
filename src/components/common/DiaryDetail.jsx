@@ -11,8 +11,7 @@ import { Link } from 'react-router-dom';
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 const WEEK_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
-const DiaryDetail = ({ diaryDetail }) => {
-  console.log('다이어리 디테일');
+const DiaryDetail = ({ diaryDetail, exchange = false }) => {
   const dateObj = new Date(diaryDetail.date);
   const day = dateObj.getDate();
   const weekday = WEEK_DAYS[dateObj.getDay()];
@@ -47,15 +46,31 @@ const DiaryDetail = ({ diaryDetail }) => {
       <article className="w-full bg-white rounded-[10px] shadow-light p-[0.9375rem] mt-[30px] ">
         <h2 className="sr-only">{`${weekday}요일 감정 일기`}</h2>
         <div className="flex justify-end gap-[15px]">
-          <Link
-            to="/diary/new"
-            state={{ date: diaryDetail.date, diaryId: diaryDetail.id }}
-            aria-label="일기 수정"
-            title="일기 수정"
+          {!exchange ? (
+            <Link
+              to="/diary/new"
+              state={{ date: diaryDetail.date, diaryId: diaryDetail.id }}
+              aria-label="일기 수정"
+              title="일기 수정"
+            >
+              <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
+            </Link>
+          ) : (
+            <span
+              className="w-5 h-5 cursor-not-allowed fill-gray-400"
+              aria-label="일기 수정"
+              title="일기 수정"
+            >
+              <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
+            </span>
+          )}
+          <button
+            className={`${exchange && 'cursor-not-allowed'}`}
+            type="button"
+            aria-label="일기 삭제"
+            title="일기 삭제"
+            disabled={exchange}
           >
-            <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
-          </Link>
-          <button type="button" aria-label="일기 삭제" title="일기 삭제">
             <Delete
               className="w-5 h-5 fill-gray-400"
               aria-hidden="true"
@@ -115,9 +130,11 @@ const DiaryDetail = ({ diaryDetail }) => {
       </article>
       <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
         <Button
+          className={`${exchange && 'cursor-not-allowed'}`}
           text="교환하기"
           size="large"
           onClick={() => openModal('buddyListModal')}
+          disabled={exchange}
         />
       </footer>
       <Modal
@@ -161,6 +178,7 @@ const DiaryDetail = ({ diaryDetail }) => {
 
 DiaryDetail.propTypes = {
   diaryDetail: PropTypes.object.isRequired,
+  exchange: PropTypes.bool,
 };
 
 export default memo(DiaryDetail);

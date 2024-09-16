@@ -67,6 +67,7 @@ const Post = () => {
             diary={post}
             buddyData={buddyData}
             type="date"
+            exchange={true}
           />
         ))}
       </main>
