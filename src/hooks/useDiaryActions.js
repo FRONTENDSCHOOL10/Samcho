@@ -62,6 +62,16 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     (e) => {
       e.preventDefault();
 
+      if (
+        selectedMood === '' ||
+        selectedEmotions === '' ||
+        selectedWeathers === '' ||
+        text === ''
+      ) {
+        toast.error('입력하지 않은 필수 값이 있습니다.');
+        return;
+      }
+
       const formData = new FormData();
       formData.append('user', userId);
       formData.append('date', defaultTitle);
