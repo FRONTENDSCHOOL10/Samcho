@@ -74,36 +74,41 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
     return <p>로딩 중...</p>;
   }
 
+  const noData = !diaryData.length || !moodData.some((data) => data.ratio > 0);
+
   return (
     <article className="w-full p-[15px] rounded-[0.625rem] bg-white flex flex-col gap-6 shadow-light">
       <h2 className="text-base font-semibold text-gray-450 h-[19px]">
         기분 분포
       </h2>
-      {!diaryData.length || !moodData.some((data) => data.ratio > 0) ? (
-        <span className="text-sm text-center text-gray-500">
-          기분분포 데이터가 없어요!
-        </span>
-      ) : (
-        <>
-          <ul className="flex flex-row items-center self-stretch justify-between">
-            {moodData.map((data) => (
-              <li key={data.mood} className="list-none">
-                <MoodDistribution mood={data.mood} ratio={data.displayRatio} />
-              </li>
-            ))}
-          </ul>
-          {/* 막대 그래프 */}
-          <div className="w-full h-[33px] rounded-2xl flex overflow-hidden flex-grow">
-            {moodData.map((data) => (
-              <div
-                key={data.mood}
-                style={{ width: `${data.ratio}%` }}
-                className={`h-full ${data.color}`}
-              ></div>
-            ))}
-          </div>
-        </>
-      )}
+      <>
+        {noData && (
+          <p className="text-base font-semibold text-center text-gray-300">
+            아직 데이터가 없어요.
+          </p>
+        )}
+        <ul className="flex flex-row items-center self-stretch justify-between">
+          {moodData.map((data) => (
+            <li key={data.mood} className="list-none">
+              <MoodDistribution
+                mood={data.mood}
+                ratio={data.displayRatio}
+                grayscale={noData ? true : false}
+              />
+            </li>
+          ))}
+        </ul>
+        {/* 막대 그래프 */}
+        <div className="w-full h-[33px] rounded-2xl flex overflow-hidden flex-grow">
+          {moodData.map((data) => (
+            <div
+              key={data.mood}
+              style={{ width: `${data.ratio}%` }}
+              className={`h-full ${noData ? 'bg-gray-200' : data.color}`}
+            ></div>
+          ))}
+        </div>
+      </>
     </article>
   );
 };

@@ -19,5 +19,6 @@ const emotions = {
   피곤한: '/icons/emotions/tired.png',
   스트레스: '/icons/emotions/stressful.png',
   답답한: '/icons/emotions/hoguma.png',
+  기록없음: '/icons/emotions/default.png',
 };
 export default emotions;
