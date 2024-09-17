@@ -7,3 +7,4 @@ export { default as useFetchAllBuddyData } from './useFetchAllBuddyData.jsx';
 export { default as useCheckAvailability } from './useCheckAvailability.jsx';
 export { default as useBlocker } from './useBlocker.jsx';
 export { default as useDiaryActions } from './useDiaryActions';
+export { default as useSearchDiary } from './useSearchDiary.js';
