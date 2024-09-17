@@ -1,4 +1,4 @@
-import RootLayout from '@/layouts/RootLayout';
+import { RootLayout, PrivateRoute } from '@/layouts';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import {
   BuddyManagement,
@@ -20,7 +20,11 @@ import {
 export const routes = [
   {
     path: '/',
-    element: <RootLayout />,
+    element: (
+      <PrivateRoute>
+        <RootLayout />
+      </PrivateRoute>
+    ),
     children: [
       { index: true, element: <Navigate to="/home/calendar" replace /> },
       {
@@ -49,19 +53,19 @@ export const routes = [
           { path: 'photo', element: <PhotoGallery /> },
         ],
       },
-      {
-        path: 'diary',
-        children: [
-          { path: 'edit', lazy: () => import('@/pages/diary/EditDiary') },
-        ],
-      },
     ],
   },
   {
-    path: 'diary/detail/:id',
-    lazy: () => import('@/pages/diary/DetailDiary'),
+    path: 'diary',
+    element: <PrivateRoute />,
+    children: [
+      {
+        path: 'detail/:id',
+        lazy: () => import('@/pages/diary/DetailDiary'),
+      },
+      { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
+    ],
   },
-  { path: 'diary/new', lazy: () => import('@/pages/diary/NewDiary') },
   { path: 'login', element: <Login /> },
   { path: 'register', element: <Register /> },
   { path: '*', element: <ErrorPage /> },

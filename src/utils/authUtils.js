@@ -27,6 +27,7 @@ export const authUtils = {
     return JSON.parse(localStorage.getItem('pocketbase_auth'));
   },
   getAuth: () => {
-    return JSON.parse(localStorage.getItem('auth'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    return auth || { isAuth: false };
   },
 };

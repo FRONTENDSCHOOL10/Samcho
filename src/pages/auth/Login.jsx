@@ -1,15 +1,22 @@
 import pb from '@/api/pb';
 import { Button, Input } from '@/components';
 import { authUtils } from '@/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    if (state && !state.isAuth) {
+      toast.error('하루몽은 로그인 후 이용 가능합니다!');
+    }
+  }, [state]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
