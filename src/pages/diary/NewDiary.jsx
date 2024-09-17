@@ -41,15 +41,17 @@ export const Component = () => {
       <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <SelectMood isSelected={selectedMood} setSelected={setSelectedMood} />
         <Accordion open={true} title="감정" className="grid grid-cols-5 gap-4">
-          {Object.entries(emotions).map(([key, src]) => (
-            <WeatherWithIcon
-              key={key}
-              src={src}
-              text={key}
-              isSelected={selectedEmotions.includes(key)}
-              onClick={() => handleEmotionClick(key)}
-            />
-          ))}
+          {Object.entries(emotions)
+            .filter(([key]) => key !== '기록없음')
+            .map(([key, src]) => (
+              <WeatherWithIcon
+                key={key}
+                src={src}
+                text={key}
+                isSelected={selectedEmotions.includes(key)}
+                onClick={() => handleEmotionClick(key)}
+              />
+            ))}
         </Accordion>
         <Accordion open={true} title="날씨" className="grid grid-cols-5 gap-4">
           {Object.entries(weathers).map(([key, src]) => (
