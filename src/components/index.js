@@ -12,6 +12,8 @@ export { default as YearMonth } from './common/YearMonth.jsx';
 export { default as CheckBox } from './common/CheckBox.jsx';
 export { default as BuddyListModal } from './common/BuddyListModal.jsx';
 export { default as ConfirmModal } from './common/ConfirmModal';
+export { default as LoadingSpinner } from './common/LoadingSpinner.jsx';
+
 // home
 export { default as Calendar } from './home/Calendar.jsx';
 export { default as FeelingCalendar } from './home/FeelingCalendar.jsx';
