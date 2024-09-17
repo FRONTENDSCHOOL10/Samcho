@@ -22,6 +22,7 @@ const MoodDistribution = ({ mood = '행복', ratio = 0, grayscale = false }) => 
       break;
     case '기록 없음':
       altText = '기록 없음';
+      break;
     default:
       altText = '행복한 감정';
   }
