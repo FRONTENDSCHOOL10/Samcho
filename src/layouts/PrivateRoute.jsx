@@ -9,9 +9,7 @@ const PrivateRoute = ({ children }) => {
     return <Navigate to="/login" state={{ isAuth: false }} replace />;
   }
 
-  if (children) {
-    return children;
-  }
+  return children;
 };
 
 PrivateRoute.propTypes = {

@@ -15,6 +15,7 @@ import {
   Register,
   SearchDiary,
 } from './pages';
+import { Outlet } from 'react-router-dom';
 
 /*@type {import('react-router-dom').RouteObject[]}*/
 export const routes = [
@@ -57,7 +58,11 @@ export const routes = [
   },
   {
     path: 'diary',
-    element: <PrivateRoute />,
+    element: (
+      <PrivateRoute>
+        <Outlet />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: 'detail/:id',
