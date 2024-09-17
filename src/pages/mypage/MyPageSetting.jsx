@@ -116,7 +116,7 @@ const MypageSetting = () => {
 
       <main className="flex flex-col items-center flex-1 gap-10 mt-5">
         <section
-          className="w-full p-5 bg-white rounded-[10px] shadow-light flex justify-between items-center"
+          className="w-full p-[0.9375rem] bg-white rounded-[10px] shadow-light flex justify-between items-center"
           aria-labelledby="items-to-change-title"
         >
           <div className="flex flex-col">

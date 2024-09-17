@@ -46,37 +46,26 @@ const DiaryDetail = ({ diaryDetail, exchange = false }) => {
       <article className="w-full bg-white rounded-[10px] shadow-light p-[0.9375rem] mt-[30px] ">
         <h2 className="sr-only">{`${weekday}요일 감정 일기`}</h2>
         <div className="flex justify-end gap-[15px]">
-          {!exchange ? (
-            <Link
-              to="/diary/new"
-              state={{ date: diaryDetail.date, diaryId: diaryDetail.id }}
-              aria-label="일기 수정"
-              title="일기 수정"
-            >
-              <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
-            </Link>
-          ) : (
-            <span
-              className="w-5 h-5 cursor-not-allowed fill-gray-400"
-              aria-label="일기 수정"
-              title="일기 수정"
-            >
-              <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
-            </span>
+          {!exchange && (
+            <>
+              <Link
+                to="/diary/new"
+                state={{ date: diaryDetail.date, diaryId: diaryDetail.id }}
+                aria-label="일기 수정"
+                title="일기 수정"
+              >
+                <Edit className="w-5 h-5 fill-gray-400" aria-hidden="true" />
+              </Link>
+
+              <button type="button" aria-label="일기 삭제" title="일기 삭제">
+                <Delete
+                  className="w-5 h-5 fill-gray-400"
+                  aria-hidden="true"
+                  onClick={() => openModal('deleteModal')}
+                />
+              </button>
+            </>
           )}
-          <button
-            className={`${exchange && 'cursor-not-allowed'}`}
-            type="button"
-            aria-label="일기 삭제"
-            title="일기 삭제"
-            disabled={exchange}
-          >
-            <Delete
-              className="w-5 h-5 fill-gray-400"
-              aria-hidden="true"
-              onClick={() => openModal('deleteModal')}
-            />
-          </button>
         </div>
 
         <div className="flex flex-col gap-y-5">
@@ -128,15 +117,15 @@ const DiaryDetail = ({ diaryDetail, exchange = false }) => {
           )}
         </div>
       </article>
-      <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
-        <Button
-          className={`${exchange && 'cursor-not-allowed'}`}
-          text="교환하기"
-          size="large"
-          onClick={() => openModal('buddyListModal')}
-          disabled={exchange}
-        />
-      </footer>
+      {!exchange && (
+        <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
+          <Button
+            text="교환하기"
+            size="large"
+            onClick={() => openModal('buddyListModal')}
+          />
+        </footer>
+      )}
       <ConfirmModal
         isOpen={isOpen('deleteModal')}
         closeModal={() => closeModal('deleteModal')}
