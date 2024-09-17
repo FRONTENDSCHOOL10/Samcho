@@ -1,5 +1,11 @@
-import { Calendar, DiaryCard, TopNavigation, YearMonth } from '@/components';
-import { useFetchMonthlyDiaryData, useFetchAllBuddyData } from '@/hooks';
+import {
+  Calendar,
+  DiaryCard,
+  LoadingSpinner,
+  TopNavigation,
+  YearMonth,
+} from '@/components';
+import { useFetchAllBuddyData, useFetchMonthlyDiaryData } from '@/hooks';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import { useEffect, useMemo, useState } from 'react';
@@ -86,10 +92,7 @@ const Home = ({ viewMode: initialViewMode }) => {
           className="py-5"
         />
         {loading ? (
-          /* 임시 처리임 - 추후 로딩 스피너나 다른 UI로 변경할 것 */
-          <p className="mt-5 font-semibold text-center text-blue-500">
-            로딩 중입니다... ⏳
-          </p>
+          <LoadingSpinner text="일기를 불러오고 있어요" />
         ) : viewMode === 'calendar' ? (
           <Calendar
             diaryData={diaryData}
