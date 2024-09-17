@@ -59,7 +59,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
   );
 
   const handleSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
 
       if (
@@ -71,6 +71,20 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         toast.dismiss();
         toast.error('입력하지 않은 필수 값이 있습니다.');
         return;
+      }
+
+      try {
+        const data = await pb.collection('diary').getFullList({
+          filter: `user = "${userId}" && date = "${defaultTitle} 00:00:00.000Z"`,
+        });
+
+        if (data.length > 0) {
+          toast.dismiss();
+          toast.error('오늘 일기는 이미 작성하셨습니다.');
+          return;
+        }
+      } catch (error) {
+        console.error('서버 통신중 에러 발생', error);
       }
 
       const formData = new FormData();
