@@ -42,6 +42,7 @@ const FeelingCalendar = ({
 
     if (currentDate < selectedDate) {
       e.preventDefault();
+      toast.dismiss();
       toast.error('미래의 일기는 아직 기록할 수 없어요!');
       return;
     }
