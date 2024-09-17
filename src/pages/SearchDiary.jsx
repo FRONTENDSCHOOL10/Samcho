@@ -3,13 +3,16 @@ import {
   SearchDiaryInput,
   SearchDiaryResult,
 } from '@/components';
-import { useFetchAllDiaryData, useFetchAllBuddyData } from '@/hooks';
+import { useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 import { groupByMonth } from '@/utils';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 const SearchDiary = () => {
   const { diaryData, loading } = useFetchAllDiaryData();
   const { buddyData } = useFetchAllBuddyData();
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResults] = useState({});
@@ -48,25 +51,40 @@ const SearchDiary = () => {
     );
   };
 
-  const handleDiarySearch = (searchTerm) => {
-    if (searchTerm && !loading) {
-      const result = diaryData.filter((diary) =>
-        diary.content.includes(searchTerm)
-      );
+  const handleDiarySearch = useCallback(
+    (searchTerm) => {
+      if (searchTerm && !loading) {
+        const result = diaryData.filter((diary) =>
+          diary.content.includes(searchTerm)
+        );
 
-      const groupedResults = groupByMonth(result);
-      setSearchResults(groupedResults);
-      setIsSearched(true);
-      handleAddHistory(searchTerm);
-    } else {
-      setSearchResults({});
+        const groupedResults = groupByMonth(result);
+        setSearchResults(groupedResults);
+        setIsSearched(true);
+        handleAddHistory(searchTerm);
+
+        setSearchParams({ query: searchTerm });
+      } else {
+        setSearchResults({});
+      }
+    },
+    [diaryData, loading, setSearchParams]
+  );
+
+  useEffect(() => {
+    const searchTerm = searchParams.get('query');
+    if (searchTerm) {
+      setInputValue(searchTerm);
+
+      if (!loading) handleDiarySearch(searchTerm, false);
     }
-  };
+  }, [searchParams, loading, handleDiarySearch]);
 
   const handleHistoryItemClick = (historyItem) => {
     setInputValue(historyItem);
     handleDiarySearch(historyItem);
   };
+
   return (
     <section className="pb-[60px]">
       <h1 className="sr-only">한줄 일기 검색</h1>
