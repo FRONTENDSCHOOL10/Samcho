@@ -4,6 +4,13 @@ import { Link } from 'react-router-dom';
 import { EmotionRankCard } from '@/components';
 import emotions from '@/assets/icons/emotions/emotions';
 
+const defaultRankingsData = Array.from({ length: 3 }, (_, index) => ({
+  emotion: '기록 없음',
+  count: 0,
+  rank: index + 1,
+  image: '/icons/emotions/default.png',
+}));
+
 const EmotionRanking = ({ diaryData, loading }) => {
   const [rankingsData, setRankingsData] = useState([]);
 
@@ -48,7 +55,9 @@ const EmotionRanking = ({ diaryData, loading }) => {
       을(를) 가장 많이 기록했어요.
     </>
   ) : (
-    <span>감정 기록이 없습니다.</span>
+    <span className="text-base font-semibold text-center text-gray-300">
+      이번 달에는 아직 기록한 감정이 없어요.
+    </span>
   );
 
   return (
@@ -66,15 +75,18 @@ const EmotionRanking = ({ diaryData, loading }) => {
       </header>
 
       <div className="flex justify-around gap-5">
-        {rankingsData.map((rankItem) => (
-          <EmotionRankCard
-            key={rankItem.rank}
-            text={rankItem.emotion}
-            count={rankItem.count}
-            rank={rankItem.rank}
-            image={rankItem.image}
-          />
-        ))}
+        {(rankingsData.length > 0 ? rankingsData : defaultRankingsData).map(
+          (rankItem) => (
+            <EmotionRankCard
+              grayscale={rankingsData.length === 0 ? true : false}
+              key={rankItem.rank}
+              text={rankItem.emotion}
+              count={rankItem.count}
+              rank={rankItem.rank}
+              image={rankItem.image}
+            />
+          )
+        )}
       </div>
       <footer className="text-sm font-medium text-center text-gray-600">
         {description}
