@@ -1,7 +1,7 @@
-import { DiaryDetail, TopHeader } from '@/components';
+import { DiaryDetail, LoadingSpinner, TopHeader } from '@/components';
 import { useFetchDiaryDetail } from '@/hooks';
 import { useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 export const Component = () => {
   const { id } = useParams();
@@ -17,13 +17,7 @@ export const Component = () => {
   }, [diaryDetail]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-dvh">
-        <p className="font-medium text-gray-300 ">
-          하루몽이 일기를 가져오고 있어요...
-        </p>
-      </div>
-    );
+    return <LoadingSpinner text="하루몽이 일기를 가져오고 있어요" />;
   }
 
   if (!diaryDate) return;

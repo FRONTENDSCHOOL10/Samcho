@@ -1,7 +1,7 @@
 import { DirectionLeft } from '@/assets/icons/direction';
 import { Close, Search } from '@/assets/icons/menu';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const SearchDiaryInput = ({
   inputValue,
@@ -12,8 +12,17 @@ const SearchDiaryInput = ({
 }) => {
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('query');
+
   const handleBackClick = () => {
-    navigate('/');
+    if (query) {
+      setInputValue('');
+      setSearchResults({});
+      navigate('/home/search', { replace: true });
+    } else {
+      navigate('/');
+    }
   };
 
   const handleChange = (e) => {

@@ -3,70 +3,24 @@ import {
   SearchDiaryInput,
   SearchDiaryResult,
 } from '@/components';
-import { useFetchAllDiaryData, useFetchAllBuddyData } from '@/hooks';
-import { groupByMonth } from '@/utils';
-import { useEffect, useState } from 'react';
+import { useSearchDiary } from '@/hooks';
 
 const SearchDiary = () => {
-  const { diaryData, loading } = useFetchAllDiaryData();
-  const { buddyData } = useFetchAllBuddyData();
+  const {
+    inputValue,
+    setInputValue,
+    searchResults,
+    setSearchResults,
+    isSearched,
+    setIsSearched,
+    history,
+    handleClearHistory,
+    handleDeleteHistoryItem,
+    handleDiarySearch,
+    handleHistoryItemClick,
+    buddyData,
+  } = useSearchDiary();
 
-  const [inputValue, setInputValue] = useState('');
-  const [searchResults, setSearchResults] = useState({});
-  const [isSearched, setIsSearched] = useState(false);
-  const [history, setHistory] = useState(() => {
-    const savedHistory = localStorage.getItem('searchHistory');
-    return savedHistory ? JSON.parse(savedHistory) : [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem('searchHistory', JSON.stringify(history));
-  }, [history]);
-
-  const handleAddHistory = (term) => {
-    if (term === '') return;
-    setHistory((prevHistory) => {
-      const updatedHistory = prevHistory.filter((item) => item !== term);
-
-      updatedHistory.unshift(term);
-
-      if (updatedHistory.length > 10) {
-        updatedHistory.pop();
-      }
-      return updatedHistory;
-    });
-  };
-
-  const handleClearHistory = () => {
-    setHistory([]);
-    localStorage.removeItem('searchHistory');
-  };
-
-  const handleDeleteHistoryItem = (itemToDelete) => {
-    setHistory((prevHistory) =>
-      prevHistory.filter((item) => item !== itemToDelete)
-    );
-  };
-
-  const handleDiarySearch = (searchTerm) => {
-    if (searchTerm && !loading) {
-      const result = diaryData.filter((diary) =>
-        diary.content.includes(searchTerm)
-      );
-
-      const groupedResults = groupByMonth(result);
-      setSearchResults(groupedResults);
-      setIsSearched(true);
-      handleAddHistory(searchTerm);
-    } else {
-      setSearchResults({});
-    }
-  };
-
-  const handleHistoryItemClick = (historyItem) => {
-    setInputValue(historyItem);
-    handleDiarySearch(historyItem);
-  };
   return (
     <section className="pb-[60px]">
       <h1 className="sr-only">한줄 일기 검색</h1>
