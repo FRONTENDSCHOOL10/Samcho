@@ -43,7 +43,31 @@ const EmotionRanking = ({ diaryData, loading }) => {
   }, [diaryData, loading]);
 
   if (loading) {
-    return <p>로딩 중...</p>; // 로딩 중 표시
+    return (
+      <article className="w-full p-[15px] rounded-[0.625rem] bg-white flex flex-col gap-6 shadow-light">
+        {/* Skeleton UI for loading */}
+        <section aria-live="polite">
+          <div className="flex items-center gap-4" role="presentation">
+            <span
+              className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"
+              aria-hidden="true"
+            ></span>
+            <span
+              className="w-24 h-4 bg-gray-200 rounded animate-pulse"
+              aria-hidden="true"
+            ></span>
+          </div>
+          <span
+            className="w-full h-8 bg-gray-200 rounded animate-pulse mt-4"
+            aria-hidden="true"
+          ></span>
+          <span
+            className="w-full h-8 bg-gray-200 rounded animate-pulse mt-2"
+            aria-hidden="true"
+          ></span>
+        </section>
+      </article>
+    );
   }
 
   const description = rankingsData.length ? (

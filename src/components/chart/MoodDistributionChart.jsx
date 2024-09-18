@@ -71,7 +71,14 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
   };
 
   if (loading) {
-    return <p>로딩 중...</p>;
+    return (
+      <article className="w-full p-[15px] rounded-[0.625rem] bg-white flex flex-col gap-6 shadow-light">
+        <div className="flex flex-col gap-4">
+          <div className="h-[19px] bg-gray-200 rounded animate-pulse w-[60%]"></div>{' '}
+          <div className="w-full h-[33px] bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </article>
+    );
   }
 
   const noData = !diaryData.length || !moodData.some((data) => data.ratio > 0);
