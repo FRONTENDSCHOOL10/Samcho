@@ -13,6 +13,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
   const [selectedWeathers, setSelectedWeathers] = useState([]);
   const [text, setText] = useState('');
   const [picture, setPicture] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (diaryDetail) {
@@ -61,6 +62,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      setIsSubmitting(true);
 
       if (
         selectedMood === '' ||
@@ -73,18 +75,20 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         return;
       }
 
-      try {
-        const data = await pb.collection('diary').getFullList({
-          filter: `user = "${userId}" && date = "${defaultTitle} 00:00:00.000Z"`,
-        });
+      if (!diaryId) {
+        try {
+          const data = await pb.collection('diary').getFullList({
+            filter: `user = "${userId}" && date = "${defaultTitle} 00:00:00.000Z"`,
+          });
 
-        if (data.length > 0) {
-          toast.dismiss();
-          toast.error('오늘 일기는 이미 작성하셨습니다.');
-          return;
+          if (data.length > 0) {
+            toast.dismiss();
+            toast.error('오늘 일기는 이미 작성하셨습니다.');
+            return;
+          }
+        } catch (error) {
+          console.error('서버 통신중 에러 발생', error);
         }
-      } catch (error) {
-        console.error('서버 통신중 에러 발생', error);
       }
 
       const formData = new FormData();
@@ -117,6 +121,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
             : '일기 작성에 실패했습니다...',
         })
         .then(() => {
+          setIsSubmitting(false);
           navigate('/');
         })
         .catch((error) => {
@@ -200,6 +205,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     setSelectedMood,
     handleEmotionClick,
     handleWeatherClick,
+    isSubmitting,
     handleSubmit,
     deleteDiary,
     exchangeDiary,

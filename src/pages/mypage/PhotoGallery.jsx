@@ -43,29 +43,37 @@ const PhotoGallery = () => {
       <main className="grid gap-5 min-h-hdv pb-[80px]">
         <TopHeader isShowIcon={true} title="사진 모아보기" />
 
-        {Object.entries(photoGroupByMonth).map(([date, diaries]) => (
-          <section key={date} className="grid gap-2 mb-4">
-            <h2 className="font-semibold">{date}</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {diaries.map((diary) => (
-                <div key={diary.id} className="relative">
-                  {!loadedImages[diary.id] && (
-                    <div className="min-w-[100px] min-h-[100px] rounded-[0.625rem] skeleton absolute inset-0"></div>
-                  )}
-                  <img
-                    src={`${baseImageUrl}/${diary.id}/${diary.picture}`}
-                    alt={`${diary.date}의 일기 사진`}
-                    className={`object-cover w-full h-full aspect-square rounded-[0.625rem] ${
-                      loadedImages[diary.id] ? '' : 'invisible'
-                    }`}
-                    onLoad={() => handleImageLoad(diary.id)}
-                    loading="lazy"
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        ))}
+        {Object.keys(photoGroupByMonth).length === 0 ? (
+          <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+            <p className="mt-5 font-semibold text-center text-gray-300">
+              아직 기록된 사진이 없어요
+            </p>
+          </div>
+        ) : (
+          Object.entries(photoGroupByMonth).map(([date, diaries]) => (
+            <section key={date} className="grid gap-2 mb-4">
+              <h2 className="font-semibold">{date}</h2>
+              <div className="grid grid-cols-3 gap-4">
+                {diaries.map((diary) => (
+                  <div key={diary.id} className="relative">
+                    {!loadedImages[diary.id] && (
+                      <div className="min-w-[100px] min-h-[100px] rounded-[0.625rem] skeleton absolute inset-0"></div>
+                    )}
+                    <img
+                      src={`${baseImageUrl}/${diary.id}/${diary.picture}`}
+                      alt={`${diary.date}의 일기 사진`}
+                      className={`object-cover w-full h-full aspect-square rounded-[0.625rem] ${
+                        loadedImages[diary.id] ? '' : 'invisible'
+                      }`}
+                      onLoad={() => handleImageLoad(diary.id)}
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))
+        )}
       </main>
     </>
   );
