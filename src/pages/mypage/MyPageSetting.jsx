@@ -162,7 +162,7 @@ const MypageSetting = () => {
         isOpen={isOpen('nicknameModal')}
         closeModal={() => closeModal('nicknameModal')}
       >
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4">
           <h3 className="text-lg font-semibold">닉네임 변경</h3>
           {/* 라벨 추가 */}
           <label className="sr-only" htmlFor="nickname-input">
