@@ -21,15 +21,16 @@ const MypageSetting = () => {
 
   // 모달관련
   const { isOpen, openModal, closeModal } = useModal();
+  const isNicknameModalOpen = isOpen('nicknameModal');
 
   // 모달이 닫힐 때 setIsDisabled 초기화
   useEffect(() => {
-    if (!isOpen('nicknameModal')) {
+    if (!isNicknameModalOpen) {
       setIsDisabled(false);
       setNewNickname('');
       setIsNicknameAvailable(null);
     }
-  }, [isOpen('nicknameModal')]);
+  }, [isOpen, isNicknameModalOpen]);
 
   // 닉네임 입력이 변경되면 중복확인 상태를 초기화
   useEffect(() => {
@@ -183,10 +184,10 @@ const MypageSetting = () => {
         isOpen={isOpen('nicknameModal')}
         closeModal={() => closeModal('nicknameModal')}
       >
-        <div className="flex flex-col w-full gap-3">
+        <div className="flex flex-col gap-3">
           <h3 className="text-lg font-semibold">닉네임 변경</h3>
           {/* 라벨 추가 */}
-          <div className="flex flex-row justify-between gap-1">
+          <div className="flex flex-row gap-1">
             <label className="sr-only" htmlFor="nickname-input">
               새 닉네임 입력
             </label>
@@ -194,10 +195,11 @@ const MypageSetting = () => {
               type="text"
               value={newNickname}
               onChange={(e) => setNewNickname(e.target.value)}
-              className="flex-1 p-2 border border-gray-300 rounded-md"
+              className="flex-[2] p-2 border border-gray-300 rounded-md"
               placeholder="새 닉네임 입력"
               aria-label="새 닉네임 입력"
               id="nickname-input"
+              style={{ minWidth: '0' }}
             />
             <button
               onClick={checkNicknameAvailability}
