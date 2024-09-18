@@ -17,9 +17,27 @@ const MypageSetting = () => {
   // 기능관련
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   // 모달관련
   const { isOpen, openModal, closeModal } = useModal();
+
+  // 모달이 닫힐 때 setIsDisabled 초기화
+  useEffect(() => {
+    if (!isOpen('nicknameModal')) {
+      setIsDisabled(false);
+      setNewNickname('');
+      setIsNicknameAvailable(null);
+    }
+  }, [isOpen('nicknameModal')]);
+
+  // 닉네임 입력이 변경되면 중복확인 상태를 초기화
+  useEffect(() => {
+    if (newNickname) {
+      setIsNicknameAvailable(null);
+      setIsDisabled(false);
+    }
+  }, [newNickname]);
 
   // 위치 상태에서 닉네임을 설정합니다.
   useEffect(() => {
@@ -43,8 +61,9 @@ const MypageSetting = () => {
 
   // 닉네임 수정
   const handleUpdateNickname = useCallback(async () => {
+    toast.dismiss();
     if (!isNicknameAvailable) {
-      toast.error('이미 존재하는 닉네임이에요!');
+      toast.error('닉네임 중복 확인을 먼저 해주세요!');
       return;
     }
 
@@ -73,6 +92,7 @@ const MypageSetting = () => {
 
   // 닉네임 중복 확인
   const checkNicknameAvailability = useCallback(async () => {
+    toast.dismiss();
     if (!newNickname.trim()) {
       toast.error('닉네임을 입력해주세요!');
       return;
@@ -88,6 +108,7 @@ const MypageSetting = () => {
       if (error.status === 404) {
         setIsNicknameAvailable(true);
         toast.success('사용 가능한 닉네임이에요!');
+        setIsDisabled(true);
       } else {
         toast.error('닉네임 확인 중 오류가 발생했어요!');
       }
@@ -162,30 +183,39 @@ const MypageSetting = () => {
         isOpen={isOpen('nicknameModal')}
         closeModal={() => closeModal('nicknameModal')}
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col w-full gap-3">
           <h3 className="text-lg font-semibold">닉네임 변경</h3>
           {/* 라벨 추가 */}
-          <label className="sr-only" htmlFor="nickname-input">
-            새 닉네임 입력
-          </label>
-          <input
-            type="text"
-            value={newNickname}
-            onChange={(e) => setNewNickname(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md"
-            placeholder="새 닉네임 입력"
-            aria-label="새 닉네임 입력"
-            id="nickname-input"
-          />
-          <button
-            onClick={checkNicknameAvailability}
-            className="p-2 text-white bg-gray-300 rounded-md"
-          >
-            닉네임 중복 확인
-          </button>
+          <div className="flex flex-row justify-between gap-1">
+            <label className="sr-only" htmlFor="nickname-input">
+              새 닉네임 입력
+            </label>
+            <input
+              type="text"
+              value={newNickname}
+              onChange={(e) => setNewNickname(e.target.value)}
+              className="flex-1 p-2 border border-gray-300 rounded-md"
+              placeholder="새 닉네임 입력"
+              aria-label="새 닉네임 입력"
+              id="nickname-input"
+            />
+            <button
+              onClick={checkNicknameAvailability}
+              className={`flex-1 p-1 text-white ${
+                isDisabled ? 'bg-gray-300' : 'bg-blue-500'
+              } rounded-md`}
+              disabled={isDisabled}
+            >
+              중복 확인
+            </button>
+          </div>
           <button
             onClick={handleUpdateNickname}
-            className="p-2 text-white bg-blue-500 rounded-md"
+            className={`p-2 text-white ${
+              isLoading || isNicknameAvailable === false
+                ? 'bg-gray-300'
+                : 'bg-blue-500'
+            } rounded-md`}
             disabled={isLoading || isNicknameAvailable === false}
           >
             {isLoading ? '업데이트 중...' : '닉네임 변경'}
