@@ -82,11 +82,6 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
         기분 분포
       </h2>
       <>
-        {noData && (
-          <p className="text-base font-semibold text-center text-gray-300">
-            아직 데이터가 없어요.
-          </p>
-        )}
         <ul className="flex flex-row items-center self-stretch justify-between">
           {moodData.map((data) => (
             <li key={data.mood} className="list-none">

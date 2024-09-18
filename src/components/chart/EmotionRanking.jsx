@@ -55,7 +55,7 @@ const EmotionRanking = ({ diaryData, loading }) => {
       을(를) 가장 많이 기록했어요.
     </>
   ) : (
-    <span className="text-base font-semibold text-center text-gray-300">
+    <span className="text-base font-medium text-center text-gray-300">
       이번 달에는 아직 기록한 감정이 없어요.
     </span>
   );

@@ -9,7 +9,6 @@ const ChartMoreList = () => {
 
   const [activeButton, setActiveButton] = useState('기록 수 많은 순');
   const [rankingsData, setRankingsData] = useState([]);
-  const [loading, setLoading] = useState(false); // 로딩 상태를 false로 초기화
 
   const handleToggle = (buttonText) => {
     setActiveButton(buttonText);
@@ -51,15 +50,22 @@ const ChartMoreList = () => {
         .slice(0, 10); // 상위 10개만 선택
 
       setRankingsData(rankingsArray);
-      setLoading(false); // 로딩 완료
     };
 
-    setLoading(true); // 로딩 시작
     fetchRankingsData();
   }, [diaryData, activeButton]);
 
-  if (loading) {
-    return <p>로딩 중...</p>;
+  if (diaryData.length === 0) {
+    return (
+      <>
+        <TopHeader title="감정 랭킹" isShowIcon={true} />
+        <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+          <p className="font-medium text-center text-gray-400">
+            아직 기록한 감정이 존재하지 않아요!
+          </p>
+        </div>
+      </>
+    );
   }
 
   return (
