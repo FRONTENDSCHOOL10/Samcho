@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { EmotionRankCard } from '@/components';
 import emotions from '@/assets/icons/emotions/emotions';
+import { SyncLoader } from 'react-spinners';
 
 const defaultRankingsData = Array.from({ length: 3 }, (_, index) => ({
   emotion: '기록 없음',
@@ -42,26 +43,22 @@ const EmotionRanking = ({ diaryData, loading }) => {
     }
   }, [diaryData, loading]);
 
-  if (loading) {
-    return <p>로딩 중...</p>; // 로딩 중 표시
-  }
-
   const description = rankingsData.length ? (
     <>
       이번 달에는{' '}
-      <span className="text-base font-bold text-blue-500">
+      <span className="text-base font-semibold text-blue-500">
         {rankingsData[0].emotion}
       </span>
-      을(를) 가장 많이 기록했어요.
+      을(를) 가장 많이 기록했어요
     </>
   ) : (
-    <span className="text-base font-semibold text-center text-gray-300">
-      이번 달에는 아직 기록한 감정이 없어요.
+    <span className="text-sm font-medium text-center text-gray-300">
+      이번 달에는 아직 기록한 감정이 없어요
     </span>
   );
 
   return (
-    <article className="flex flex-col w-full gap-6 p-4 bg-white rounded-[0.625rem] shadow-light">
+    <article className="flex flex-col w-full min-h-[270px] gap-6 p-4 bg-white rounded-[0.625rem] shadow-light">
       <header className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-gray-600">감정랭킹</h2>
         <Link
@@ -73,24 +70,35 @@ const EmotionRanking = ({ diaryData, loading }) => {
           더보기
         </Link>
       </header>
-
-      <div className="flex justify-around gap-5">
-        {(rankingsData.length > 0 ? rankingsData : defaultRankingsData).map(
-          (rankItem) => (
-            <EmotionRankCard
-              grayscale={rankingsData.length === 0 ? true : false}
-              key={rankItem.rank}
-              text={rankItem.emotion}
-              count={rankItem.count}
-              rank={rankItem.rank}
-              image={rankItem.image}
-            />
-          )
-        )}
-      </div>
-      <footer className="text-sm font-medium text-center text-gray-600">
-        {description}
-      </footer>
+      {loading ? (
+        <div className="flex flex-col items-center justify-center flex-1 w-full gap-4 font-medium">
+          <SyncLoader color="#4D82BE" size={10} margin={4} />
+          <p className="text-center text-gray-400">
+            하루몽이 감정 랭킹을 가져오고 있어요
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-3 gap-5">
+            {(rankingsData.length > 0 ? rankingsData : defaultRankingsData).map(
+              (rankItem) => (
+                <EmotionRankCard
+                  grayscale={rankingsData.length === 0}
+                  key={rankItem.rank}
+                  text={rankItem.emotion}
+                  count={rankItem.count}
+                  rank={rankItem.rank}
+                  image={rankItem.image}
+                  className="w-full"
+                />
+              )
+            )}
+          </div>
+          <footer className="text-sm font-medium text-center text-gray-600">
+            {description}
+          </footer>
+        </>
+      )}
     </article>
   );
 };

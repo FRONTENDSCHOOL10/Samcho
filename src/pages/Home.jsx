@@ -92,7 +92,7 @@ const Home = ({ viewMode: initialViewMode }) => {
           className="py-5"
         />
         {loading ? (
-          <LoadingSpinner text="일기를 불러오고 있어요" />
+          <LoadingSpinner text="하루몽이 일기를 불러오고 있어요" />
         ) : viewMode === 'calendar' ? (
           <Calendar
             diaryData={diaryData}
@@ -112,9 +112,11 @@ const Home = ({ viewMode: initialViewMode }) => {
                 />
               ))
             ) : (
-              <p className="mt-5 font-semibold text-center text-gray-300">
-                해당 월에는 일기 기록이 없어요 😭
-              </p>
+              <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                <p className="mt-5 font-semibold text-center text-gray-300">
+                  해당 월에는 아직 일기 기록이 없어요
+                </p>
+              </div>
             )}
           </main>
         )}

@@ -35,10 +35,9 @@ const BuddySearch = ({
     } catch (error) {
       console.error(error);
       setErrorMessage('해당 아이디 혹은 닉네임을 가진 유저가 없습니다.');
-    } finally {
-      setLoading(false);
-      setTriggerSearch(false);
     }
+    setLoading(false);
+    setTriggerSearch(false);
   }, [searchBuddy, setTriggerSearch]);
 
   // 함수 실행
@@ -60,29 +59,45 @@ const BuddySearch = ({
 
     // 중복 신청 방지 : 이미 보낸 상대에게 다시 신청 X
     try {
-      const existingRequest = await pb.collection('buddy').getFullList({
-        filter: `recipient = "${userData.id}" && requester = "${userId}" || recipient = "${userId}" && requester = "${userData.id}"`, // 이미 신청한 기록이 있는지 확인
+      const existingRequestPromise = pb.collection('buddy').getFullList({
+        filter: `recipient = "${userData.id}" && requester = "${userId}" || recipient = "${userId}" && requester = "${userData.id}"`,
       });
 
-      if (existingRequest.length > 0) {
-        toast.error('이미 해당 사용자와 단짝 이거나 대기 상태입니다.');
-        return;
-      }
+      existingRequestPromise
+        .then(async (existingRequest) => {
+          if (existingRequest.length > 0) {
+            toast.error('해당 유저와 단짝 이거나 대기 상태입니다.');
+            return;
+          }
 
-      const buddy = await pb.collection('buddy').create({
-        recipient: userData.id,
-        requester: userId,
-        status: 'pending',
-      });
+          const buddyPromise = pb.collection('buddy').create({
+            recipient: userData.id,
+            requester: userId,
+            status: 'pending',
+          });
 
-      await pb.collection('notification').create({
-        recipient: userData.id,
-        requester: userId,
-        type: '단짝',
-        type_id: buddy.id,
-      });
-
-      toast.success('단짝 신청을 보냈습니다!');
+          toast
+            .promise(buddyPromise, {
+              loading: '단짝 신청 중...',
+              success: '단짝 신청을 보냈습니다!',
+              error: '단짝 신청에 실패했습니다.',
+            })
+            .then(async (buddy) => {
+              await pb.collection('notification').create({
+                recipient: userData.id,
+                requester: userId,
+                type: '단짝',
+                type_id: buddy.id,
+              });
+              closeModal();
+            })
+            .catch((error) => {
+              console.error('[Error] 단짝 신청 실패: ', error);
+            });
+        })
+        .catch((error) => {
+          console.error('[Error] 신청 여부 확인 실패: ', error);
+        });
     } catch (error) {
       toast.error('단짝 신청에 실패했습니다.');
       console.error(error);
@@ -100,14 +115,16 @@ const BuddySearch = ({
   return (
     <Modal isOpen={isOpen} closeModal={handleCloseModal}>
       {/* 모달 창 */}
-      <section className="flex flex-col gap-4">
+      <section className="flex flex-col gap-5">
         <h2 className="text-lg font-semibold text-gray-500">단짝 찾기</h2>
 
         {loading ? (
-          <p>검색 중...</p>
+          <p className="w-full font-medium text-center text-gray-400">
+            단짝 검색 중...
+          </p>
         ) : userData ? (
           <main className="flex flex-row items-center justify-between">
-            <div className="flex flex-col">
+            <div className="flex flex-row items-baseline gap-0.5">
               <p
                 className="text-base font-semibold text-gray-450"
                 aria-label="닉네임"
@@ -115,22 +132,24 @@ const BuddySearch = ({
                 {userData.name}
               </p>
               <p
-                className="text-sm font-medium text-gray-400"
+                className="text-sm font-medium text-gray-300"
                 aria-label="아이디"
               >
-                {userData.username}
+                ({userData.username})
               </p>
             </div>
             <button
               type="button"
-              className="text-white bg-blue-500 px-[10px] rounded-[5px] py-[5px]"
+              className="text-blue-500 bg-white font-medium px-[10px] py-[5px]"
               onClick={handleBuddyRequest}
             >
               신청
             </button>
           </main>
         ) : errorMessage ? (
-          <p className="text-red-500">{errorMessage}</p>
+          <p className="w-full font-medium text-center text-gray-400">
+            {errorMessage}
+          </p>
         ) : (
           <p className="text-gray-500">
             아이디 혹은 닉네임으로 유저를 검색하세요.

@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { TopHeader, NotificationCard, Modal, CheckBox } from '@/components';
+import {
+  TopHeader,
+  NotificationCard,
+  Modal,
+  CheckBox,
+  LoadingSpinner,
+} from '@/components';
 import pb from '@/api/pb';
 import toast from 'react-hot-toast';
 import { useFetchAllDiaryData, useModal } from '@/hooks';
@@ -151,15 +157,15 @@ const Notification = () => {
                 />
               ))
             ) : (
-              <p className="font-medium text-center text-gray-300">
-                알림이 오지 않았어요!
-              </p>
+              <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                <p className="h-full font-medium text-center text-gray-400">
+                  도착한 알림이 없어요!
+                </p>
+              </div>
             )}
           </main>
         ) : (
-          <p className="font-medium text-center text-gray-300">
-            알림 데이터 불러오는 중...
-          </p>
+          <LoadingSpinner text="하루몽이 도착한 알림을 불러오고 있어요" />
         )}
       </section>
       <Modal

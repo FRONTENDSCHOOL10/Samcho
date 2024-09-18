@@ -32,6 +32,7 @@ export const Component = () => {
     setSelectedMood,
     handleEmotionClick,
     handleWeatherClick,
+    isSubmitting,
     handleSubmit,
   } = useDiaryActions(diaryDetail, currentDate, diaryId);
 
@@ -68,9 +69,11 @@ export const Component = () => {
         <SelectPicture picture={picture} setPicture={setPicture} />
         <footer className="fixed bottom-0 w-full max-w-[27.5rem] bg-white py-4 z-50 shadow-top -mx-5 px-5">
           <Button
+            className={`${isSubmitting && 'bg-gray-300 cursor-not-allowed'}`}
             buttonType="submit"
             text={diaryId ? '수정완료' : '작성완료'}
             size="large"
+            disabled={isSubmitting}
           />
         </footer>
       </form>
