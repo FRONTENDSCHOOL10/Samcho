@@ -1,5 +1,5 @@
 import { pb } from '@/api';
-import { DiaryCard, TopHeader } from '@/components';
+import { DiaryCard, LoadingSpinner, TopHeader } from '@/components';
 import { useState, useEffect } from 'react';
 import { useFetchAllBuddyData } from '@/hooks';
 
@@ -47,19 +47,21 @@ const Post = () => {
       <TopHeader title="교환일기 우편함" />
       <main className="flex flex-col gap-5">
         {loading && (
-          <p className="font-medium text-center text-gray-300">
-            교환일기 데이터 불러오는 중...
-          </p>
+          <LoadingSpinner text="하루몽이 교환일기를 불러오고 있어요" />
         )}
         {error && (
-          <p className="font-medium text-center text-red">
-            교환일기 데이터를 불러오지 못했습니다...
-          </p>
+          <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+            <p className="font-medium text-center text-red">
+              교환일기를 불러오지 못했습니다.
+            </p>
+          </div>
         )}
         {posts.length === 0 && !loading && (
-          <p className="font-medium text-center text-gray-300">
-            단짝과 교환한 일기가 존재하지 않아요!
-          </p>
+          <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+            <p className="font-medium text-center text-gray-400">
+              단짝과 교환한 일기가 존재하지 않아요!
+            </p>
+          </div>
         )}
         {posts.map((post) => (
           <DiaryCard

@@ -3,9 +3,9 @@ import { SyncLoader } from 'react-spinners';
 
 const LoadingSpinner = ({ text }) => {
   return (
-    <div className="fixed flex flex-col items-center gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+    <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
       <SyncLoader color="#4D82BE" size={10} margin={4} />
-      <p className="font-medium text-gray-400">{text}</p>
+      <p className="w-full font-medium text-center text-gray-400">{text}</p>
     </div>
   );
 };

@@ -92,7 +92,7 @@ const Home = ({ viewMode: initialViewMode }) => {
           className="py-5"
         />
         {loading ? (
-          <LoadingSpinner text="일기를 불러오고 있어요" />
+          <LoadingSpinner text="하루몽이 일기를 불러오고 있어요" />
         ) : viewMode === 'calendar' ? (
           <Calendar
             diaryData={diaryData}
