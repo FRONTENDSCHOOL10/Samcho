@@ -10,7 +10,10 @@ const EmotionRankCard = ({ text, count, rank, image, grayscale = false }) => {
       <h3 className="sr-only">
         {rank}위: {text}
       </h3>
-      <p className="flex justify-start font-bold text-blue" aria-hidden="true">
+      <p
+        className="flex justify-start font-semibold text-blue"
+        aria-hidden="true"
+      >
         {rank}
       </p>
       <div className="flex flex-col items-center justify-center gap-1">
@@ -19,10 +22,10 @@ const EmotionRankCard = ({ text, count, rank, image, grayscale = false }) => {
           alt={text}
           className="w-[50px] h-[50px] rounded-full object-cover"
         />
-        <p className="text-sm font-semibold text-blue" aria-hidden="true">
+        <p className="text-sm font-medium text-blue" aria-hidden="true">
           {text}
         </p>
-        <p className="text-xs font-medium text-blue">{count}회</p>
+        <p className="text-xs font-normal text-blue">{count}회</p>
       </div>
     </article>
   );

@@ -49,14 +49,14 @@ const EmotionRanking = ({ diaryData, loading }) => {
   const description = rankingsData.length ? (
     <>
       이번 달에는{' '}
-      <span className="text-base font-bold text-blue-500">
+      <span className="text-base font-semibold text-blue-500">
         {rankingsData[0].emotion}
       </span>
-      을(를) 가장 많이 기록했어요.
+      을(를) 가장 많이 기록했어요
     </>
   ) : (
-    <span className="text-base font-medium text-center text-gray-300">
-      이번 달에는 아직 기록한 감정이 없어요.
+    <span className="text-sm font-medium text-center text-gray-300">
+      이번 달에는 아직 기록한 감정이 없어요
     </span>
   );
 
@@ -74,16 +74,17 @@ const EmotionRanking = ({ diaryData, loading }) => {
         </Link>
       </header>
 
-      <div className="flex justify-around gap-5">
+      <div className="grid grid-cols-3 gap-5">
         {(rankingsData.length > 0 ? rankingsData : defaultRankingsData).map(
           (rankItem) => (
             <EmotionRankCard
-              grayscale={rankingsData.length === 0 ? true : false}
+              grayscale={rankingsData.length === 0}
               key={rankItem.rank}
               text={rankItem.emotion}
               count={rankItem.count}
               rank={rankItem.rank}
               image={rankItem.image}
+              className="w-full"
             />
           )
         )}
