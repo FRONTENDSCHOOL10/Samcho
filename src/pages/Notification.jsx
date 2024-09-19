@@ -172,16 +172,18 @@ const Notification = () => {
         isOpen={isOpen('diaryListModal')}
         closeModal={() => closeModal('diaryListModal')}
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 max-h-[50vh]">
           <h2 className="text-lg font-semibold text-gray-500">일기 리스트</h2>
-          {diaryData.map((diary, idx) => (
-            <CheckBox
-              key={diary.id}
-              label={diary.date}
-              checked={checkedIndex === idx}
-              onChange={() => handleChange(diary.id, idx)}
-            />
-          ))}
+          <div className="flex flex-col gap-2 overflow-y-auto">
+            {diaryData.map((diary, idx) => (
+              <CheckBox
+                key={diary.id}
+                label={diary.date}
+                checked={checkedIndex === idx}
+                onChange={() => handleChange(diary.id, idx)}
+              />
+            ))}
+          </div>
           <button
             type="button"
             className="py-2 font-medium text-white rounded-md bg-blue"
