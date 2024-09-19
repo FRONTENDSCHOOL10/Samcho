@@ -4,10 +4,12 @@ import { toast } from 'react-hot-toast';
 import { pb } from '@/api';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
-const userId = JSON.parse(localStorage.getItem('auth'))?.user?.id;
 
 const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
+  const userId = JSON.parse(localStorage.getItem('auth')).user.id;
+
   const navigate = useNavigate();
+
   const [selectedMood, setSelectedMood] = useState('');
   const [selectedEmotions, setSelectedEmotions] = useState([]);
   const [selectedWeathers, setSelectedWeathers] = useState([]);
