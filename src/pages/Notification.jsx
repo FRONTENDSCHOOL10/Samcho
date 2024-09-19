@@ -20,6 +20,7 @@ const Notification = () => {
   const [checkedIndex, setCheckedIndex] = useState(null);
   const [diary, setDiary] = useState('');
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { isOpen, openModal, closeModal } = useModal();
   const { diaryData } = useFetchAllDiaryData();
@@ -58,6 +59,9 @@ const Notification = () => {
   };
 
   const handleDiaryExchange = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const data = {
       recipient_diary: diary,
       status: 'accepted',
@@ -75,6 +79,7 @@ const Notification = () => {
       console.error('[error] 교환일기 수락 실패: ', error);
       toast.error('교환일기 수락에 실패했습니다.');
     }
+    setIsSubmitting(false);
   };
 
   const handleBuddyAccept = async (notification) => {
@@ -131,7 +136,6 @@ const Notification = () => {
     return <p>{errorMessage}</p>;
   }
 
-  // 데이터가 로드되고 알림이 있을 때 알림 목록을 렌더링
   return (
     <>
       <section className="flex flex-col gap-5 min-h-dvh pb-[80px]">
@@ -175,21 +179,30 @@ const Notification = () => {
         <div className="flex flex-col gap-4 max-h-[50vh]">
           <h2 className="text-lg font-semibold text-gray-500">일기 리스트</h2>
           <div className="flex flex-col gap-2 overflow-y-auto">
-            {diaryData.map((diary, idx) => (
-              <CheckBox
-                key={diary.id}
-                label={diary.date}
-                checked={checkedIndex === idx}
-                onChange={() => handleChange(diary.id, idx)}
-              />
-            ))}
+            {diaryData.length === 0 ? (
+              <div className="p-4 font-medium text-center text-gray-400">
+                교환할 수 있는 일기가 없어요 😥
+              </div>
+            ) : (
+              diaryData.map((diary, idx) => (
+                <CheckBox
+                  key={diary.id}
+                  label={diary.date}
+                  checked={checkedIndex === idx}
+                  onChange={() => handleChange(diary.id, idx)}
+                />
+              ))
+            )}
           </div>
           <button
             type="button"
-            className="py-2 font-medium text-white rounded-md bg-blue"
+            className={`py-2 font-medium text-white rounded-md ${
+              diaryData.length === 0 || isSubmitting ? 'bg-gray-300' : 'bg-blue'
+            }`}
             onClick={handleDiaryExchange}
+            disabled={diaryData.length === 0 || isSubmitting}
           >
-            교환
+            {isSubmitting ? '교환 중...' : '교환'}
           </button>
         </div>
       </Modal>
