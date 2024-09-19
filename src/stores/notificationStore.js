@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const useNotificationStore = create((set) => ({
+const useNotificationStore = create((set, get) => ({
   notifications: [],
   unreadCount: 0,
 
@@ -20,6 +20,8 @@ const useNotificationStore = create((set) => ({
     set(() => ({
       unreadCount: 0,
     })),
+
+  getNotifications: () => get().notifications,
 }));
 
 export default useNotificationStore;
