@@ -201,7 +201,7 @@ DiaryCard.propTypes = {
   type: PropTypes.oneOf(['icons', 'date']),
   onDelete: PropTypes.func,
   exchange: PropTypes.bool,
-  timeAgo: PropTypes.string.isRequired,
+  timeAgo: PropTypes.string,
 };
 
 export default memo(DiaryCard);
