@@ -1,4 +1,4 @@
-import { TopHeader } from '@/components';
+import { LoadingSpinner, TopHeader } from '@/components';
 import { useFetchAllDiaryData } from '@/hooks';
 import { groupByMonth } from '@/utils';
 import { Helmet } from 'react-helmet-async';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 const PhotoGallery = () => {
   const [loadedImages, setLoadedImages] = useState({});
 
-  const { diaryData } = useFetchAllDiaryData();
+  const { diaryData, loading } = useFetchAllDiaryData();
 
   const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -21,6 +21,9 @@ const PhotoGallery = () => {
     setLoadedImages((prev) => ({ ...prev, [id]: true }));
   };
 
+  if (loading) {
+    return <LoadingSpinner text="하루몽이 사진을 불러오고 있어요" />;
+  }
   return (
     <>
       <Helmet>
