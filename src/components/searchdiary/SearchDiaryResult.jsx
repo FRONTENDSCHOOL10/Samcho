@@ -11,14 +11,12 @@ const SearchDiaryResult = ({
 
   if (Object.keys(searchResults).length > 0 && inputValue) {
     return (
-      <main className="flex flex-col">
+      <main>
         {Object.keys(searchResults).map((yearMonth) => (
-          <section key={yearMonth} className="my-5">
-            <h2 className="font-semibold text-left text-gray-450">
-              {yearMonth}
-            </h2>
+          <section key={yearMonth} className="flex flex-col">
+            <h2 className="mt-5 font-semibold text-left">{yearMonth}</h2>
             {searchResults[yearMonth].map((diary) => (
-              <div key={diary.id} className="">
+              <div key={diary.id} className="mb-5">
                 <DiaryCard diary={diary} buddyData={buddyData} />
               </div>
             ))}
