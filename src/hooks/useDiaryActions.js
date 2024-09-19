@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { pb } from '@/api';
+import imageCompression from 'browser-image-compression';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -87,10 +88,13 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           if (data.length > 0) {
             toast.dismiss();
             toast.error('오늘 일기는 이미 작성하셨습니다.');
+            setIsSubmitting(false);
             return;
           }
         } catch (error) {
           console.error('서버 통신중 에러 발생', error);
+          setIsSubmitting(false);
+          return;
         }
       }
 
@@ -105,8 +109,16 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         formData.append('weather', weather);
       });
       formData.append('content', text);
+
       if (picture) {
-        formData.append('picture', picture);
+        try {
+          const webpFile = await convertToWebP(picture);
+          formData.append('picture', webpFile);
+        } catch (error) {
+          console.error('이미지 변환 중 오류 발생:', error);
+          setIsSubmitting(false);
+          return;
+        }
       }
 
       const submitPromise = diaryId
@@ -129,6 +141,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         })
         .catch((error) => {
           console.error('[Error] 일기작성: ', error);
+          setIsSubmitting(false);
         });
     },
     [
@@ -214,6 +227,48 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     deleteDiary,
     exchangeDiary,
   };
+};
+
+// Webp 변환 함수
+const convertToWebP = async (file) => {
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  };
+
+  try {
+    const compressedFile = await imageCompression(file, options);
+
+    // Canvas를 사용하여 이미지 생성
+    const img = await createImageBitmap(compressedFile);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+
+    // WebP 지원 여부 확인
+    const isWebPSupported =
+      canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+
+    if (isWebPSupported) {
+      // WebP 지원되는 경우
+      const webpBlob = await new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.5);
+      });
+      return new File([webpBlob], 'image.webp', { type: 'image/webp' });
+    } else {
+      // WebP 지원되지 않는 경우 JPEG로 대체
+      const jpegBlob = await new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.5);
+      });
+      return new File([jpegBlob], 'image.jpg', { type: 'image/jpeg' });
+    }
+  } catch (error) {
+    console.error('이미지 변환 중 오류 발생:', error);
+    return file; // 변환에 실패하면 원본 파일 반환
+  }
 };
 
 export default useDiaryActions;
