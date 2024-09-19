@@ -72,6 +72,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       ) {
         toast.dismiss();
         toast.error('입력하지 않은 필수 값이 있습니다.');
+        setIsSubmitting(false);
         return;
       }
 
