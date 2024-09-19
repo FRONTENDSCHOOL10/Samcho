@@ -65,7 +65,7 @@ const MoodDistributionChart = ({ diaryData, loading }) => {
       case '나쁨':
         return 'bg-blue-700';
       case '슬픔':
-        return 'bg-gray-300';
+        return 'bg-blue-800';
       default:
         return 'bg-blue-50';
     }
