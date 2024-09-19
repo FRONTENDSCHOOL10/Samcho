@@ -1,5 +1,6 @@
 export const validateUsername = (username) => {
-  const usernameRegex = /^[a-zA-Z0-9]{4,}$/;
+  const usernameRegex =
+    /^(?=.*[a-zA-Z])(?:(?=.*[0-9])|(?:[^0-9]*))^[a-zA-Z0-9]{4,}$/;
   return usernameRegex.test(username);
 };
 
@@ -9,7 +10,7 @@ export const validateEmail = (email) => {
 };
 
 export const validateNickname = (nickname) => {
-  const nicknameRegex = /^[가-힣]{2,}$/;
+  const nicknameRegex = /^[가-힣a-zA-Z0-9]{2,}$/;
   return nicknameRegex.test(nickname);
 };
 

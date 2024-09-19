@@ -22,6 +22,7 @@ const Login = () => {
     e.preventDefault();
 
     if (username === '' || password === '') {
+      toast.dismiss();
       toast.error('아이디 혹은 비밀번호를 입력해 주세요.');
       return;
     }

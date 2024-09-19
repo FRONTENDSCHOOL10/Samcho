@@ -56,15 +56,19 @@ const Input = ({
   const successMessages = {
     username: renderSuccessMessage(
       id === 'username' && !error && hasValue && duplicate,
-      '사용가능한 아이디입니다.'
+      '사용 가능한 아이디입니다.'
+    ),
+    email: renderSuccessMessage(
+      id === 'email' && !error && hasValue,
+      '사용 가능한 이메일입니다.'
     ),
     name: renderSuccessMessage(
       id === 'name' && !error && hasValue && duplicate,
-      '사용가능한 닉네임입니다.'
+      '사용 가능한 닉네임입니다.'
     ),
     password: renderSuccessMessage(
       id === 'password' && !error && hasValue,
-      '사용가능한 비밀번호입니다.'
+      '사용 가능한 비밀번호입니다.'
     ),
     passwordConfirm: renderSuccessMessage(
       id === 'passwordConfirm' &&
@@ -118,9 +122,7 @@ const Input = ({
 /* 성공 메세지 렌더링 함수 */
 const renderSuccessMessage = (condition, message) => {
   return (
-    condition && (
-      <p className="w-[242px] text-green-600 text-xs mt-1">{message}</p>
-    )
+    condition && <p className="w-full mt-1 text-xs text-green-600">{message}</p>
   );
 };
 
