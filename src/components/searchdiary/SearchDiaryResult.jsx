@@ -40,6 +40,7 @@ SearchDiaryResult.propTypes = {
   searchResults: PropTypes.objectOf(PropTypes.array).isRequired,
   inputValue: PropTypes.string.isRequired,
   isSearched: PropTypes.bool.isRequired,
+  buddyData: PropTypes.array.isRequired,
 };
 
 export default SearchDiaryResult;
