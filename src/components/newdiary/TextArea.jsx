@@ -6,7 +6,7 @@ const TextArea = ({ text, setText }) => {
   const maxLength = 200;
 
   const textAreaClasses =
-    text.length == maxLength ? 'text-blue-500 font-semibold' : '';
+    text.length >= maxLength ? 'text-blue-500 font-semibold' : '';
 
   const onChange = (e) => {
     const value = e.target.value;
