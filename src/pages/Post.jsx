@@ -2,6 +2,12 @@ import { pb } from '@/api';
 import { DiaryCard, LoadingSpinner, TopHeader } from '@/components';
 import { useState, useEffect } from 'react';
 import { useFetchAllBuddyData } from '@/hooks';
+import {
+  isAfter,
+  addHours,
+  differenceInHours,
+  differenceInMinutes,
+} from 'date-fns';
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
@@ -21,13 +27,37 @@ const Post = () => {
             'recipient, recipient_diary.user, requester, requester_diary.user',
         });
 
-        const diary = records.map((record) => {
-          if (record.recipient === userId) {
-            return record.expand.requester_diary;
-          } else if (record.requester === userId) {
-            return record.expand.recipient_diary;
-          }
-        });
+        const now = new Date();
+
+        const diary = [];
+
+        await Promise.all(
+          records.map(async (record) => {
+            const updatedTime = new Date(record.updated);
+
+            if (isAfter(now, addHours(updatedTime, 24))) {
+              await pb.collection('post').delete(record.id);
+            } else {
+              const minutesDifference = differenceInMinutes(now, updatedTime);
+              const timeAgo =
+                minutesDifference < 60
+                  ? '방금 전'
+                  : `${differenceInHours(now, updatedTime)}시간`;
+
+              if (record.recipient === userId) {
+                diary.push({
+                  ...record.expand.requester_diary,
+                  timeAgo,
+                });
+              } else if (record.requester === userId) {
+                diary.push({
+                  ...record.expand.recipient_diary,
+                  timeAgo,
+                });
+              }
+            }
+          })
+        );
 
         setPosts(diary);
       } catch (error) {
@@ -70,6 +100,7 @@ const Post = () => {
             buddyData={buddyData}
             type="date"
             exchange={true}
+            timeAgo={post.timeAgo} // 계산된 시간 차이를 DiaryCard로 넘김
           />
         ))}
       </main>
