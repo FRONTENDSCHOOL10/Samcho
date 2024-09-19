@@ -9,7 +9,7 @@ import {
   validatePassword,
 } from '@/utils';
 import { useNavigate } from 'react-router-dom';
-import useCheckAvailability from '@/hooks/useCheckAvailability'; // 추가
+import { useCheckAvailability } from '@/hooks';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -71,7 +71,8 @@ const Register = () => {
         if (!validateEmail(value)) error = '유효한 이메일 주소를 입력하세요.';
         break;
       case 'name':
-        if (!validateNickname(value)) error = '한글 2자리 이상 입력하세요.';
+        if (!validateNickname(value))
+          error = '특수문자 제외 2자리 이상 입력하세요.';
         break;
       case 'password':
         if (!validatePassword(value))
@@ -95,9 +96,18 @@ const Register = () => {
 
     toast.dismiss();
 
+    // 비어있는 필드가 있는지 확인하고, 있으면 중단
+    for (const field of Object.keys(form)) {
+      if (!form[field].trim()) {
+        toast.error('입력하지 않은 필드가 존재합니다.');
+        return;
+      }
+    }
+
     let formIsValid = true;
     const newErrors = {};
 
+    // 필드 유효성 검사
     Object.keys(form).forEach((field) => {
       validateField(field, form[field]);
       if (errors[field]) {
@@ -109,7 +119,7 @@ const Register = () => {
     setErrors(newErrors);
 
     if (!formIsValid) {
-      toast.error('입력된 정보가 유효하지 않습니다.');
+      toast.error('입력된 필드값의 형식이 올바르지 않습니다.');
       return;
     }
 
@@ -153,7 +163,7 @@ const Register = () => {
       </header>
       <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-5">
-          <div className="flex gap-2 w-fit">
+          <div className="flex justify-between max-w-[250px] gap-2">
             <Input
               label="아이디"
               type="text"
@@ -163,15 +173,19 @@ const Register = () => {
               error={!!errors.username}
               errorMessage={errors.username}
               duplicate={duplicate.username}
-              className="!w-[166px] min-h-[61px]"
+              className="min-h-[61px]"
             />
-            <Button
-              type="secondary"
-              size="xs"
-              text="중복 확인"
+            <button
+              type="button"
               onClick={() => checkAvailability('username', form.username)}
-              className="!rounded-md"
-            />
+              className={`text-sm font-medium text-blue text-nowrap ${
+                !validateUsername(form.username) &&
+                'text-gray-300 cursor-not-allowed'
+              }`}
+              disabled={!validateUsername(form.username)}
+            >
+              중복확인
+            </button>
           </div>
           <Input
             label="이메일"
@@ -183,7 +197,7 @@ const Register = () => {
             errorMessage={errors.email}
             className="min-h-[61px]"
           />
-          <div className="flex gap-2 w-fit">
+          <div className="flex justify-between max-w-[250px] gap-2">
             <Input
               label="닉네임"
               type="text"
@@ -193,15 +207,19 @@ const Register = () => {
               error={!!errors.name}
               errorMessage={errors.name}
               duplicate={duplicate.name}
-              className="!w-[166px] min-h-[61px]"
+              className="min-h-[61px]"
             />
-            <Button
-              size="xs"
-              type="secondary"
-              text="중복 확인"
+            <button
+              type="button"
               onClick={() => checkAvailability('name', form.name)}
-              className="!rounded-md"
-            />
+              className={`text-sm font-medium text-blue text-nowrap ${
+                !validateNickname(form.name) &&
+                'text-gray-300 cursor-not-allowed'
+              }`}
+              disabled={!validateNickname(form.name)}
+            >
+              중복확인
+            </button>
           </div>
           <Input
             label="비밀번호"

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import pb from '@/api/pb';
 import toast from 'react-hot-toast';
-import { validateUsername, validateNickname } from '@/utils';
 
 export const useCheckAvailability = () => {
   const [duplicate, setDuplicate] = useState({ username: false, name: false });
@@ -12,51 +11,55 @@ export const useCheckAvailability = () => {
 
     switch (field) {
       case 'username':
-        if (!validateUsername(value)) {
-          toast.error('아이디 형식이 올바르지 않습니다.');
-          return;
-        }
-
-        try {
-          const existingUser = await pb
-            .collection('users')
-            .getFirstListItem(`username="${value}"`);
-          if (existingUser) {
-            toast.error('이미 존재하는 아이디 입니다.');
+        toast
+          .promise(
+            pb.collection('users').getFullList({
+              filter: `username = "${value}"`,
+            }),
+            {
+              loading: '아이디 중복 여부 확인중...',
+              success: (result) => {
+                if (result.length === 0) {
+                  setDuplicate((prev) => ({ ...prev, username: true }));
+                  return '사용 가능한 아이디 입니다.';
+                } else {
+                  setDuplicate((prev) => ({ ...prev, username: false }));
+                  throw new Error('중복된 아이디 입니다.');
+                }
+              },
+              error: '중복된 아이디 입니다.',
+            }
+          )
+          .catch((error) => {
             setDuplicate((prev) => ({ ...prev, username: false }));
-          }
-        } catch (error) {
-          if (error.status === 404) {
-            toast.success('사용 가능한 아이디 입니다!');
-            setDuplicate((prev) => ({ ...prev, username: true }));
-          } else {
-            throw error;
-          }
-        }
+            console.error('[Error] 아이디 중복 체크: ', error);
+          });
         break;
 
       case 'name':
-        if (!validateNickname(value)) {
-          toast.error('닉네임 형식이 올바르지 않습니다.');
-          return;
-        }
-
-        try {
-          const existingUser = await pb
-            .collection('users')
-            .getFirstListItem(`name="${value}"`);
-          if (existingUser) {
-            toast.error('이미 존재하는 닉네임 입니다!');
+        toast
+          .promise(
+            pb.collection('users').getFullList({
+              filter: `name = "${value}"`,
+            }),
+            {
+              loading: '닉네임 중복 여부 확인중...',
+              success: (result) => {
+                if (result.length === 0) {
+                  setDuplicate((prev) => ({ ...prev, name: true }));
+                  return '사용 가능한 닉네임 입니다.';
+                } else {
+                  setDuplicate((prev) => ({ ...prev, name: false }));
+                  throw new Error('중복된 닉네임 입니다.');
+                }
+              },
+              error: '중복된 닉네임 입니다.',
+            }
+          )
+          .catch((error) => {
             setDuplicate((prev) => ({ ...prev, name: false }));
-          }
-        } catch (error) {
-          if (error.status === 404) {
-            toast.success('사용 가능한 닉네임 입니다!');
-            setDuplicate((prev) => ({ ...prev, name: true }));
-          } else {
-            throw error;
-          }
-        }
+            console.error('[Error] 닉네임 중복 체크: ', error);
+          });
         break;
 
       default:
