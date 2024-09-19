@@ -134,6 +134,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     [
       diaryId,
       defaultTitle,
+      userId,
       selectedMood,
       selectedEmotions,
       selectedWeathers,
@@ -194,7 +195,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         console.error(error);
       }
     },
-    [diaryDetail]
+    [diaryDetail, userId]
   );
 
   return {
