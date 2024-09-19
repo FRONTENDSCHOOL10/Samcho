@@ -11,6 +11,7 @@ const Login = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const isLogin = authUtils.getAuth();
@@ -25,24 +26,34 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    toast.dismiss();
 
     if (username === '' || password === '') {
-      toast.dismiss();
-      toast.error('아이디 혹은 비밀번호를 입력해 주세요.');
+      toast.error('아이디 혹은 비밀번호를 입력해 주세요.', {
+        duration: 1500,
+      });
       return;
     }
 
+    setIsSubmitting(true);
     toast
-      .promise(authenticateUser(username, password), {
-        loading: '로그인 시도 중...',
-        success: '하루몽에 오신걸 환영합니다!',
-        error: '로그인에 실패했습니다...',
-      })
+      .promise(
+        authenticateUser(username, password),
+        {
+          loading: '로그인 시도 중...',
+          success: '하루몽에 오신걸 환영합니다!',
+          error: '로그인에 실패했습니다...',
+        },
+        {
+          duration: 2000,
+        }
+      )
       .then(() => {
         navigate('/');
       })
       .catch((error) => {
         console.error('[Error] 로그인 실패: ', error);
+        setIsSubmitting(false);
       });
   };
 
@@ -84,6 +95,7 @@ const Login = () => {
             text="로그인"
             className="flex-1"
             aria-disabled={username === '' || password === ''}
+            disabled={isSubmitting}
           />
         </div>
       </form>

@@ -21,16 +21,15 @@ const MypageSetting = () => {
 
   // 모달관련
   const { isOpen, openModal, closeModal } = useModal();
-  const isNicknameModalOpen = isOpen('nicknameModal');
 
   // 모달이 닫힐 때 setIsDisabled 초기화
   useEffect(() => {
-    if (!isNicknameModalOpen) {
+    if (!isOpen('nicknameModal')) {
       setIsDisabled(false);
       setNewNickname('');
       setIsNicknameAvailable(null);
     }
-  }, [isOpen, isNicknameModalOpen]);
+  }, [isOpen]);
 
   // 닉네임 입력이 변경되면 중복확인 상태를 초기화
   useEffect(() => {
@@ -48,23 +47,21 @@ const MypageSetting = () => {
 
   // 로그아웃 기능
   const handleLogout = useCallback(async () => {
-    setIsLoading(true);
     try {
       pb.authStore.clear();
       authUtils.setDefaultAuthData();
+      closeModal('logoutModal');
       navigate('/login');
     } catch {
       toast.error('로그아웃 중 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
     }
-  }, [navigate]);
+  }, [navigate, closeModal]);
 
   // 닉네임 수정
   const handleUpdateNickname = useCallback(async () => {
     toast.dismiss();
     if (!isNicknameAvailable) {
-      toast.error('닉네임 중복 확인을 먼저 해주세요!');
+      toast.error('닉네임 중복 확인을 해주세요!');
       return;
     }
 
@@ -165,7 +162,6 @@ const MypageSetting = () => {
           onClick={() => openModal('logoutModal')}
           className="w-full px-5 py-[15px] bg-white rounded-[10px] shadow-light flex justify-center items-center"
           aria-label="로그아웃"
-          disabled={isLoading}
         >
           <span className="text-lg font-bold text-blue-500">로그아웃</span>
         </button>
@@ -173,7 +169,6 @@ const MypageSetting = () => {
           onClick={() => openModal('withdrawalModal')}
           className="w-full px-5 py-[15px] bg-red rounded-[10px] shadow-light flex justify-center items-center"
           aria-label="회원 탈퇴"
-          disabled={isLoading}
         >
           <span className="text-lg font-bold text-white">회원탈퇴</span>
         </button>

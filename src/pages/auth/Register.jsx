@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Input } from '@/components';
 import toast from 'react-hot-toast';
 import pb from '@/api/pb';
@@ -9,14 +10,22 @@ import {
   validatePassword,
   authUtils,
 } from '@/utils';
-import { useNavigate } from 'react-router-dom';
 import { useCheckAvailability } from '@/hooks';
-import { useEffect } from 'react';
+
+const FORM_FIELDS = [
+  'username',
+  'email',
+  'name',
+  'password',
+  'passwordConfirm',
+];
+const DUPLICATE_CHECK_FIELDS = ['username', 'name'];
 
 const Register = () => {
   const navigate = useNavigate();
+  const { duplicate, checkAvailability, resetDuplicate } =
+    useCheckAvailability();
 
-  // 폼 상태
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -24,144 +33,130 @@ const Register = () => {
     password: '',
     passwordConfirm: '',
   });
-
-  // 에러 상태
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const isLogin = authUtils.getAuth();
-    if (isLogin.isAuth) navigate('/');
+    if (authUtils.getAuth().isAuth) navigate('/');
   }, [navigate]);
 
-  // 중복 확인 관련 훅 사용
-  const { duplicate, checkAvailability, resetDuplicate } =
-    useCheckAvailability();
+  const validateField = useCallback(
+    (id, value, updatedForm = form) => {
+      const validationRules = {
+        username: () =>
+          validateUsername(value)
+            ? ''
+            : '영문, 숫자 포함 4자리 이상 입력하세요.',
+        email: () =>
+          validateEmail(value) ? '' : '유효한 이메일 주소를 입력하세요.',
+        name: () =>
+          validateNickname(value) ? '' : '특수문자 제외 2자리 이상 입력하세요.',
+        password: () =>
+          validatePassword(value)
+            ? ''
+            : '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.',
+        passwordConfirm: () =>
+          value === updatedForm.password ? '' : '비밀번호가 일치하지 않습니다.',
+      };
 
-  // 입력 시 실시간 유효성 검증
+      return validationRules[id] ? validationRules[id]() : '';
+    },
+    [form]
+  );
+
   const handleChange = (e) => {
     const { id, value } = e.target;
 
-    // 아이디나 닉네임이 변경될 경우 중복 상태 초기화
-    if (id === 'username' || id === 'name') {
+    if (DUPLICATE_CHECK_FIELDS.includes(id)) {
       resetDuplicate(id);
     }
 
     setForm((prevForm) => {
       const updatedForm = { ...prevForm, [id]: value };
+      const error = validateField(id, value, updatedForm);
+      setErrors((prev) => ({ ...prev, [id]: error }));
 
-      // 실시간 유효성 검사
-      validateField(id, value, updatedForm);
-
-      // 비밀번호 변경 시 비밀번호 확인도 다시 검사
       if (id === 'password' || id === 'passwordConfirm') {
-        validateField(
+        const confirmError = validateField(
           'passwordConfirm',
           updatedForm.passwordConfirm,
           updatedForm
         );
+        setErrors((prev) => ({ ...prev, passwordConfirm: confirmError }));
       }
 
       return updatedForm;
     });
   };
 
-  // 유효성 검증을 통한 메세지 표시
-  const validateField = (id, value, updatedForm = form) => {
-    let error = '';
-
-    switch (id) {
-      case 'username':
-        if (!validateUsername(value))
-          error = '영문, 숫자 포함 4자리 이상 입력하세요.';
-        break;
-      case 'email':
-        if (!validateEmail(value)) error = '유효한 이메일 주소를 입력하세요.';
-        break;
-      case 'name':
-        if (!validateNickname(value))
-          error = '특수문자 제외 2자리 이상 입력하세요.';
-        break;
-      case 'password':
-        if (!validatePassword(value))
-          error = '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.';
-        break;
-      case 'passwordConfirm':
-        if (value !== updatedForm.password)
-          error = '비밀번호가 일치하지 않습니다.';
-        break;
-      default:
-        break;
-    }
-
-    setErrors((prevErrors) => ({ ...prevErrors, [id]: error }));
-  };
-
-  // 최종 유효성 검증 및 회원가입 데이터 제출
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { username, email, name, password, passwordConfirm } = form;
-
-    toast.dismiss();
-
-    // 비어있는 필드가 있는지 확인하고, 있으면 중단
-    for (const field of Object.keys(form)) {
-      if (!form[field].trim()) {
-        toast.error('입력하지 않은 필드가 존재합니다.');
-        return;
-      }
-    }
-
-    let formIsValid = true;
+  const validateForm = useCallback(() => {
+    let isValid = true;
     const newErrors = {};
 
-    // 필드 유효성 검사
-    Object.keys(form).forEach((field) => {
-      validateField(field, form[field]);
-      if (errors[field]) {
-        formIsValid = false;
-        newErrors[field] = errors[field];
+    FORM_FIELDS.forEach((field) => {
+      if (!form[field].trim()) {
+        newErrors[field] = '이 필드는 필수입니다.';
+        isValid = false;
+      } else {
+        const error = validateField(field, form[field]);
+        if (error) {
+          newErrors[field] = error;
+          isValid = false;
+        }
       }
     });
 
     setErrors(newErrors);
+    return isValid;
+  }, [form, validateField]);
 
-    if (!formIsValid) {
-      toast.error('입력된 필드값의 형식이 올바르지 않습니다.');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    toast.dismiss();
+
+    if (!validateForm()) {
+      toast.error('모든 필드를 올바르게 입력해주세요.');
       return;
     }
 
-    if (!duplicate.username) {
-      toast.error('아이디 중복 확인을 해주세요.');
+    if (!duplicate.username || !duplicate.name) {
+      toast.error('아이디와 닉네임 중복 확인을 해주세요.');
       return;
     }
 
-    if (!duplicate.name) {
-      toast.error('닉네임 중복 확인을 해주세요.');
-      return;
-    }
+    const data = { ...form, emailVisibility: true };
 
-    const data = {
-      username,
-      email,
-      name,
-      password,
-      passwordConfirm,
-      emailVisibility: true,
-    };
-
-    toast
-      .promise(pb.collection('users').create(data), {
+    try {
+      setIsSubmitting(true);
+      await toast.promise(pb.collection('users').create(data), {
         loading: '회원가입 시도 중...',
         success: '회원가입을 완료했습니다!',
         error: '회원가입에 실패했습니다...',
-      })
-      .then(() => {
-        navigate('/login');
-      })
-      .catch((error) => {
-        console.error('[Error] 회원가입: ', error);
       });
+      navigate('/login');
+    } catch (error) {
+      console.error('[Error] 회원가입: ', error);
+      setIsSubmitting(false);
+    }
   };
+
+  const renderDuplicateCheckButton = useCallback(
+    (field) => (
+      <button
+        type="button"
+        onClick={() => checkAvailability(field, form[field])}
+        className={`text-sm font-medium text-blue text-nowrap ${
+          validateField(field, form[field])
+            ? 'text-gray-300 cursor-not-allowed'
+            : ''
+        }`}
+        disabled={validateField(field, form[field])}
+      >
+        중복확인
+      </button>
+    ),
+    [checkAvailability, form, validateField]
+  );
 
   return (
     <div className="flex flex-col items-center justify-center gap-10 min-h-dvh">
@@ -182,17 +177,7 @@ const Register = () => {
               duplicate={duplicate.username}
               className="min-h-[61px]"
             />
-            <button
-              type="button"
-              onClick={() => checkAvailability('username', form.username)}
-              className={`text-sm font-medium text-blue text-nowrap ${
-                !validateUsername(form.username) &&
-                'text-gray-300 cursor-not-allowed'
-              }`}
-              disabled={!validateUsername(form.username)}
-            >
-              중복확인
-            </button>
+            {renderDuplicateCheckButton('username')}
           </div>
           <Input
             label="이메일"
@@ -216,17 +201,7 @@ const Register = () => {
               duplicate={duplicate.name}
               className="min-h-[61px]"
             />
-            <button
-              type="button"
-              onClick={() => checkAvailability('name', form.name)}
-              className={`text-sm font-medium text-blue text-nowrap ${
-                !validateNickname(form.name) &&
-                'text-gray-300 cursor-not-allowed'
-              }`}
-              disabled={!validateNickname(form.name)}
-            >
-              중복확인
-            </button>
+            {renderDuplicateCheckButton('name')}
           </div>
           <Input
             label="비밀번호"
@@ -264,6 +239,7 @@ const Register = () => {
             text="회원가입"
             type="primary"
             className="flex-1"
+            disabled={isSubmitting}
           />
         </div>
       </form>
@@ -271,4 +247,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default React.memo(Register);
