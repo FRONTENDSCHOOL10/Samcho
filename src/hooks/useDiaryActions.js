@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { pb } from '@/api';
 import imageCompression from 'browser-image-compression';
+import { format } from 'date-fns';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -137,7 +138,8 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         })
         .then(() => {
           setIsSubmitting(false);
-          navigate('/');
+
+          navigate(`/home/calendar?date=${format(defaultTitle, 'yyyy-MM')}`);
         })
         .catch((error) => {
           console.error('[Error] 일기작성: ', error);

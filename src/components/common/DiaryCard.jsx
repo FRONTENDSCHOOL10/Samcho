@@ -152,7 +152,7 @@ const DiaryCard = ({
               <img
                 src={`${baseImageUrl}/${id}/${picture}`}
                 alt={`${date} 사진`}
-                className={`rounded-[0.625rem] aspect-square ${
+                className={`rounded-[0.625rem] aspect-square object-cover ${
                   !isImageLoaded ? 'hidden' : 'block'
                 }`}
                 width={100}

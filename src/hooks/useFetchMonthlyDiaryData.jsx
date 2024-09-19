@@ -45,7 +45,7 @@ const useFetchMonthlyDiaryData = (selectedMonth) => {
     getData();
   }, [selectedMonth, navigate, userId]);
 
-  return { diaryData, loading };
+  return { diaryData, setDiaryData, loading };
 };
 
 useFetchMonthlyDiaryData.propTypes = {
