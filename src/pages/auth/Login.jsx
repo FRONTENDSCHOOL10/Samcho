@@ -13,6 +13,11 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
+    const isLogin = authUtils.getAuth();
+    if (isLogin.isAuth) navigate('/');
+  }, [navigate]);
+
+  useEffect(() => {
     if (state && !state.isAuth) {
       toast.error('하루몽은 로그인 후 이용 가능합니다!');
     }
