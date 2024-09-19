@@ -8,13 +8,17 @@ import {
   Search,
   Notification,
 } from '@/assets/icons/menu';
-import { useModal } from '@/hooks';
+import { useModal, useNotification } from '@/hooks';
 import { Modal, Select } from '..';
+import useNotificationStore from '@/stores/notificationStore';
 
 const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [tempMoodFilter, setTempMoodFilter] = useState(selectedMood);
   const { isOpen, openModal, closeModal } = useModal();
+  const unreadCount = useNotificationStore((state) => state.unreadCount);
+
+  useNotification();
 
   const handleToggleIcon = () => {
     setIsCalendarView(!isCalendarView);
@@ -45,7 +49,14 @@ const TopNavigation = ({ selectedMood, setSelectedMood, onToggleView }) => {
             <Search aria-hidden="true" className=" text-gray-450" />
           </Link>
           <Link to={'/home/notification'} title="알림">
-            <Notification className=" fill-gray-450" aria-hidden="true" />
+            <div className="relative">
+              <Notification className=" fill-gray-450" aria-hidden="true" />
+              {unreadCount > 0 && (
+                <span className="absolute flex items-center justify-center w-4 h-4 text-xs text-white rounded-full -right-1 -top-1 bg-red">
+                  {unreadCount}
+                </span>
+              )}
+            </div>
           </Link>
 
           {isCalendarView ? (
