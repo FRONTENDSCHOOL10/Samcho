@@ -29,18 +29,15 @@ const Post = () => {
 
         const now = new Date();
 
-        // 필터링과 삭제를 동시에 처리하는 최적화된 방법
         const diary = [];
 
         await Promise.all(
           records.map(async (record) => {
             const updatedTime = new Date(record.updated);
 
-            // 24시간이 지난 데이터는 삭제
             if (isAfter(now, addHours(updatedTime, 24))) {
               await pb.collection('post').delete(record.id);
             } else {
-              // 24시간 내의 데이터는 diary 배열에 추가
               const minutesDifference = differenceInMinutes(now, updatedTime);
               const timeAgo =
                 minutesDifference < 60
