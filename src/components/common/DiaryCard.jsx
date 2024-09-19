@@ -17,6 +17,7 @@ const DiaryCard = ({
   type = 'icons',
   onDelete,
   exchange = false,
+  timeAgo,
 }) => {
   const { id, date, mood, emotion, weather, picture, content, expand } = diary;
 
@@ -35,19 +36,23 @@ const DiaryCard = ({
   };
 
   const formattedDate =
-    type === 'date'
-      ? format(new Date(date), 'yyyy년 M월 d일 EEEE', { locale: ko })
-      : null;
+    type === 'date' ? format(new Date(date), 'yyyy.MM.dd') : null;
 
   const dateOrIcons =
     type === 'date' ? (
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between">
         <span className="text-sm font-medium text-gray-450">
           From.{expand?.user?.name}
         </span>
-        <span className="text-sm font-medium text-right text-gray-450">
-          {formattedDate}
-        </span>
+        <div className="flex flex-col text-sm font-medium text-right text-gray-450">
+          <span
+            className="text-xs text-gray-300"
+            aria-label={timeAgo === '방금 전' ? undefined : `${timeAgo} 경과`}
+          >
+            {timeAgo}
+          </span>
+          <span>{formattedDate}</span>
+        </div>
       </div>
     ) : (
       <div
@@ -196,6 +201,7 @@ DiaryCard.propTypes = {
   type: PropTypes.oneOf(['icons', 'date']),
   onDelete: PropTypes.func,
   exchange: PropTypes.bool,
+  timeAgo: PropTypes.string.isRequired,
 };
 
 export default memo(DiaryCard);
