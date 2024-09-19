@@ -1,5 +1,6 @@
 import pb from '@/api/pb';
-import useNotificationStore from '@/stores/notificationStore';
+import { useNotificationStore } from '@/stores';
+
 import { authUtils } from '@/utils/authUtils';
 import { useEffect } from 'react';
 
