@@ -1,9 +1,12 @@
 import { useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
-import { groupByMonth } from '@/utils';
+import { authUtils, groupByMonth } from '@/utils';
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const useSearchDiary = () => {
+  const { user } = authUtils.getAuth();
+  const userId = user.id;
+
   const { diaryData, loading } = useFetchAllDiaryData();
   const { buddyData } = useFetchAllBuddyData();
 
@@ -12,13 +15,13 @@ const useSearchDiary = () => {
   const [searchResults, setSearchResults] = useState({});
   const [isSearched, setIsSearched] = useState(false);
   const [history, setHistory] = useState(() => {
-    const savedHistory = localStorage.getItem('searchHistory');
+    const savedHistory = localStorage.getItem(`searchHistory_${userId}`);
     return savedHistory ? JSON.parse(savedHistory) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('searchHistory', JSON.stringify(history));
-  }, [history]);
+    localStorage.setItem(`searchHistory_${userId}`, JSON.stringify(history));
+  }, [history, userId]);
 
   const handleAddHistory = (term) => {
     if (term === '') return;
@@ -34,7 +37,7 @@ const useSearchDiary = () => {
 
   const handleClearHistory = () => {
     setHistory([]);
-    localStorage.removeItem('searchHistory');
+    localStorage.removeItem(`searchHistory_${userId}`);
   };
 
   const handleDeleteHistoryItem = (itemToDelete) => {
