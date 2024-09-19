@@ -7,9 +7,11 @@ import {
   validateUsername,
   validateNickname,
   validatePassword,
+  authUtils,
 } from '@/utils';
 import { useNavigate } from 'react-router-dom';
 import { useCheckAvailability } from '@/hooks';
+import { useEffect } from 'react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -25,6 +27,11 @@ const Register = () => {
 
   // 에러 상태
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const isLogin = authUtils.getAuth();
+    if (isLogin.isAuth) navigate('/');
+  }, [navigate]);
 
   // 중복 확인 관련 훅 사용
   const { duplicate, checkAvailability, resetDuplicate } =

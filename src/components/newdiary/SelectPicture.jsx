@@ -1,6 +1,8 @@
 import { useState, useEffect, memo } from 'react';
 import CameraIcon from '@/assets/icons/diary/camera.svg';
 import PropTypes from 'prop-types';
+import heic2any from 'heic2any';
+import toast from 'react-hot-toast';
 
 const SelectPicture = ({ picture, setPicture }) => {
   const [preview, setPreview] = useState(null);
@@ -14,16 +16,52 @@ const SelectPicture = ({ picture, setPicture }) => {
       setPreview(URL.createObjectURL(file));
     };
 
-    if (picture instanceof File) {
+    const handleFileLoad = (file) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
       };
-      reader.readAsDataURL(picture);
-    } else if (typeof picture === 'string') {
-      fetchImage(picture);
-    } else {
-      setPreview(null);
+      reader.readAsDataURL(file);
+    };
+
+    const handleHEICFile = async (file) => {
+      const convertPromise = heic2any({ blob: file, toType: 'image/jpeg' });
+
+      toast.promise(convertPromise, {
+        loading: '파일 변환 중...',
+        success: '파일 변환 완료!',
+        error: 'HEIC 변환 오류 발생',
+      });
+
+      try {
+        const jpegBlob = await convertPromise;
+        const jpegFile = new File([jpegBlob], 'image.jpg', {
+          type: 'image/jpeg',
+        });
+        setPicture(jpegFile);
+        setPreview(URL.createObjectURL(jpegFile));
+      } catch (error) {
+        console.error('HEIC conversion error:', error);
+        setPreview(null);
+      }
+    };
+
+    switch (true) {
+      case picture instanceof File:
+        switch (picture.type) {
+          case 'image/heic':
+          case 'image/heif':
+            handleHEICFile(picture);
+            break;
+          default:
+            handleFileLoad(picture);
+        }
+        break;
+      case typeof picture === 'string':
+        fetchImage(picture);
+        break;
+      default:
+        setPreview(null);
     }
   }, [picture, setPicture]);
 
@@ -58,7 +96,7 @@ const SelectPicture = ({ picture, setPicture }) => {
       <input
         id="fileInput"
         type="file"
-        accept="image/jpeg, image/png"
+        accept="image/jpeg, image/png, image/heic, image/heif"
         className="hidden"
         onChange={handleFileChange}
       />
