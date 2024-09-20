@@ -4,8 +4,7 @@ import { Modal, TopHeader, ConfirmModal } from '@/components';
 import { FaChevronRight } from 'react-icons/fa';
 import { pb } from '@/api';
 import toast from 'react-hot-toast';
-// import useModal from '@/hooks/useModal';
-import { authUtils } from '@/utils';
+import { authUtils, validateNickname, deleteData, deleteFilter } from '@/utils';
 import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 
 const MypageSetting = () => {
@@ -23,11 +22,12 @@ const MypageSetting = () => {
   const [isValiable, setIsValiable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 모달관련
   const { isOpen, openModal, closeModal } = useModal();
 
-  // 모달이 닫힐 때 setIsDisabled 초기화
+  // 모달이 닫힐 때 초기화
   useEffect(() => {
     if (!isOpen('nicknameModal')) {
       setIsDisabled(false);
@@ -46,7 +46,6 @@ const MypageSetting = () => {
     }
   }, [newNickname]);
 
-  // 위치 상태에서 닉네임을 설정합니다.
   useEffect(() => {
     const { user } = authUtils.getAuth();
     setName(user.name);
@@ -72,7 +71,6 @@ const MypageSetting = () => {
 
     setIsLoading(true);
     try {
-      // localStorage auth에도 nickname 값 세팅시키기
       const userData = authUtils.getAuth();
 
       const userId = userData.user.id;
@@ -144,66 +142,49 @@ const MypageSetting = () => {
   //회원 탈퇴 기능 관련함수
   const handleDeleteAccount = useCallback(async () => {
     setIsLoading(true);
+    setIsDeleting(true);
 
-    try {
-      const { user } = authUtils.getAuth();
-      const userId = user.id;
+    const { user } = authUtils.getAuth();
+    const userId = user.id;
 
-      // buddyData 삭제
-      if (buddyData && buddyData.length > 0) {
-        await Promise.all(
-          buddyData.map((buddy) => pb.collection('buddy').delete(buddy.id))
-        );
-      }
+    toast
+      .promise(
+        (async () => {
+          await deleteData(buddyData, 'buddy');
+          await deleteData(diaryData, 'diary');
 
-      // diaryData 삭제
-      if (diaryData && diaryData.length > 0) {
-        await Promise.all(
-          diaryData.map((diary) => pb.collection('diary').delete(diary.id))
-        );
-      }
+          await deleteFilter(
+            'notification',
+            `(recipient = "${userId}" || requester = "${userId}")`
+          );
+          await deleteFilter(
+            'post',
+            `(recipient = "${userId}" || requester = "${userId}")`
+          );
 
-      // notification 컬렉션에서 삭제 (recipient 또는 requester가 user인 경우)
-      const notifications = await pb.collection('notification').getFullList({
-        filter: `(recipient = "${userId}" || requester = "${userId}")`,
+          await pb.collection('users').delete(userId);
+
+          pb.authStore.clear();
+          authUtils.setDefaultAuthData();
+
+          navigate('/login');
+        })(),
+        {
+          loading: '회원탈퇴 처리 중...',
+          success: '회원탈퇴가 성공적으로 처리되었습니다.',
+          error: '회원탈퇴 처리 중 오류가 발생했습니다.',
+        },
+        {
+          duration: 2000,
+        }
+      )
+      .catch((error) => {
+        console.error('회원탈퇴 실패: ', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setIsDeleting(false);
       });
-
-      if (notifications.length > 0) {
-        await Promise.all(
-          notifications.map((notification) =>
-            pb.collection('notification').delete(notification.id)
-          )
-        );
-      }
-
-      // post 컬렉션에서 삭제 (recipient 또는 requester가 user인 경우)
-      const posts = await pb.collection('post').getFullList({
-        filter: `(recipient = "${userId}" || requester = "${userId}")`,
-      });
-
-      if (posts.length > 0) {
-        await Promise.all(
-          posts.map((post) => pb.collection('post').delete(post.id))
-        );
-      }
-
-      // 유저 계정 삭제
-      await pb.collection('users').delete(userId);
-
-      // 인증 정보 초기화 및 로그아웃 처리
-      pb.authStore.clear();
-      authUtils.setDefaultAuthData();
-
-      // 로그인 페이지로 이동
-      navigate('/login');
-
-      toast.success('회원탈퇴가 성공적으로 처리되었습니다.');
-    } catch (error) {
-      toast.error('회원탈퇴 처리 중 오류가 발생했습니다.');
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
   }, [buddyData, diaryData, navigate]);
 
   return (
@@ -312,6 +293,7 @@ const MypageSetting = () => {
         closeModal={() => closeModal('withdrawalModal')}
         title="회원탈퇴"
         onConfirm={() => handleDeleteAccount()}
+        disabled={isDeleting}
       >
         정말 회원탈퇴를 하시겠습니까?
       </ConfirmModal>
