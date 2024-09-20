@@ -4,11 +4,14 @@ import { Modal, TopHeader, ConfirmModal } from '@/components';
 import { FaChevronRight } from 'react-icons/fa';
 import { pb } from '@/api';
 import toast from 'react-hot-toast';
-import useModal from '@/hooks/useModal';
-import { authUtils, validateNickname } from '@/utils';
+import { authUtils, validateNickname, deleteData, deleteFilter } from '@/utils';
+import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 
 const MypageSetting = () => {
   const navigate = useNavigate();
+  // 유저 관련 데이터
+  const { buddyData } = useFetchAllBuddyData(true);
+  const { diaryData } = useFetchAllDiaryData();
 
   // 유저 상태 관리
   const [name, setName] = useState('');
@@ -19,11 +22,12 @@ const MypageSetting = () => {
   const [isValiable, setIsValiable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // 모달관련
   const { isOpen, openModal, closeModal } = useModal();
 
-  // 모달이 닫힐 때 setIsDisabled 초기화
+  // 모달이 닫힐 때 초기화
   useEffect(() => {
     if (!isOpen('nicknameModal')) {
       setIsDisabled(false);
@@ -42,7 +46,6 @@ const MypageSetting = () => {
     }
   }, [newNickname]);
 
-  // 위치 상태에서 닉네임을 설정합니다.
   useEffect(() => {
     const { user } = authUtils.getAuth();
     setName(user.name);
@@ -68,7 +71,6 @@ const MypageSetting = () => {
 
     setIsLoading(true);
     try {
-      // localStorage auth에도 nickname 값 세팅시키기
       const userData = authUtils.getAuth();
 
       const userId = userData.user.id;
@@ -140,20 +142,50 @@ const MypageSetting = () => {
   //회원 탈퇴 기능 관련함수
   const handleDeleteAccount = useCallback(async () => {
     setIsLoading(true);
+    setIsDeleting(true);
 
     const { user } = authUtils.getAuth();
+    const userId = user.id;
 
-    await pb.collection('users').delete(user.id);
+    toast
+      .promise(
+        (async () => {
+          await deleteData(buddyData, 'buddy');
+          await deleteData(diaryData, 'diary');
 
-    pb.authStore.clear();
-    authUtils.setDefaultAuthData();
+          await deleteFilter(
+            'notification',
+            `(recipient = "${userId}" || requester = "${userId}")`
+          );
+          await deleteFilter(
+            'post',
+            `(recipient = "${userId}" || requester = "${userId}")`
+          );
 
-    navigate('/login');
+          await pb.collection('users').delete(userId);
 
-    toast.success('회원탈퇴가 성공적으로 처리되었습니다.', {
-      duration: 2000,
-    });
-  }, [navigate]);
+          pb.authStore.clear();
+          authUtils.setDefaultAuthData();
+
+          navigate('/login');
+        })(),
+        {
+          loading: '회원탈퇴 처리 중...',
+          success: '회원탈퇴가 성공적으로 처리되었습니다.',
+          error: '회원탈퇴 처리 중 오류가 발생했습니다.',
+        },
+        {
+          duration: 2000,
+        }
+      )
+      .catch((error) => {
+        console.error('회원탈퇴 실패: ', error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setIsDeleting(false);
+      });
+  }, [buddyData, diaryData, navigate]);
 
   return (
     <section className="flex flex-col justify-between min-h-dvh pb-[80px]">
@@ -261,6 +293,7 @@ const MypageSetting = () => {
         closeModal={() => closeModal('withdrawalModal')}
         title="회원탈퇴"
         onConfirm={() => handleDeleteAccount()}
+        disabled={isDeleting}
       >
         정말 회원탈퇴를 하시겠습니까?
       </ConfirmModal>
