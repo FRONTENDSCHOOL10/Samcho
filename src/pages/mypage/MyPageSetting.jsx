@@ -150,7 +150,9 @@ const MypageSetting = () => {
 
     navigate('/login');
 
-    toast.success('회원탈퇴가 성공적으로 처리되었습니다.');
+    toast.success('회원탈퇴가 성공적으로 처리되었습니다.', {
+      duration: 2000,
+    });
   }, [navigate]);
 
   return (
