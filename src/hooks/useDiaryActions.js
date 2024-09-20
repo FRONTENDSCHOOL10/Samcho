@@ -230,6 +230,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
   const exchangeDiary = useCallback(
     async (buddy, closeModal) => {
       try {
+        // 1. notification에서 교환 요청 중복 확인
         const existingRequest = await pb
           .collection('notification')
           .getFullList({
@@ -237,10 +238,36 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           });
 
         if (existingRequest.length > 0) {
-          toast.error('이미 해당 사용자와 교환중인 일기가 있습니다.');
+          toast.error('이미 해당 단짝과 교환중인 일기가 있습니다.', {
+            duration: 2000,
+            id: 'RequestDuplicationPostPrevent',
+          });
           return;
         }
 
+        // 2. post에서 이미 같은 일기로 교환된 기록이 있는지 확인
+        const existingExchange = await pb.collection('post').getFullList({
+          filter: `
+              (
+                (recipient = "${buddy}" && requester = "${userId}") || 
+                (recipient = "${userId}" && requester = "${buddy}")
+              ) && 
+              (
+                recipient_diary = "${diaryDetail.id}" || 
+                requester_diary = "${diaryDetail.id}"
+              )
+            `,
+        });
+
+        if (existingExchange.length > 0) {
+          toast.error('이미 해당 단짝과 이 일기를 교환 중입니다.', {
+            duration: 2000,
+            id: 'PostDuplicationPrevent',
+          });
+          return;
+        }
+
+        // 3. post 컬렉션에 교환일기 생성 (pending)
         const post = await pb.collection('post').create({
           recipient: buddy,
           requester: userId,
@@ -248,6 +275,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           status: 'pending',
         });
 
+        // 4. notification에 교환 요청 알림 생성
         await pb.collection('notification').create({
           recipient: buddy,
           requester: userId,
