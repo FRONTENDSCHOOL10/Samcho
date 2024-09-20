@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { pb } from '@/api';
 import imageCompression from 'browser-image-compression';
 import { format } from 'date-fns';
+import { debounce } from 'lodash';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -30,6 +31,57 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       }
     }
   }, [diaryDetail]);
+
+  useEffect(() => {
+    if (!diaryId) {
+      const autosaveData = sessionStorage.getItem('autosave');
+
+      if (autosaveData) {
+        const { selectedMood, selectedEmotions, selectedWeathers, text } =
+          JSON.parse(autosaveData);
+
+        if (selectedMood) {
+          setSelectedMood(selectedMood);
+        }
+
+        if (selectedEmotions && Array.isArray(selectedEmotions)) {
+          setSelectedEmotions(selectedEmotions);
+        }
+
+        if (selectedWeathers && Array.isArray(selectedWeathers)) {
+          setSelectedWeathers(selectedWeathers);
+        }
+
+        if (text) {
+          setText(text);
+        }
+      }
+    }
+  }, [
+    setSelectedEmotions,
+    setSelectedMood,
+    setSelectedWeathers,
+    setText,
+    diaryId,
+  ]);
+
+  useEffect(() => {
+    if (!diaryId) {
+      const saveData = debounce(() => {
+        const autosaveData = {
+          selectedMood,
+          selectedEmotions,
+          selectedWeathers,
+          text,
+        };
+
+        sessionStorage.setItem('autosave', JSON.stringify(autosaveData));
+      }, 500);
+
+      saveData();
+      return () => saveData.cancel();
+    }
+  }, [selectedMood, selectedEmotions, selectedWeathers, text, diaryId]);
 
   const handleEmotionClick = useCallback(
     (text) => {
@@ -138,7 +190,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         })
         .then(() => {
           setIsSubmitting(false);
-
+          sessionStorage.removeItem('autosave');
           navigate(`/home/calendar?date=${format(defaultTitle, 'yyyy-MM')}`);
         })
         .catch((error) => {
@@ -217,6 +269,8 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     selectedMood,
     selectedEmotions,
     selectedWeathers,
+    setSelectedEmotions,
+    setSelectedWeathers,
     text,
     setText,
     picture,

@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import emotions from '@/assets/icons/emotions/emotions';
 import weathers from '@/assets/icons/weather/weathers';
 import {
@@ -11,7 +12,6 @@ import {
 } from '@/components';
 import { useFetchDiaryDetail, useDiaryActions } from '@/hooks';
 import { format } from 'date-fns';
-import { useLocation } from 'react-router-dom';
 
 export const Component = () => {
   const location = useLocation();
@@ -26,10 +26,10 @@ export const Component = () => {
     selectedEmotions,
     selectedWeathers,
     text,
+    setSelectedMood,
     setText,
     picture,
     setPicture,
-    setSelectedMood,
     handleEmotionClick,
     handleWeatherClick,
     isSubmitting,
