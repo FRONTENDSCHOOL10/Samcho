@@ -142,7 +142,7 @@ const DiaryCard = ({
             <div className="min-w-[100px] max-w-[100px] min-h-[100px] rounded-[0.625rem] bg-gray-100 text-xs content-center text-center font-medium text-gray-450">
               등록된
               <br />
-              사진이 없어요...
+              사진이 없어요
             </div>
           ) : (
             <>

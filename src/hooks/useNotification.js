@@ -79,6 +79,9 @@ const useNotification = () => {
           read: false,
         });
       }
+      if (e.action === 'delete') {
+        fetchNotifications();
+      }
     };
 
     fetchNotifications();
