@@ -211,21 +211,34 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     ]
   );
 
-  const deleteDiary = useCallback(
-    async (id, closeModal, onDelete) => {
-      closeModal('deleteModal');
-      try {
-        await pb.collection('diary').delete(id);
-        toast.success('일기 삭제가 완료되었습니다.');
-        if (onDelete) onDelete(id); // 상태 업데이트
-      } catch (error) {
-        toast.error('일기 삭제 중 오류가 발생했습니다.');
-        console.error('[error] 다이어리 삭제 실패: ', error);
+  const deleteDiary = async (id, closeModal, onDelete) => {
+    try {
+      const post = await pb.collection('post').getFullList({
+        filter: `requester_diary = "${id}" || recipient_diary = "${id}"`,
+      });
+
+      if (post.length > 0 && post.some((item) => item.status === 'accepted')) {
+        toast.error('교환 중인 일기는 삭제할 수 없습니다 🙅‍♀️');
+        if (closeModal) closeModal();
+        return;
       }
-      if (!onDelete) navigate('/');
-    },
-    [navigate]
-  );
+
+      await toast.promise(pb.collection('diary').delete(id), {
+        loading: '일기를 삭제하는 중입니다...⏳',
+        success: '일기를 성공적으로 삭제했습니다.',
+        error: '일기 삭제 중 오류가 발생했습니다. 다시 시도해주세요 😥',
+      });
+
+      if (closeModal) closeModal();
+      if (onDelete) onDelete(id);
+      navigate('/');
+    } catch (error) {
+      console.error('[error] 다이어리 삭제 실패: ', error);
+      throw error;
+    }
+
+    // if (!onDelete) navigate('/');
+  };
 
   const exchangeDiary = useCallback(
     async (buddy, closeModal) => {
