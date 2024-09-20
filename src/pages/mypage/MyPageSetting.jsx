@@ -5,7 +5,7 @@ import { DirectionRight } from '@/assets/icons/direction';
 import { pb } from '@/api';
 import toast from 'react-hot-toast';
 import useModal from '@/hooks/useModal';
-import { authUtils } from '@/utils';
+import { authUtils, validateNickname } from '@/utils';
 
 const MypageSetting = () => {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ const MypageSetting = () => {
 
   // 기능관련
   const [isNicknameAvailable, setIsNicknameAvailable] = useState(null);
+  const [isValiable, setIsValiable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -28,6 +29,7 @@ const MypageSetting = () => {
       setIsDisabled(false);
       setNewNickname('');
       setIsNicknameAvailable(null);
+      setIsValiable(false);
     }
   }, [isOpen]);
 
@@ -36,6 +38,7 @@ const MypageSetting = () => {
     if (newNickname) {
       setIsNicknameAvailable(null);
       setIsDisabled(false);
+      setIsValiable(false);
     }
   }, [newNickname]);
 
@@ -53,17 +56,15 @@ const MypageSetting = () => {
       closeModal('logoutModal');
       navigate('/login');
     } catch {
-      toast.error('로그아웃 중 오류가 발생했습니다.');
+      toast.error('로그아웃 중 오류가 발생했습니다.', {
+        duration: 2000,
+      });
     }
   }, [navigate, closeModal]);
 
   // 닉네임 수정
   const handleUpdateNickname = useCallback(async () => {
     toast.dismiss();
-    if (!isNicknameAvailable) {
-      toast.error('닉네임 중복 확인을 해주세요!');
-      return;
-    }
 
     setIsLoading(true);
     try {
@@ -78,37 +79,60 @@ const MypageSetting = () => {
       authUtils.setUpdateData(userData);
 
       setName(newNickname);
-      toast.success('닉네임이 수정되었어요!');
+      toast.success('닉네임이 수정되었어요!', {
+        duration: 2000,
+      });
       closeModal('nicknameModal');
     } catch (error) {
-      toast.error('닉네임 업데이트 중 오류가 발생했습니다.');
+      toast.error('닉네임 업데이트 중 오류가 발생했습니다.', {
+        duration: 2000,
+      });
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  }, [newNickname, isNicknameAvailable, closeModal]);
+  }, [newNickname, closeModal]);
 
-  // 닉네임 중복 확인
+  // 닉네임 중복 확인 및 유효성 검사
   const checkNicknameAvailability = useCallback(async () => {
     toast.dismiss();
     if (!newNickname.trim()) {
-      toast.error('닉네임을 입력해주세요!');
+      toast.error('닉네임을 입력해주세요!', {
+        duration: 2000,
+      });
       return;
     }
 
     toast.dismiss();
 
+    const isValidation = validateNickname(newNickname);
+
+    if (!isValidation) {
+      toast.error('닉네임 형식이 올바르지 않아요!', {
+        duration: 2000,
+      });
+      return;
+    }
+
+    setIsValiable(true);
+
     try {
       await pb.collection('users').getFirstListItem(`name = "${newNickname}"`);
       setIsNicknameAvailable(false);
-      toast.error('이미 존재하는 닉네임이에요!');
+      toast.error('이미 존재하는 닉네임이에요!', {
+        duration: 2000,
+      });
     } catch (error) {
       if (error.status === 404) {
         setIsNicknameAvailable(true);
-        toast.success('사용 가능한 닉네임이에요!');
+        toast.success('사용 가능한 닉네임이에요!', {
+          duration: 2000,
+        });
         setIsDisabled(true);
       } else {
-        toast.error('닉네임 확인 중 오류가 발생했어요!');
+        toast.error('닉네임 확인 중 오류가 발생했어요!', {
+          duration: 2000,
+        });
       }
     }
   }, [newNickname]);
@@ -209,11 +233,11 @@ const MypageSetting = () => {
           <button
             onClick={handleUpdateNickname}
             className={`p-2 text-white ${
-              isLoading || isNicknameAvailable === false
-                ? 'bg-gray-300'
-                : 'bg-blue-500'
+              isLoading ? 'bg-gray-300' : 'bg-blue-500'
             } rounded-md`}
-            disabled={isLoading || isNicknameAvailable === false}
+            disabled={
+              isLoading || isNicknameAvailable === false || isValiable === false
+            }
           >
             {isLoading ? '업데이트 중...' : '닉네임 변경'}
           </button>
