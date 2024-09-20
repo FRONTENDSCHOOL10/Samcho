@@ -22,7 +22,7 @@ const Chart = () => {
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
       />
-      <MoodChart />
+      <MoodChart diaryData={diaryData} loading={loading} />
       <MoodDistributionChart diaryData={diaryData} loading={loading} />
       <EmotionRanking diaryData={diaryData} loading={loading} />
     </section>

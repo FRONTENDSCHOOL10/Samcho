@@ -60,7 +60,7 @@ const EmotionRanking = ({ diaryData, loading }) => {
   return (
     <article className="flex flex-col w-full min-h-[270px] gap-6 p-4 bg-white rounded-[0.625rem] shadow-light">
       <header className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-gray-600">감정랭킹</h2>
+        <h2 className="text-base font-semibold text-gray-600">감정 랭킹</h2>
         <Link
           to="/chart/more"
           state={{ diaryData }}
