@@ -22,6 +22,7 @@ const Login = () => {
     if (state && !state.isAuth) {
       toast.error('하루몽은 로그인 후 이용 가능합니다!', {
         id: 'isNotLogin',
+        duration: 2000,
       });
     }
   }, [state]);
@@ -127,7 +128,9 @@ const authenticateUser = async (username, password) => {
     return response;
   } catch (error) {
     if (error.message === '이메일 인증이 필요합니다') {
-      toast.error('가입한 이메일의 인증을 확인 후 로그인 하세요');
+      toast.error('가입한 이메일의 인증을 확인 후 로그인 하세요', {
+        duration: 2000,
+      });
     }
     throw error;
   }

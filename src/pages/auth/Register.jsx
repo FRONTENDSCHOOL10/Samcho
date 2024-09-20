@@ -115,12 +115,16 @@ const Register = () => {
     toast.remove();
 
     if (!validateForm()) {
-      toast.error('모든 필드를 올바르게 입력해주세요.');
+      toast.error('모든 필드를 올바르게 입력해주세요.', {
+        duration: 1500,
+      });
       return;
     }
 
     if (!duplicate.username || !duplicate.email || !duplicate.name) {
-      toast.error('중복 확인을 하지 않은 필드가 존재합니다.');
+      toast.error('중복 확인을 하지 않은 필드가 존재합니다.', {
+        duration: 1500,
+      });
       return;
     }
 
@@ -128,11 +132,17 @@ const Register = () => {
 
     try {
       setIsSubmitting(true);
-      await toast.promise(pb.collection('users').create(data), {
-        loading: '회원가입 시도 중...',
-        success: '회원가입을 완료했습니다!',
-        error: '회원가입에 실패했습니다...',
-      });
+      await toast.promise(
+        pb.collection('users').create(data),
+        {
+          loading: '회원가입 시도 중...',
+          success: '회원가입을 완료했습니다!',
+          error: '회원가입에 실패했습니다...',
+        },
+        {
+          duration: 2000,
+        }
+      );
       await pb.collection('users').requestVerification(form.email);
       toast.success('가입한 이메일 인증 후 로그인이 가능합니다.', {
         duration: 5000,

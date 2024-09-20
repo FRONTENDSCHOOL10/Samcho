@@ -49,10 +49,12 @@ const Mypage = () => {
   };
 
   const handleSearchClick = () => {
-    toast.dismiss();
+    toast.remove();
 
     if (!searchBuddy.trim()) {
-      toast.error('아이디 혹은 닉네임을 입력하세요.');
+      toast.error('아이디 혹은 닉네임을 입력하세요.', {
+        duration: 1500,
+      });
       return;
     }
 
