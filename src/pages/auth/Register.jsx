@@ -19,7 +19,7 @@ const FORM_FIELDS = [
   'password',
   'passwordConfirm',
 ];
-const DUPLICATE_CHECK_FIELDS = ['username', 'name'];
+const DUPLICATE_CHECK_FIELDS = ['username', 'email', 'name'];
 
 const Register = () => {
   const navigate = useNavigate();
@@ -112,15 +112,15 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.dismiss();
+    toast.remove();
 
     if (!validateForm()) {
       toast.error('모든 필드를 올바르게 입력해주세요.');
       return;
     }
 
-    if (!duplicate.username || !duplicate.name) {
-      toast.error('아이디와 닉네임 중복 확인을 해주세요.');
+    if (!duplicate.username || !duplicate.email || !duplicate.name) {
+      toast.error('중복 확인을 하지 않은 필드가 존재합니다.');
       return;
     }
 
@@ -132,6 +132,10 @@ const Register = () => {
         loading: '회원가입 시도 중...',
         success: '회원가입을 완료했습니다!',
         error: '회원가입에 실패했습니다...',
+      });
+      await pb.collection('users').requestVerification(form.email);
+      toast.success('가입한 이메일 인증 후 로그인이 가능합니다.', {
+        duration: 5000,
       });
       navigate('/login');
     } catch (error) {
@@ -146,16 +150,16 @@ const Register = () => {
         type="button"
         onClick={() => checkAvailability(field, form[field])}
         className={`text-sm font-medium text-blue text-nowrap ${
-          validateField(field, form[field])
+          validateField(field, form[field]) || duplicate[field]
             ? 'text-gray-300 cursor-not-allowed'
             : ''
         }`}
-        disabled={validateField(field, form[field])}
+        disabled={validateField(field, form[field]) || duplicate[field]}
       >
         중복확인
       </button>
     ),
-    [checkAvailability, form, validateField]
+    [checkAvailability, form, validateField, duplicate]
   );
 
   return (
@@ -179,16 +183,20 @@ const Register = () => {
             />
             {renderDuplicateCheckButton('username')}
           </div>
-          <Input
-            label="이메일"
-            type="email"
-            id="email"
-            value={form.email}
-            onChange={handleChange}
-            error={!!errors.email}
-            errorMessage={errors.email}
-            className="min-h-[61px]"
-          />
+          <div className="flex justify-between max-w-[250px] gap-2">
+            <Input
+              label="이메일"
+              type="email"
+              id="email"
+              value={form.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              errorMessage={errors.email}
+              duplicate={duplicate.email}
+              className="min-h-[61px]"
+            />
+            {renderDuplicateCheckButton('email')}
+          </div>
           <div className="flex justify-between max-w-[250px] gap-2">
             <Input
               label="닉네임"

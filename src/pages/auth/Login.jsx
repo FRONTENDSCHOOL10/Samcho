@@ -20,17 +20,20 @@ const Login = () => {
 
   useEffect(() => {
     if (state && !state.isAuth) {
-      toast.error('하루몽은 로그인 후 이용 가능합니다!');
+      toast.error('하루몽은 로그인 후 이용 가능합니다!', {
+        id: 'isNotLogin',
+      });
     }
   }, [state]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    toast.dismiss();
+    toast.remove();
 
     if (username === '' || password === '') {
       toast.error('아이디 혹은 비밀번호를 입력해 주세요.', {
         duration: 1500,
+        className: 'custom-toast',
       });
       return;
     }
@@ -52,7 +55,9 @@ const Login = () => {
         navigate('/');
       })
       .catch((error) => {
-        console.error('[Error] 로그인 실패: ', error);
+        if (error.message !== '이메일 인증이 필요합니다') {
+          console.error('[Error] 로그인 실패: ', error);
+        }
         setIsSubmitting(false);
       });
   };
@@ -107,7 +112,23 @@ export default Login;
 
 // 인증 함수
 const authenticateUser = async (username, password) => {
-  await pb.collection('users').authWithPassword(username, password);
-  const { model, token } = authUtils.getPocketbaseAuth();
-  authUtils.setAuthData(model, token);
+  try {
+    const response = await pb
+      .collection('users')
+      .authWithPassword(username, password);
+    const { model, token } = authUtils.getPocketbaseAuth();
+
+    if (!model.verified) {
+      pb.authStore.clear();
+      throw new Error('이메일 인증이 필요합니다');
+    }
+
+    authUtils.setAuthData(model, token);
+    return response;
+  } catch (error) {
+    if (error.message === '이메일 인증이 필요합니다') {
+      toast.error('가입한 이메일의 인증을 확인 후 로그인 하세요');
+    }
+    throw error;
+  }
 };

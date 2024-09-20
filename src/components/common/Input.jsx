@@ -59,7 +59,7 @@ const Input = ({
       '사용 가능한 아이디입니다.'
     ),
     email: renderSuccessMessage(
-      id === 'email' && !error && hasValue,
+      id === 'email' && !error && hasValue && duplicate,
       '사용 가능한 이메일입니다.'
     ),
     name: renderSuccessMessage(

@@ -3,12 +3,15 @@ import pb from '@/api/pb';
 import toast from 'react-hot-toast';
 
 export const useCheckAvailability = () => {
-  const [duplicate, setDuplicate] = useState({ username: false, name: false });
+  const [duplicate, setDuplicate] = useState({
+    username: false,
+    name: false,
+    email: false,
+  });
 
   // 중복 확인 함수
   const checkAvailability = async (field, value) => {
-    toast.dismiss();
-
+    toast.remove();
     switch (field) {
       case 'username':
         toast
@@ -28,6 +31,9 @@ export const useCheckAvailability = () => {
                 }
               },
               error: '중복된 아이디 입니다.',
+            },
+            {
+              id: 'usernameDuplicateToast',
             }
           )
           .catch((error) => {
@@ -54,11 +60,43 @@ export const useCheckAvailability = () => {
                 }
               },
               error: '중복된 닉네임 입니다.',
+            },
+            {
+              id: 'nameDuplicateToast',
             }
           )
           .catch((error) => {
             setDuplicate((prev) => ({ ...prev, name: false }));
             console.error('[Error] 닉네임 중복 체크: ', error);
+          });
+        break;
+
+      case 'email':
+        toast
+          .promise(
+            pb.collection('users').getFullList({
+              filter: `email = "${value}"`,
+            }),
+            {
+              loading: '이메일 중복 여부 확인중...',
+              success: (result) => {
+                if (result.length === 0) {
+                  setDuplicate((prev) => ({ ...prev, email: true }));
+                  return '사용 가능한 이메일 입니다.';
+                } else {
+                  setDuplicate((prev) => ({ ...prev, email: false }));
+                  throw new Error('중복된 이메일 입니다.');
+                }
+              },
+              error: '중복된 이메일 입니다.',
+            },
+            {
+              id: 'emailDuplicateToast',
+            }
+          )
+          .catch((error) => {
+            setDuplicate((prev) => ({ ...prev, name: false }));
+            console.error('[Error] 이메일 중복 체크: ', error);
           });
         break;
 
