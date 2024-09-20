@@ -72,6 +72,13 @@ const SelectPicture = ({ picture, setPicture }) => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.target.click();
+    }
+  };
+
   return (
     <div className="w-full bg-white rounded-[13px] px-5 py-[15px] flex flex-col gap-4 shadow-light">
       <h2 className="text-base font-semibold text-gray-450">오늘의 사진</h2>
@@ -83,6 +90,8 @@ const SelectPicture = ({ picture, setPicture }) => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
+        tabIndex="0"
+        onKeyDown={handleKeyDown}
       >
         {!preview && (
           <>
