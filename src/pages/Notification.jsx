@@ -197,10 +197,10 @@ const Notification = () => {
           <button
             type="button"
             className={`py-2 font-medium text-white rounded-md ${
-              diaryData.length === 0 || isSubmitting ? 'bg-gray-300' : 'bg-blue'
+              !diary || isSubmitting ? 'bg-gray-300' : 'bg-blue'
             }`}
             onClick={handleDiaryExchange}
-            disabled={diaryData.length === 0 || isSubmitting}
+            disabled={!diary || isSubmitting}
           >
             {isSubmitting ? '교환 중...' : '교환'}
           </button>
