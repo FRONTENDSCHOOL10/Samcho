@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { Modal, TopHeader, ConfirmModal } from '@/components';
-import { DirectionRight } from '@/assets/icons/direction';
+import { FaChevronRight } from 'react-icons/fa';
 import { pb } from '@/api';
 import toast from 'react-hot-toast';
 import useModal from '@/hooks/useModal';
@@ -177,8 +177,9 @@ const MypageSetting = () => {
             type="button"
             aria-label="닉네임 변경"
             onClick={() => openModal('nicknameModal')}
+            className="p-2"
           >
-            <DirectionRight className="w-5 h-5 fill-gray-600" aria-hidden />
+            <FaChevronRight aria-hidden={true} />
           </button>
         </section>
       </main>

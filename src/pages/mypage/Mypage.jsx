@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TopHeader, BuddySearch } from '@/components';
 import { Link } from 'react-router-dom';
-import { DirectionRight } from '@/assets/icons/direction';
+import { FaChevronRight } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 import { authUtils } from '@/utils';
@@ -77,9 +77,13 @@ const Mypage = () => {
               </h3>
               <p className="text-sm font-medium text-gray-300">{email}</p>
             </div>
-            <nav aria-label="계정 관리">
-              <Link to="/mypage/setting" aria-label="계정 관리 페이지로 이동">
-                <DirectionRight className="fill-black" />
+            <nav className="flex" aria-label="계정 관리">
+              <Link
+                className="p-2"
+                to="/mypage/setting"
+                aria-label="계정 관리 페이지로 이동"
+              >
+                <FaChevronRight aria-hidden={true} />
               </Link>
             </nav>
           </div>
@@ -109,12 +113,13 @@ const Mypage = () => {
             <p className="text-base font-medium text-gray-450">
               사진 모아 보기
             </p>
-            <nav aria-label="사진 모아 보기">
+            <nav className="flex" aria-label="사진 모아 보기">
               <Link
+                className="p-2"
                 to="/mypage/photo"
                 aria-label="사진 모아 보기 페이지로 이동"
               >
-                <DirectionRight className="fill-black" />
+                <FaChevronRight aria-hidden={true} />
               </Link>
             </nav>
           </article>
@@ -128,8 +133,9 @@ const Mypage = () => {
             <p className="text-base font-medium text-gray-450">
               {buddyData?.length}명
             </p>
-            <nav aria-label="단짝 관리">
+            <nav className="flex" aria-label="단짝 관리">
               <Link
+                className="p-2"
                 to="/mypage/buddy-management"
                 aria-label="단짝 관리 페이지로 이동"
               >
@@ -166,7 +172,7 @@ const Mypage = () => {
             />
             <button
               type="button"
-              className="text-base font-semibold text-blue-500"
+              className="p-2 text-base font-semibold text-blue-500"
               aria-label="단짝 검색"
               onClick={handleSearchClick}
             >
