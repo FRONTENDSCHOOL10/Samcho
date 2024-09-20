@@ -4,11 +4,15 @@ import { Modal, TopHeader, ConfirmModal } from '@/components';
 import { DirectionRight } from '@/assets/icons/direction';
 import { pb } from '@/api';
 import toast from 'react-hot-toast';
-import useModal from '@/hooks/useModal';
+// import useModal from '@/hooks/useModal';
 import { authUtils } from '@/utils';
+import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 
 const MypageSetting = () => {
   const navigate = useNavigate();
+  // 유저 관련 데이터
+  const { buddyData } = useFetchAllBuddyData(true);
+  const { diaryData } = useFetchAllDiaryData();
 
   // 유저 상태 관리
   const [name, setName] = useState('');
@@ -117,17 +121,66 @@ const MypageSetting = () => {
   const handleDeleteAccount = useCallback(async () => {
     setIsLoading(true);
 
-    const { user } = authUtils.getAuth();
+    try {
+      const { user } = authUtils.getAuth();
+      const userId = user.id;
 
-    await pb.collection('users').delete(user.id);
+      // buddyData 삭제
+      if (buddyData && buddyData.length > 0) {
+        await Promise.all(
+          buddyData.map((buddy) => pb.collection('buddy').delete(buddy.id))
+        );
+      }
 
-    pb.authStore.clear();
-    authUtils.setDefaultAuthData();
+      // diaryData 삭제
+      if (diaryData && diaryData.length > 0) {
+        await Promise.all(
+          diaryData.map((diary) => pb.collection('diary').delete(diary.id))
+        );
+      }
 
-    navigate('/login');
+      // notification 컬렉션에서 삭제 (recipient 또는 requester가 user인 경우)
+      const notifications = await pb.collection('notification').getFullList({
+        filter: `(recipient = "${userId}" || requester = "${userId}")`,
+      });
 
-    toast.success('회원탈퇴가 성공적으로 처리되었습니다.');
-  }, [navigate]);
+      if (notifications.length > 0) {
+        await Promise.all(
+          notifications.map((notification) =>
+            pb.collection('notification').delete(notification.id)
+          )
+        );
+      }
+
+      // post 컬렉션에서 삭제 (recipient 또는 requester가 user인 경우)
+      const posts = await pb.collection('post').getFullList({
+        filter: `(recipient = "${userId}" || requester = "${userId}")`,
+      });
+
+      if (posts.length > 0) {
+        await Promise.all(
+          posts.map((post) => pb.collection('post').delete(post.id))
+        );
+      }
+
+      // 유저 계정 삭제
+      await pb.collection('users').delete(userId);
+
+      // 인증 정보 초기화 및 로그아웃 처리
+      pb.authStore.clear();
+      authUtils.setDefaultAuthData();
+
+      // 로그인 페이지로 이동
+      navigate('/login');
+
+      toast.success('회원탈퇴가 성공적으로 처리되었습니다.');
+    } catch (error) {
+      toast.error('회원탈퇴 처리 중 오류가 발생했습니다.');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [buddyData, diaryData, navigate]);
 
   return (
     <section className="flex flex-col justify-between min-h-dvh pb-[80px]">
