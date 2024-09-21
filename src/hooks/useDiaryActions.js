@@ -286,7 +286,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
 // Webp 변환 함수
 const convertToWebP = async (file) => {
   const options = {
-    maxSizeMB: 0.1,
+    maxSizeMB: 0.2,
     maxWidthOrHeight: 1920,
     useWebWorker: true,
   };
@@ -309,7 +309,7 @@ const convertToWebP = async (file) => {
     if (isWebPSupported) {
       // WebP 지원되는 경우
       const webpBlob = await new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.8);
+        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.95);
       });
       return new File([webpBlob], 'image.webp', { type: 'image/webp' });
     } else {
