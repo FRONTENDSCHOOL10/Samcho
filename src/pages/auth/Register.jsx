@@ -11,6 +11,7 @@ import {
   authUtils,
 } from '@/utils';
 import { useCheckAvailability } from '@/hooks';
+import { Helmet } from 'react-helmet-async';
 
 const FORM_FIELDS = [
   'username',
@@ -174,6 +175,29 @@ const Register = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-10 min-h-dvh">
+      <Helmet>
+        <title>하루몽 - 회원가입</title>
+        <meta name="description" content="하루몽 회원가입 페이지 입니다." />
+        <meta property="author" content="하루몽" />
+
+        <meta property="og:locale" content="ko_KR" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://harumong.netlify.app/register"
+        />
+        <meta property="og:site_name" content="하루몽 - 감정일기" />
+        <meta property="og:title" content="하루몽 - 감정일기" />
+        <meta
+          property="og:description"
+          content="감정 기반으로 작성하는 일기 어플리케이션 하루몽"
+        />
+        <meta
+          property="og:image"
+          content="https://harumong.netlify.app/logo.png"
+        />
+      </Helmet>
+
       <header className="flex justify-center">
         <h1 className="text-[36px] font-semibold text-gray-450">회원가입</h1>
       </header>
@@ -189,7 +213,7 @@ const Register = () => {
               error={!!errors.username}
               errorMessage={errors.username}
               duplicate={duplicate.username}
-              className="min-h-[61px]"
+              className="min-h-[65px]"
             />
             {renderDuplicateCheckButton('username')}
           </div>
@@ -203,7 +227,7 @@ const Register = () => {
               error={!!errors.email}
               errorMessage={errors.email}
               duplicate={duplicate.email}
-              className="min-h-[61px]"
+              className="min-h-[65px]"
             />
             {renderDuplicateCheckButton('email')}
           </div>
@@ -217,7 +241,7 @@ const Register = () => {
               error={!!errors.name}
               errorMessage={errors.name}
               duplicate={duplicate.name}
-              className="min-h-[61px]"
+              className="min-h-[65px]"
             />
             {renderDuplicateCheckButton('name')}
           </div>
@@ -230,7 +254,7 @@ const Register = () => {
             error={!!errors.password}
             errorMessage={errors.password}
             isViewIcon={true}
-            className="min-h-[61px]"
+            className="min-h-[65px]"
           />
           <Input
             label="비밀번호 확인"
@@ -241,7 +265,7 @@ const Register = () => {
             error={!!errors.passwordConfirm}
             errorMessage={errors.passwordConfirm}
             isViewIcon={true}
-            className="min-h-[61px]"
+            className="min-h-[65px]"
           />
         </div>
 
