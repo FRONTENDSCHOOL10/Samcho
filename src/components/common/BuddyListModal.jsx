@@ -21,7 +21,9 @@ const BuddyListModal = ({
       await handleExchange();
     } catch (error) {
       console.error('[error] 교환일기 신청 실패: ', error);
-      toast.error('교환일기 신청에 실패했습니다. ');
+      toast.error('교환일기 신청에 실패했습니다. ', {
+        duration: 2000,
+      });
     }
     setIsSubmitting(false);
   };
