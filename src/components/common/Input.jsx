@@ -4,7 +4,7 @@ import VisibleIcon from '@/assets/icons/passwordView/visible.svg';
 import InvisibleIcon from '@/assets/icons/passwordView/invisible.svg';
 
 const inputClasses =
-  'block py-2.5 px-0 w-full text-sm rounded-none bg-transparent border-b text-gray-400 border-gray-400 focus:outline-none focus:border-blue-500 focus:text-blue-500';
+  'block py-2.5 px-0 w-full text-base rounded-none bg-transparent border-b text-gray-450 border-gray-400 focus:outline-none focus:border-blue-500 focus:text-blue-500';
 
 const errorClasses = 'w-full text-red text-xs mt-1 text-nowrap';
 
@@ -49,7 +49,7 @@ const Input = ({
         ? '-translate-y-6 scale-75'
         : 'translate-y-0 scale-100'
     }
-    ${isFocused ? 'text-blue-500' : 'text-gray-400'}
+    ${isFocused ? 'text-blue-500' : 'text-gray-450'}
   `;
 
   // 성공 메시지 조건 설정

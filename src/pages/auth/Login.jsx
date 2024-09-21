@@ -80,12 +80,21 @@ const Login = () => {
           property="og:description"
           content="감정 기반으로 작성하는 일기 어플리케이션 하루몽"
         />
-        <meta property="og:image" content="public/logo.png" />
+        <meta
+          property="og:image"
+          content="https://harumong.netlify.app/logo.png"
+        />
       </Helmet>
       <section className="flex flex-col items-center justify-center gap-10 min-h-dvh">
-        <header className="flex justify-center w-[225px] h-[150px]">
+        <header className="flex justify-center">
           <h1 className="sr-only">하루몽 로그인</h1>
-          <img src="/logo.png" alt="하루몽" />
+          <img
+            src="/logo.png"
+            alt="하루몽"
+            loading="lazy"
+            width={225}
+            height={150}
+          />
         </header>
         <form onSubmit={handleLogin} className="flex flex-col gap-10">
           <div className="flex flex-col gap-6">
