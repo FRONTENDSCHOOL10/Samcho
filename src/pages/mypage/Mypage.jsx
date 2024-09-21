@@ -174,7 +174,7 @@ const Mypage = () => {
             />
             <button
               type="button"
-              className="p-2 text-base font-semibold text-blue-500"
+              className="p-2 text-base font-semibold text-blue-500 text-nowrap"
               aria-label="단짝 검색"
               onClick={handleSearchClick}
             >

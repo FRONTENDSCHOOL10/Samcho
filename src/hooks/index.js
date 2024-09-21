@@ -11,3 +11,4 @@ export { default as useBuddyActions } from './useBuddyActions.js';
 export { default as useSearchDiary } from './useSearchDiary.js';
 export { default as useNotification } from './useNotification.js';
 export { default as ScrollToTop } from './useScrollToTop.jsx';
+export { default as useBuddySearchAction } from './useBuddySearchAction.jsx';
