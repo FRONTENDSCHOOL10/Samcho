@@ -34,6 +34,7 @@ export const useCheckAvailability = () => {
             },
             {
               id: 'usernameDuplicateToast',
+              duration: 2000,
             }
           )
           .catch((error) => {
@@ -63,6 +64,7 @@ export const useCheckAvailability = () => {
             },
             {
               id: 'nameDuplicateToast',
+              duration: 2000,
             }
           )
           .catch((error) => {
@@ -92,6 +94,7 @@ export const useCheckAvailability = () => {
             },
             {
               id: 'emailDuplicateToast',
+              duration: 2000,
             }
           )
           .catch((error) => {
@@ -101,7 +104,9 @@ export const useCheckAvailability = () => {
         break;
 
       default:
-        toast.error('알 수 없는 필드입니다.');
+        toast.error('알 수 없는 필드입니다.', {
+          duration: 2000,
+        });
         break;
     }
   };

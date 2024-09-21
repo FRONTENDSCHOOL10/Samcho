@@ -4,7 +4,6 @@ import { toast } from 'react-hot-toast';
 import { pb } from '@/api';
 import imageCompression from 'browser-image-compression';
 import { format } from 'date-fns';
-import { debounce } from 'lodash';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -32,57 +31,6 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
     }
   }, [diaryDetail]);
 
-  useEffect(() => {
-    if (!diaryId) {
-      const autosaveData = sessionStorage.getItem('autosave');
-
-      if (autosaveData) {
-        const { selectedMood, selectedEmotions, selectedWeathers, text } =
-          JSON.parse(autosaveData);
-
-        if (selectedMood) {
-          setSelectedMood(selectedMood);
-        }
-
-        if (selectedEmotions && Array.isArray(selectedEmotions)) {
-          setSelectedEmotions(selectedEmotions);
-        }
-
-        if (selectedWeathers && Array.isArray(selectedWeathers)) {
-          setSelectedWeathers(selectedWeathers);
-        }
-
-        if (text) {
-          setText(text);
-        }
-      }
-    }
-  }, [
-    setSelectedEmotions,
-    setSelectedMood,
-    setSelectedWeathers,
-    setText,
-    diaryId,
-  ]);
-
-  useEffect(() => {
-    if (!diaryId) {
-      const saveData = debounce(() => {
-        const autosaveData = {
-          selectedMood,
-          selectedEmotions,
-          selectedWeathers,
-          text,
-        };
-
-        sessionStorage.setItem('autosave', JSON.stringify(autosaveData));
-      }, 500);
-
-      saveData();
-      return () => saveData.cancel();
-    }
-  }, [selectedMood, selectedEmotions, selectedWeathers, text, diaryId]);
-
   const handleEmotionClick = useCallback(
     (text) => {
       if (selectedEmotions.includes(text)) {
@@ -92,8 +40,10 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       } else if (selectedEmotions.length < 5) {
         setSelectedEmotions([...selectedEmotions, text]);
       } else {
-        toast.dismiss();
-        toast.error('감정은 5개까지 선택 가능합니다.');
+        toast.remove();
+        toast.error('감정은 5개까지 선택 가능합니다.', {
+          duration: 1500,
+        });
       }
     },
     [selectedEmotions]
@@ -108,8 +58,10 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       } else if (selectedWeathers.length < 2) {
         setSelectedWeathers([...selectedWeathers, text]);
       } else {
-        toast.dismiss();
-        toast.error('날씨는 2개까지 선택 가능합니다.');
+        toast.remove();
+        toast.error('날씨는 2개까지 선택 가능합니다.', {
+          duration: 1500,
+        });
       }
     },
     [selectedWeathers]
@@ -122,12 +74,14 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
 
       if (
         selectedMood === '' ||
-        selectedEmotions === '' ||
-        selectedWeathers === '' ||
+        selectedEmotions.length === 0 ||
+        selectedWeathers.length === 0 ||
         text === ''
       ) {
-        toast.dismiss();
-        toast.error('입력하지 않은 필수 값이 있습니다.');
+        toast.remove();
+        toast.error('입력하지 않은 필수 값이 있습니다.', {
+          duration: 1500,
+        });
         setIsSubmitting(false);
         return;
       }
@@ -139,8 +93,10 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           });
 
           if (data.length > 0) {
-            toast.dismiss();
-            toast.error('오늘 일기는 이미 작성하셨습니다.');
+            toast.remove();
+            toast.error('오늘 일기는 이미 작성하셨습니다.', {
+              duration: 1500,
+            });
             setIsSubmitting(false);
             return;
           }
@@ -179,18 +135,24 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         : pb.collection('diary').create(formData);
 
       toast
-        .promise(submitPromise, {
-          loading: diaryId ? '일기 수정 중...' : '일기 저장 중...',
-          success: diaryId
-            ? '일기 수정을 완료했습니다!'
-            : '일기 작성을 완료했습니다!',
-          error: diaryId
-            ? '일기 수정에 실패했습니다...'
-            : '일기 작성에 실패했습니다...',
-        })
+        .promise(
+          submitPromise,
+          {
+            loading: diaryId ? '일기 수정 중...' : '일기 저장 중...',
+            success: diaryId
+              ? '일기 수정을 완료했습니다!'
+              : '일기 작성을 완료했습니다!',
+            error: diaryId
+              ? '일기 수정에 실패했습니다...'
+              : '일기 작성에 실패했습니다...',
+          },
+          {
+            duration: 2000,
+          }
+        )
         .then(() => {
           setIsSubmitting(false);
-          sessionStorage.removeItem('autosave');
+          if (!diaryId) sessionStorage.removeItem('autosave');
           navigate(`/home/calendar?date=${format(defaultTitle, 'yyyy-MM')}`);
         })
         .catch((error) => {
@@ -243,6 +205,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
   const exchangeDiary = useCallback(
     async (buddy, closeModal) => {
       try {
+        // 1. notification에서 교환 요청 중복 확인
         const existingRequest = await pb
           .collection('notification')
           .getFullList({
@@ -250,10 +213,36 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           });
 
         if (existingRequest.length > 0) {
-          toast.error('이미 해당 사용자와 교환중인 일기가 있습니다.');
+          toast.error('이미 해당 단짝과 교환중인 일기가 있습니다.', {
+            duration: 2000,
+            id: 'RequestDuplicationPostPrevent',
+          });
           return;
         }
 
+        // 2. post에서 이미 같은 일기로 교환된 기록이 있는지 확인
+        const existingExchange = await pb.collection('post').getFullList({
+          filter: `
+              (
+                (recipient = "${buddy}" && requester = "${userId}") || 
+                (recipient = "${userId}" && requester = "${buddy}")
+              ) && 
+              (
+                recipient_diary = "${diaryDetail.id}" || 
+                requester_diary = "${diaryDetail.id}"
+              )
+            `,
+        });
+
+        if (existingExchange.length > 0) {
+          toast.error('이미 해당 단짝과 이 일기를 교환 중입니다.', {
+            duration: 2000,
+            id: 'PostDuplicationPrevent',
+          });
+          return;
+        }
+
+        // 3. post 컬렉션에 교환일기 생성 (pending)
         const post = await pb.collection('post').create({
           recipient: buddy,
           requester: userId,
@@ -261,6 +250,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           status: 'pending',
         });
 
+        // 4. notification에 교환 요청 알림 생성
         await pb.collection('notification').create({
           recipient: buddy,
           requester: userId,
@@ -268,10 +258,14 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           type_id: post.id,
         });
 
-        toast.success('일기 교환 신청을 보냈습니다!');
+        toast.success('일기 교환 신청을 보냈습니다!', {
+          duration: 2000,
+        });
         if (closeModal) closeModal('buddyListModal');
       } catch (error) {
-        toast.error('일기 교환 신청에 실패했습니다.');
+        toast.error('일기 교환 신청에 실패했습니다.', {
+          duration: 2000,
+        });
         console.error(error);
       }
     },
@@ -301,7 +295,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
 // Webp 변환 함수
 const convertToWebP = async (file) => {
   const options = {
-    maxSizeMB: 1,
+    maxSizeMB: 0.2,
     maxWidthOrHeight: 1920,
     useWebWorker: true,
   };
@@ -324,13 +318,13 @@ const convertToWebP = async (file) => {
     if (isWebPSupported) {
       // WebP 지원되는 경우
       const webpBlob = await new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.5);
+        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.95);
       });
       return new File([webpBlob], 'image.webp', { type: 'image/webp' });
     } else {
       // WebP 지원되지 않는 경우 JPEG로 대체
       const jpegBlob = await new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.5);
+        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
       });
       return new File([jpegBlob], 'image.jpg', { type: 'image/jpeg' });
     }
