@@ -74,7 +74,8 @@ const DiaryDetail = ({ diaryDetail, exchange = false }) => {
               key={diaryDetail.date}
               src={moods[diaryDetail.mood]}
               alt={`${diaryDetail.mood} 아이콘`}
-              className="w-[44px] h-[44px]"
+              width={44}
+              height={44}
             />
             <span className="text-base font-semibold text-gray-450">
               {dateFormatted}
@@ -88,6 +89,8 @@ const DiaryDetail = ({ diaryDetail, exchange = false }) => {
                 className="inline-block object-contain w-10 h-10 bg-white rounded-full"
                 alt={item}
                 src={emotions[item] || weathers[item]}
+                width={40}
+                height={40}
                 loading="lazy"
               />
             ))}
@@ -100,10 +103,12 @@ const DiaryDetail = ({ diaryDetail, exchange = false }) => {
               )}
               <img
                 src={`${baseImageUrl}/${diaryDetail.id}/${diaryDetail.picture}`}
-                className={`object-cover w-full rounded-lg aspect-square ${
+                className={`object-cover rounded-lg aspect-square ${
                   isImageLoaded ? 'block' : 'hidden'
                 }`}
                 alt={`${diaryDetail.date}일에 기록된 사진`}
+                width={370}
+                height={370}
                 onLoad={handleImageLoad}
               />
               <p className="text-sm font-medium leading-normal text-blue-500">
