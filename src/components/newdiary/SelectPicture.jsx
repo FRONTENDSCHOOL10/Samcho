@@ -27,11 +27,17 @@ const SelectPicture = ({ picture, setPicture }) => {
     const handleHEICFile = async (file) => {
       const convertPromise = heic2any({ blob: file, toType: 'image/jpeg' });
 
-      toast.promise(convertPromise, {
-        loading: '파일 변환 중...',
-        success: '파일 변환 완료!',
-        error: 'HEIC 변환 오류 발생',
-      });
+      toast.promise(
+        convertPromise,
+        {
+          loading: '파일 변환 중...',
+          success: '파일 변환 완료!',
+          error: 'HEIC 변환 오류 발생',
+        },
+        {
+          duration: 2000,
+        }
+      );
 
       try {
         const jpegBlob = await convertPromise;

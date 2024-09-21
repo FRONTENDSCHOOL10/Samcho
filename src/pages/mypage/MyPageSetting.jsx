@@ -67,7 +67,7 @@ const MypageSetting = () => {
 
   // 닉네임 수정
   const handleUpdateNickname = useCallback(async () => {
-    toast.dismiss();
+    toast.remove();
 
     setIsLoading(true);
     try {
@@ -97,21 +97,21 @@ const MypageSetting = () => {
 
   // 닉네임 중복 확인 및 유효성 검사
   const checkNicknameAvailability = useCallback(async () => {
-    toast.dismiss();
+    toast.remove();
     if (!newNickname.trim()) {
       toast.error('닉네임을 입력해주세요!', {
-        duration: 2000,
+        duration: 1500,
       });
       return;
     }
 
-    toast.dismiss();
+    toast.remove();
 
     const isValidation = validateNickname(newNickname);
 
     if (!isValidation) {
       toast.error('닉네임 형식이 올바르지 않아요!', {
-        duration: 2000,
+        duration: 1500,
       });
       return;
     }
@@ -122,18 +122,18 @@ const MypageSetting = () => {
       await pb.collection('users').getFirstListItem(`name = "${newNickname}"`);
       setIsNicknameAvailable(false);
       toast.error('이미 존재하는 닉네임이에요!', {
-        duration: 2000,
+        duration: 1500,
       });
     } catch (error) {
       if (error.status === 404) {
         setIsNicknameAvailable(true);
         toast.success('사용 가능한 닉네임이에요!', {
-          duration: 2000,
+          duration: 1500,
         });
         setIsDisabled(true);
       } else {
         toast.error('닉네임 확인 중 오류가 발생했어요!', {
-          duration: 2000,
+          duration: 1500,
         });
       }
     }

@@ -49,11 +49,13 @@ const BuddySearch = ({
 
   /* 단짝 신청하기 함수 */
   const handleBuddyRequest = async () => {
-    toast.dismiss(); // 기존의 모든 toast 메시지 제거
+    toast.remove();
 
     // 본인에게 단짝 신청을 보낸 경우
     if (userId === userData.id) {
-      toast.error('자신에게 단짝 요청을 보낼 수 없습니다.');
+      toast.error('자신에게 단짝 요청을 보낼 수 없습니다.', {
+        duration: 1500,
+      });
       return;
     }
 
@@ -66,7 +68,9 @@ const BuddySearch = ({
       existingRequestPromise
         .then(async (existingRequest) => {
           if (existingRequest.length > 0) {
-            toast.error('해당 유저와 단짝 이거나 대기 상태입니다.');
+            toast.error('해당 유저와 단짝 이거나 대기 상태입니다.', {
+              duration: 1500,
+            });
             return;
           }
 
@@ -77,11 +81,17 @@ const BuddySearch = ({
           });
 
           toast
-            .promise(buddyPromise, {
-              loading: '단짝 신청 중...',
-              success: '단짝 신청을 보냈습니다!',
-              error: '단짝 신청에 실패했습니다.',
-            })
+            .promise(
+              buddyPromise,
+              {
+                loading: '단짝 신청 중...',
+                success: '단짝 신청을 보냈습니다!',
+                error: '단짝 신청에 실패했습니다.',
+              },
+              {
+                duration: 2000,
+              }
+            )
             .then(async (buddy) => {
               await pb.collection('notification').create({
                 recipient: userData.id,
@@ -99,7 +109,9 @@ const BuddySearch = ({
           console.error('[Error] 신청 여부 확인 실패: ', error);
         });
     } catch (error) {
-      toast.error('단짝 신청에 실패했습니다.');
+      toast.error('단짝 신청에 실패했습니다.', {
+        duration: 2000,
+      });
       console.error(error);
     }
   };

@@ -36,14 +36,18 @@ const FeelingCalendar = ({
   const handleClick = (e) => {
     if (loading) {
       e.preventDefault();
-      toast.error('데이터를 불러오는 중입니다. 잠시만 기다려주세요!');
+      toast.error('데이터를 불러오는 중입니다. 잠시만 기다려주세요!', {
+        duration: 2000,
+      });
       return;
     }
 
     if (currentDate < selectedDate) {
       e.preventDefault();
-      toast.dismiss();
-      toast.error('미래의 일기는 아직 기록할 수 없어요!');
+      toast.remove();
+      toast.error('미래의 일기는 아직 기록할 수 없어요!', {
+        duration: 1500,
+      });
       return;
     }
   };

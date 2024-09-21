@@ -73,11 +73,15 @@ const Notification = () => {
       setNotificationData((prevData) =>
         prevData.filter((item) => item.id !== selectedNotification.id)
       );
-      toast.success('교환일기 신청이 수락 되었습니다.');
+      toast.success('교환일기 신청이 수락 되었습니다.', {
+        duration: 2000,
+      });
       closeModal('diaryListModal');
     } catch (error) {
       console.error('[error] 교환일기 수락 실패: ', error);
-      toast.error('교환일기 수락에 실패했습니다.');
+      toast.error('교환일기 수락에 실패했습니다.', {
+        duration: 2000,
+      });
     }
     setIsSubmitting(false);
   };
@@ -98,7 +102,9 @@ const Notification = () => {
         setNotificationData((prevData) =>
           prevData.filter((item) => item.id !== notification.id)
         );
-        toast.success('단짝 요청을 수락했습니다!');
+        toast.success('단짝 요청을 수락했습니다!', {
+          duration: 2000,
+        });
       } catch (error) {
         console.error('수락 처리 중 오류 발생: ', error);
       }
@@ -113,7 +119,9 @@ const Notification = () => {
         setNotificationData((prevData) =>
           prevData.filter((item) => item.id !== notification.id)
         );
-        toast.success('일기 교환 요청을 거절했습니다.');
+        toast.success('일기 교환 요청을 거절했습니다.', {
+          duration: 2000,
+        });
       } catch (error) {
         console.error('거절 처리 중 오류 발생: ', error);
       }
@@ -124,7 +132,9 @@ const Notification = () => {
         setNotificationData((prevData) =>
           prevData.filter((item) => item.id !== notification.id)
         );
-        toast.success('단짝 요청을 거절했습니다.');
+        toast.success('단짝 요청을 거절했습니다.', {
+          duration: 2000,
+        });
       } catch (error) {
         console.error('거절 처리 중 오류 발생: ', error);
       }

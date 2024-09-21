@@ -14,8 +14,8 @@ const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
   const handleDelete = () => {
     deleteBuddy(buddyId, onDelete);
     closeModal('breachModal');
-  };
-
+  }
+  
   return (
     <div className="flex justify-between bg-white p-[0.9375rem] rounded-[10px] shadow-light items-center">
       <p className="text-lg font-medium">{buddyName}</p>
