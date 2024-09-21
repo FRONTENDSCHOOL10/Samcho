@@ -73,7 +73,7 @@ const Login = () => {
 
         <meta property="og:locale" content="ko_KR" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://localhost:3000/login" />
+        <meta property="og:url" content="https://harumong.netlify.app/login" />
         <meta property="og:site_name" content="하루몽 - 감정일기" />
         <meta property="og:title" content="하루몽 - 감정일기" />
         <meta
