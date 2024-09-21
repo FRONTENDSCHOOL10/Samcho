@@ -104,7 +104,9 @@ const Mypage = () => {
               </p>
             </article>
             <article className="w-full p-[0.9375rem] bg-white rounded-[0.625rem] shadow-light flex flex-col gap-2">
-              <h3 className="text-base font-medium text-gray-450">올린 사진</h3>
+              <h3 className="text-base font-medium text-gray-450">
+                기록한 사진
+              </h3>
               <p className="text-sm font-medium text-gray-400 self-left">
                 {photoCount}개
               </p>
