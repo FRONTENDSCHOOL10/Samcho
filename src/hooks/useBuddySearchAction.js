@@ -1,16 +1,71 @@
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import pb from '@/api/pb';
 import toast from 'react-hot-toast';
 import { deleteFilter } from '@/utils';
 
 export const useBuddySearchAction = (
-  userData,
-  relationshipStatus,
+  searchBuddy,
+  triggerSearch,
+  setTriggerSearch,
   closeModal
 ) => {
+  const [userData, setUserData] = useState(null);
+  const [relationshipStatus, setRelationshipStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
+  // 검색 로직
+  const handleSearch = useCallback(async () => {
+    setLoading(true);
+    setErrorMessage('');
+    setUserData(null);
+
+    try {
+      const result = await pb
+        .collection('users')
+        .getFirstListItem(`username="${searchBuddy}" || name="${searchBuddy}"`);
+
+      setUserData({
+        id: result.id,
+        username: result.username,
+        name: result.name,
+      });
+
+      const relationship = await pb.collection('buddy').getFullList({
+        filter: `recipient = "${result.id}" && requester = "${userId}" || recipient = "${userId}" && requester = "${result.id}"`,
+      });
+
+      if (relationship.length > 0) {
+        const status = relationship[0].status;
+        if (status === 'accepted') {
+          setRelationshipStatus('accepted');
+        } else if (status === 'pending') {
+          const isRequester = relationship[0].requester === userId;
+          setRelationshipStatus(
+            isRequester ? 'pending_requester' : 'pending_recipient'
+          );
+        }
+      } else {
+        setRelationshipStatus('none');
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('해당 아이디 혹은 닉네임을 가진 유저가 없습니다.');
+    }
+    setLoading(false);
+    setTriggerSearch(false);
+  }, [searchBuddy, setTriggerSearch, userId]);
+
+  // 검색 함수 실행
+  useEffect(() => {
+    if (triggerSearch && searchBuddy) {
+      handleSearch();
+    }
+  }, [triggerSearch, searchBuddy, handleSearch]);
+
+  // 단짝 신청 및 취소 처리 로직
   const handleBuddySearchAction = async () => {
     toast.remove();
 
@@ -110,7 +165,14 @@ export const useBuddySearchAction = (
     }
   };
 
-  return { handleBuddySearchAction, isSubmitting };
+  return {
+    handleBuddySearchAction,
+    isSubmitting,
+    userData,
+    relationshipStatus,
+    errorMessage,
+    loading,
+  };
 };
 
 export default useBuddySearchAction;

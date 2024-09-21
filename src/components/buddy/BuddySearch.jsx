@@ -1,8 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { Modal } from '@/components';
 import { useBuddySearchAction } from '@/hooks';
-import pb from '@/api/pb';
+import PropTypes from 'prop-types';
 
 const BuddySearch = ({
   isOpen,
@@ -11,64 +9,19 @@ const BuddySearch = ({
   triggerSearch,
   setTriggerSearch,
 }) => {
-  const [userData, setUserData] = useState(null);
-  const [relationshipStatus, setRelationshipStatus] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const userId = JSON.parse(localStorage.getItem('auth')).user.id;
-
-  const { handleBuddySearchAction, isSubmitting } = useBuddySearchAction(
+  const {
+    handleBuddySearchAction,
+    isSubmitting,
     userData,
     relationshipStatus,
+    errorMessage,
+    loading,
+  } = useBuddySearchAction(
+    searchBuddy,
+    triggerSearch,
+    setTriggerSearch,
     closeModal
   );
-
-  const handleSearch = useCallback(async () => {
-    setLoading(true);
-    setErrorMessage('');
-    setUserData(null);
-
-    try {
-      const result = await pb
-        .collection('users')
-        .getFirstListItem(`username="${searchBuddy}" || name="${searchBuddy}"`);
-
-      setUserData({
-        id: result.id,
-        username: result.username,
-        name: result.name,
-      });
-
-      const relationship = await pb.collection('buddy').getFullList({
-        filter: `recipient = "${result.id}" && requester = "${userId}" || recipient = "${userId}" && requester = "${result.id}"`,
-      });
-
-      if (relationship.length > 0) {
-        const status = relationship[0].status;
-        if (status === 'accepted') {
-          setRelationshipStatus('accepted');
-        } else if (status === 'pending') {
-          const isRequester = relationship[0].requester === userId;
-          setRelationshipStatus(
-            isRequester ? 'pending_requester' : 'pending_recipient'
-          );
-        }
-      } else {
-        setRelationshipStatus('none');
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMessage('해당 아이디 혹은 닉네임을 가진 유저가 없습니다.');
-    }
-    setLoading(false);
-    setTriggerSearch(false);
-  }, [searchBuddy, setTriggerSearch, userId]);
-
-  useEffect(() => {
-    if (triggerSearch && searchBuddy) {
-      handleSearch();
-    }
-  }, [triggerSearch, searchBuddy, handleSearch]);
 
   return (
     <Modal isOpen={isOpen} closeModal={closeModal}>
@@ -136,9 +89,9 @@ const BuddySearch = ({
 BuddySearch.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  searchBuddy: PropTypes.string.isRequired,
-  triggerSearch: PropTypes.bool.isRequired,
-  setTriggerSearch: PropTypes.func.isRequired,
+  searchBuddy: PropTypes.string.isRequired, // 검색할 유저 아이디
+  triggerSearch: PropTypes.bool.isRequired, // 검색 실행 여부
+  setTriggerSearch: PropTypes.func.isRequired, // 검색 실행 여부를 초기화하는 함수
 };
 
 export default BuddySearch;
