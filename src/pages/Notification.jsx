@@ -62,20 +62,49 @@ const Notification = () => {
     if (isSubmitting) return;
 
     setIsSubmitting(true);
-    const data = {
-      recipient_diary: diary,
-      status: 'accepted',
-    };
+
     try {
+      // 1. post 컬렉션에서 교환된 기록이 있는지 확인
+      const existingExchanges = await pb.collection('post').getFullList({
+        filter: `
+          (
+            (recipient = "${selectedNotification.requester}" && requester = "${userId}") || 
+            (recipient = "${userId}" && requester = "${selectedNotification.requester}")
+          ) && 
+          (
+            recipient_diary = "${diary}" || 
+            requester_diary = "${diary}"
+          )
+        `,
+      });
+
+      // 중복된 일기가 있는 경우 교환 못함
+      if (existingExchanges.length > 0) {
+        toast.error('이미 해당 단짝과 이 일기를 교환 중입니다.', {
+          id: 'preventExchangeDiaryDuplicationOnNotification',
+          duration: 2000,
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. 중복되지 않은 경우 교환 수락 처리
+      const data = {
+        recipient_diary: diary,
+        status: 'accepted',
+      };
+
       await pb.collection('post').update(selectedNotification.type_id, data);
       await pb.collection('notification').delete(selectedNotification.id);
 
       setNotificationData((prevData) =>
         prevData.filter((item) => item.id !== selectedNotification.id)
       );
+      
       toast.success('교환일기 신청이 수락 되었습니다.', {
         duration: 2000,
       });
+
       closeModal('diaryListModal');
     } catch (error) {
       console.error('[error] 교환일기 수락 실패: ', error);
@@ -83,6 +112,7 @@ const Notification = () => {
         duration: 2000,
       });
     }
+
     setIsSubmitting(false);
   };
 
