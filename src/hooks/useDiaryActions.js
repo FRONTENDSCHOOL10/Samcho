@@ -4,7 +4,6 @@ import { toast } from 'react-hot-toast';
 import { pb } from '@/api';
 import imageCompression from 'browser-image-compression';
 import { format } from 'date-fns';
-import { debounce } from 'lodash';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
@@ -31,57 +30,6 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       }
     }
   }, [diaryDetail]);
-
-  useEffect(() => {
-    if (!diaryId) {
-      const autosaveData = sessionStorage.getItem('autosave');
-
-      if (autosaveData) {
-        const { selectedMood, selectedEmotions, selectedWeathers, text } =
-          JSON.parse(autosaveData);
-
-        if (selectedMood) {
-          setSelectedMood(selectedMood);
-        }
-
-        if (selectedEmotions && Array.isArray(selectedEmotions)) {
-          setSelectedEmotions(selectedEmotions);
-        }
-
-        if (selectedWeathers && Array.isArray(selectedWeathers)) {
-          setSelectedWeathers(selectedWeathers);
-        }
-
-        if (text) {
-          setText(text);
-        }
-      }
-    }
-  }, [
-    setSelectedEmotions,
-    setSelectedMood,
-    setSelectedWeathers,
-    setText,
-    diaryId,
-  ]);
-
-  useEffect(() => {
-    if (!diaryId) {
-      const saveData = debounce(() => {
-        const autosaveData = {
-          selectedMood,
-          selectedEmotions,
-          selectedWeathers,
-          text,
-        };
-
-        sessionStorage.setItem('autosave', JSON.stringify(autosaveData));
-      }, 500);
-
-      saveData();
-      return () => saveData.cancel();
-    }
-  }, [selectedMood, selectedEmotions, selectedWeathers, text, diaryId]);
 
   const handleEmotionClick = useCallback(
     (text) => {
@@ -126,8 +74,8 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
 
       if (
         selectedMood === '' ||
-        selectedEmotions === '' ||
-        selectedWeathers === '' ||
+        selectedEmotions.length === 0 ||
+        selectedWeathers.length === 0 ||
         text === ''
       ) {
         toast.remove();
@@ -204,7 +152,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         )
         .then(() => {
           setIsSubmitting(false);
-          sessionStorage.removeItem('autosave');
+          if (!diaryId) sessionStorage.removeItem('autosave');
           navigate(`/home/calendar?date=${format(defaultTitle, 'yyyy-MM')}`);
         })
         .catch((error) => {
@@ -338,7 +286,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
 // Webp 변환 함수
 const convertToWebP = async (file) => {
   const options = {
-    maxSizeMB: 1,
+    maxSizeMB: 0.1,
     maxWidthOrHeight: 1920,
     useWebWorker: true,
   };
@@ -361,13 +309,13 @@ const convertToWebP = async (file) => {
     if (isWebPSupported) {
       // WebP 지원되는 경우
       const webpBlob = await new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.5);
+        canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.8);
       });
       return new File([webpBlob], 'image.webp', { type: 'image/webp' });
     } else {
       // WebP 지원되지 않는 경우 JPEG로 대체
       const jpegBlob = await new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.5);
+        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
       });
       return new File([jpegBlob], 'image.jpg', { type: 'image/jpeg' });
     }

@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import emotions from '@/assets/icons/emotions/emotions';
 import weathers from '@/assets/icons/weather/weathers';
 import {
@@ -10,8 +9,11 @@ import {
   TopHeader,
   WeatherWithIcon,
 } from '@/components';
-import { useFetchDiaryDetail, useDiaryActions } from '@/hooks';
+import { useDiaryActions, useFetchDiaryDetail } from '@/hooks';
 import { format } from 'date-fns';
+import { debounce } from 'lodash';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export const Component = () => {
   const location = useLocation();
@@ -27,6 +29,8 @@ export const Component = () => {
     selectedWeathers,
     text,
     setSelectedMood,
+    setSelectedEmotions,
+    setSelectedWeathers,
     setText,
     picture,
     setPicture,
@@ -35,6 +39,57 @@ export const Component = () => {
     isSubmitting,
     handleSubmit,
   } = useDiaryActions(diaryDetail, currentDate, diaryId);
+
+  useEffect(() => {
+    if (!diaryId) {
+      const autosaveData = sessionStorage.getItem('autosave');
+
+      if (autosaveData) {
+        const { selectedMood, selectedEmotions, selectedWeathers, text } =
+          JSON.parse(autosaveData);
+
+        if (selectedMood) {
+          setSelectedMood(selectedMood);
+        }
+
+        if (selectedEmotions && Array.isArray(selectedEmotions)) {
+          setSelectedEmotions(selectedEmotions);
+        }
+
+        if (selectedWeathers && Array.isArray(selectedWeathers)) {
+          setSelectedWeathers(selectedWeathers);
+        }
+
+        if (text) {
+          setText(text);
+        }
+      }
+    }
+  }, [
+    setSelectedEmotions,
+    setSelectedMood,
+    setSelectedWeathers,
+    setText,
+    diaryId,
+  ]);
+
+  useEffect(() => {
+    if (!diaryId) {
+      const saveData = debounce(() => {
+        const autosaveData = {
+          selectedMood,
+          selectedEmotions,
+          selectedWeathers,
+          text,
+        };
+
+        sessionStorage.setItem('autosave', JSON.stringify(autosaveData));
+      }, 500);
+
+      saveData();
+      return () => saveData.cancel();
+    }
+  }, [selectedMood, selectedEmotions, selectedWeathers, text, diaryId]);
 
   return (
     <section className="flex flex-col gap-5 pb-[100px]">
