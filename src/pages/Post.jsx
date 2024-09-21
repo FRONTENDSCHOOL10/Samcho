@@ -25,6 +25,7 @@ const Post = () => {
           filter: `(recipient = "${userId}" || requester = "${userId}") && status = "accepted"`,
           expand:
             'recipient, recipient_diary.user, requester, requester_diary.user',
+          sort: '-updated',
         });
 
         const now = new Date();
@@ -40,8 +41,10 @@ const Post = () => {
             } else {
               const minutesDifference = differenceInMinutes(now, updatedTime);
               const timeAgo =
-                minutesDifference < 60
+                minutesDifference < 1
                   ? '방금 전'
+                  : minutesDifference < 60
+                  ? `${minutesDifference}분`
                   : `${differenceInHours(now, updatedTime)}시간`;
 
               if (record.recipient === userId) {
@@ -74,7 +77,10 @@ const Post = () => {
 
   return (
     <section className="flex flex-col gap-5 pb-[80px]">
-      <TopHeader title="교환일기 우편함" />
+      <TopHeader
+        title="교환일기 우편함"
+        subTitle="교환일기는 24시간 뒤에 자동으로 삭제됩니다."
+      />
       <main className="flex flex-col gap-5">
         {loading && (
           <LoadingSpinner text="하루몽이 교환일기를 불러오고 있어요" />

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const TopHeader = ({ title, isShowIcon = false }) => {
+const TopHeader = ({ title, subTitle = '', isShowIcon = false }) => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
@@ -22,13 +22,17 @@ const TopHeader = ({ title, isShowIcon = false }) => {
           <DirectionLeft className="fill-black" aria-hidden="true" />
         </button>
       )}
-      <h1 className="text-lg">{title}</h1>
+      <div className="flex flex-col">
+        <h1 className="text-lg text-center">{title}</h1>
+        <p className="text-sm font-medium text-gray-300">{subTitle}</p>
+      </div>
     </header>
   );
 };
 
 TopHeader.propTypes = {
   title: PropTypes.string.isRequired,
+  subTitle: PropTypes.string,
   isShowIcon: PropTypes.bool,
 };
 
