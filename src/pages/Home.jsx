@@ -38,7 +38,7 @@ const Home = ({ viewMode: initialViewMode }) => {
   useEffect(() => {
     if (selectedMood !== '전체' && filteredMoodData.length === 0) {
       toast.error(`${selectedMood} 기분의 일기가 없어요😥`, {
-        duration: 1000,
+        duration: 1500,
       });
     }
   }, [selectedMood, filteredMoodData.length]);

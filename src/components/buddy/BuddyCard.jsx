@@ -24,7 +24,10 @@ const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
 
       if (!user) {
         toast.error(
-          '사용자 인증정보를 불러오지 못했어요. 다시 시도해주세요 😥'
+          '사용자 인증정보를 불러오지 못했어요. 다시 시도해주세요 😥',
+          {
+            duration: 2000,
+          }
         );
         return;
       }
@@ -36,7 +39,9 @@ const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
         );
 
       if (!record) {
-        toast.error('단짝 정보를 찾을 수 없어요. 다시 시도해주세요 😥');
+        toast.error('단짝 정보를 찾을 수 없어요. 다시 시도해주세요 😥', {
+          duration: 2000,
+        });
         return;
       }
 
@@ -77,7 +82,9 @@ const BuddyCard = ({ buddyName, startDate, buddyId, onDelete }) => {
         }))
       );
 
-      toast.success('단짝을 멀리 보냈습니다.');
+      toast.success('단짝을 멀리 보냈습니다.', {
+        duration: 2000,
+      });
       closeModal('breachModal');
       onDelete(buddyId);
     } catch (error) {

@@ -92,8 +92,10 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       } else if (selectedEmotions.length < 5) {
         setSelectedEmotions([...selectedEmotions, text]);
       } else {
-        toast.dismiss();
-        toast.error('감정은 5개까지 선택 가능합니다.');
+        toast.remove();
+        toast.error('감정은 5개까지 선택 가능합니다.', {
+          duration: 1500,
+        });
       }
     },
     [selectedEmotions]
@@ -108,8 +110,10 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       } else if (selectedWeathers.length < 2) {
         setSelectedWeathers([...selectedWeathers, text]);
       } else {
-        toast.dismiss();
-        toast.error('날씨는 2개까지 선택 가능합니다.');
+        toast.remove();
+        toast.error('날씨는 2개까지 선택 가능합니다.', {
+          duration: 1500,
+        });
       }
     },
     [selectedWeathers]
@@ -126,8 +130,10 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         selectedWeathers === '' ||
         text === ''
       ) {
-        toast.dismiss();
-        toast.error('입력하지 않은 필수 값이 있습니다.');
+        toast.remove();
+        toast.error('입력하지 않은 필수 값이 있습니다.', {
+          duration: 1500,
+        });
         setIsSubmitting(false);
         return;
       }
@@ -139,8 +145,10 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           });
 
           if (data.length > 0) {
-            toast.dismiss();
-            toast.error('오늘 일기는 이미 작성하셨습니다.');
+            toast.remove();
+            toast.error('오늘 일기는 이미 작성하셨습니다.', {
+              duration: 1500,
+            });
             setIsSubmitting(false);
             return;
           }
@@ -179,15 +187,21 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         : pb.collection('diary').create(formData);
 
       toast
-        .promise(submitPromise, {
-          loading: diaryId ? '일기 수정 중...' : '일기 저장 중...',
-          success: diaryId
-            ? '일기 수정을 완료했습니다!'
-            : '일기 작성을 완료했습니다!',
-          error: diaryId
-            ? '일기 수정에 실패했습니다...'
-            : '일기 작성에 실패했습니다...',
-        })
+        .promise(
+          submitPromise,
+          {
+            loading: diaryId ? '일기 수정 중...' : '일기 저장 중...',
+            success: diaryId
+              ? '일기 수정을 완료했습니다!'
+              : '일기 작성을 완료했습니다!',
+            error: diaryId
+              ? '일기 수정에 실패했습니다...'
+              : '일기 작성에 실패했습니다...',
+          },
+          {
+            duration: 2000,
+          }
+        )
         .then(() => {
           setIsSubmitting(false);
           sessionStorage.removeItem('autosave');
@@ -216,10 +230,14 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       closeModal('deleteModal');
       try {
         await pb.collection('diary').delete(id);
-        toast.success('일기 삭제가 완료되었습니다.');
+        toast.success('일기 삭제가 완료되었습니다.', {
+          duration: 2000,
+        });
         if (onDelete) onDelete(id); // 상태 업데이트
       } catch (error) {
-        toast.error('일기 삭제 중 오류가 발생했습니다.');
+        toast.error('일기 삭제 중 오류가 발생했습니다.', {
+          duration: 2000,
+        });
         console.error('[error] 다이어리 삭제 실패: ', error);
       }
       if (!onDelete) navigate('/');
@@ -237,7 +255,9 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           });
 
         if (existingRequest.length > 0) {
-          toast.error('이미 해당 사용자와 교환중인 일기가 있습니다.');
+          toast.error('이미 해당 사용자와 교환중인 일기가 있습니다.', {
+            duration: 2000,
+          });
           return;
         }
 
@@ -255,10 +275,14 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
           type_id: post.id,
         });
 
-        toast.success('일기 교환 신청을 보냈습니다!');
+        toast.success('일기 교환 신청을 보냈습니다!', {
+          duration: 2000,
+        });
         if (closeModal) closeModal('buddyListModal');
       } catch (error) {
-        toast.error('일기 교환 신청에 실패했습니다.');
+        toast.error('일기 교환 신청에 실패했습니다.', {
+          duration: 2000,
+        });
         console.error(error);
       }
     },
