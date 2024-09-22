@@ -29,9 +29,6 @@ export default defineConfig({
           // UI 관련 라이브러리
           'ui-libs': ['react-hot-toast', 'react-icons', 'react-spinners'],
 
-          // 차트 라이브러리
-          chart: ['recharts'],
-
           // 유틸리티 라이브러리
           utils: ['lodash', 'query-string', 'date-fns'],
 

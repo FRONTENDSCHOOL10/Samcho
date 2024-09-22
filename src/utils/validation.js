@@ -10,7 +10,7 @@ export const validateEmail = (email) => {
 };
 
 export const validateNickname = (nickname) => {
-  const nicknameRegex = /^[가-힣a-zA-Z0-9]{2,}$/;
+  const nicknameRegex = /^[가-힣a-zA-Z0-9]{2,6}$/;
   return nicknameRegex.test(nickname);
 };
 
