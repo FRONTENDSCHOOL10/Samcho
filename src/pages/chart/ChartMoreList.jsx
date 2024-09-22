@@ -3,7 +3,7 @@ import { IconRankMoreList, ToggleButton, TopHeader } from '@/components';
 import emotions from '@/assets/icons/emotions/emotions';
 import { useLocation } from 'react-router-dom';
 
-export const Component = () => {
+const ChartMoreList = () => {
   const location = useLocation();
   const { diaryData } = location.state || {}; // state에서 diaryData를 받음
 
@@ -96,3 +96,5 @@ export const Component = () => {
     </section>
   );
 };
+
+export default ChartMoreList;

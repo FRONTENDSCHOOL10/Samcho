@@ -4,7 +4,7 @@ import { groupByMonth } from '@/utils';
 import { Helmet } from 'react-helmet-async';
 import { useState } from 'react';
 
-export const Component = () => {
+const PhotoGallery = () => {
   const [loadedImages, setLoadedImages] = useState({});
 
   const { diaryData, loading } = useFetchAllDiaryData();
@@ -81,3 +81,5 @@ export const Component = () => {
     </>
   );
 };
+
+export default PhotoGallery;

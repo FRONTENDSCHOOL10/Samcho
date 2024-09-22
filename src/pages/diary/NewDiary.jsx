@@ -15,7 +15,7 @@ import debounce from 'lodash/debounce';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-export const Component = () => {
+const NewDiary = () => {
   const location = useLocation();
   const { date, diaryId } = location.state || {};
 
@@ -135,3 +135,5 @@ export const Component = () => {
     </section>
   );
 };
+
+export default NewDiary;

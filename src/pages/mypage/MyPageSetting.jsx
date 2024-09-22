@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import { authUtils, validateNickname, deleteData, deleteFilter } from '@/utils';
 import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 
-export const Component = () => {
+const MyPageSetting = () => {
   const navigate = useNavigate();
   // 유저 관련 데이터
   const { buddyData } = useFetchAllBuddyData(true);
@@ -300,3 +300,5 @@ export const Component = () => {
     </section>
   );
 };
+
+export default MyPageSetting;

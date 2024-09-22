@@ -23,7 +23,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           // 주요 React 관련 라이브러리
-          'react-vendor': ['react', 'react-dom', 'react-router-dom', 'zustand'],
+          react: ['react', 'react-dom'],
+          'react-router-dom': ['react-router-dom'],
 
           // UI 관련 라이브러리
           'ui-libs': ['react-hot-toast', 'react-icons', 'react-spinners'],

@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import { useFetchAllDiaryData, useModal } from '@/hooks';
 import { formatDate } from 'date-fns';
 
-export const Component = () => {
+const Notification = () => {
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
   const [notificationData, setNotificationData] = useState(null);
@@ -249,3 +249,5 @@ export const Component = () => {
     </>
   );
 };
+
+export default Notification;

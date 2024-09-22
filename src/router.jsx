@@ -1,6 +1,22 @@
 import { RootLayout, PrivateRoute } from '@/layouts';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { Chart, ErrorPage, Home, Login, Mypage, Post, Register } from './pages';
+import {
+  BuddyManagement,
+  Chart,
+  ChartMoreList,
+  DetailDiary,
+  ErrorPage,
+  Home,
+  Login,
+  Mypage,
+  MyPageSetting,
+  Newdiary,
+  Notification,
+  PhotoGallery,
+  Post,
+  Register,
+  SearchDiary,
+} from './pages';
 import { Outlet } from 'react-router-dom';
 
 /*@type {import('react-router-dom').RouteObject[]}*/
@@ -19,15 +35,15 @@ export const routes = [
         children: [
           { path: 'calendar', element: <Home viewMode="calendar" /> },
           { path: 'list', element: <Home viewMode="list" /> },
-          { path: 'notification', lazy: () => import('@/pages/Notification') },
-          { path: 'search', lazy: () => import('@/pages/SearchDiary') },
+          { path: 'notification', element: <Notification /> },
+          { path: 'search', element: <SearchDiary /> },
         ],
       },
       {
         path: 'chart',
         children: [
           { index: true, element: <Chart /> },
-          { path: 'more', lazy: () => import('@/pages/chart/ChartMoreList') },
+          { path: 'more', element: <ChartMoreList /> },
         ],
       },
       { path: 'post', element: <Post /> },
@@ -37,13 +53,13 @@ export const routes = [
           { index: true, element: <Mypage /> },
           {
             path: 'setting',
-            lazy: () => import('@/pages/mypage/MyPageSetting'),
+            element: <MyPageSetting />,
           },
           {
             path: 'buddy-management',
-            lazy: () => import('@/pages/mypage/BuddyManagement'),
+            element: <BuddyManagement />,
           },
-          { path: 'photo', lazy: () => import('@/pages/mypage/PhotoGallery') },
+          { path: 'photo', element: <PhotoGallery /> },
         ],
       },
     ],
@@ -58,9 +74,9 @@ export const routes = [
     children: [
       {
         path: 'detail/:id',
-        lazy: () => import('@/pages/diary/DetailDiary'),
+        element: <DetailDiary />,
       },
-      { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
+      { path: 'new', element: <Newdiary /> },
     ],
   },
   { path: 'login', element: <Login /> },
