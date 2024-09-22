@@ -11,7 +11,7 @@ import {
 } from '@/components';
 import { useDiaryActions, useFetchDiaryDetail } from '@/hooks';
 import { format } from 'date-fns';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 

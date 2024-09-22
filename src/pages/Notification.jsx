@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import { useFetchAllDiaryData, useModal } from '@/hooks';
 import { formatDate } from 'date-fns';
 
-const Notification = () => {
+export const Component = () => {
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
 
   const [notificationData, setNotificationData] = useState(null);
@@ -100,7 +100,7 @@ const Notification = () => {
       setNotificationData((prevData) =>
         prevData.filter((item) => item.id !== selectedNotification.id)
       );
-      
+
       toast.success('교환일기 신청이 수락 되었습니다.', {
         duration: 2000,
       });
@@ -249,5 +249,3 @@ const Notification = () => {
     </>
   );
 };
-
-export default Notification;

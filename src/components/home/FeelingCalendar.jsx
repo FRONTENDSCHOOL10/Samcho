@@ -1,4 +1,4 @@
-import DayCircle2 from '@/assets/icons/daycircle/daycircle2.svg?react';
+import DayCircle from '@/assets/icons/daycircle/daycircle.svg?react';
 import moods from '@/assets/icons/mood/moods';
 import { format, isToday } from 'date-fns';
 import PropTypes from 'prop-types';
@@ -62,7 +62,7 @@ const FeelingCalendar = ({
         {mood && !hasDiaryWithDifferentMood ? (
           <img src={moods[mood]} alt={mood} className={harumongImgClasses} />
         ) : (
-          <DayCircle2 className={dayCircleClasses} />
+          <DayCircle className={dayCircleClasses} />
         )}
       </Link>
       <span className={hasDiaryWithDifferentMoodClasses}>{day}</span>

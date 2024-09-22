@@ -5,7 +5,7 @@ import {
 } from '@/components';
 import { useSearchDiary } from '@/hooks';
 
-const SearchDiary = () => {
+export const Component = () => {
   const {
     inputValue,
     setInputValue,
@@ -48,5 +48,3 @@ const SearchDiary = () => {
     </section>
   );
 };
-
-export default SearchDiary;

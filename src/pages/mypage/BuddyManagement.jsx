@@ -3,7 +3,7 @@ import { BuddyCard, LoadingSpinner, TopHeader } from '@/components';
 import { useFetchAllBuddyData } from '@/hooks';
 import { formatDate } from 'date-fns';
 
-const BuddyManagement = () => {
+export const Component = () => {
   const { buddyData, loading } = useFetchAllBuddyData();
   const [buddies, setBuddies] = useState(buddyData);
 
@@ -43,5 +43,3 @@ const BuddyManagement = () => {
     </section>
   );
 };
-
-export default BuddyManagement;
