@@ -236,7 +236,7 @@
 </td>
 
 <td>
-  <img src="https://img.shields.io/badge/LEE SIYEON-4AB367?style=for-the-badge&logoColor=white"alt="이서연 이름 라벨" />
+  <img src="https://img.shields.io/badge/LEE SEOYEON-4AB367?style=for-the-badge&logoColor=white"alt="이서연 이름 라벨" />
 </td>
 
 <td>
