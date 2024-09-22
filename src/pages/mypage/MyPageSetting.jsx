@@ -6,6 +6,7 @@ import { pb } from '@/api';
 import toast from 'react-hot-toast';
 import { authUtils, validateNickname, deleteData, deleteFilter } from '@/utils';
 import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
+import { Helmet } from 'react-helmet-async';
 
 const MyPageSetting = () => {
   const navigate = useNavigate();
@@ -188,116 +189,143 @@ const MyPageSetting = () => {
   }, [buddyData, diaryData, navigate]);
 
   return (
-    <section className="flex flex-col justify-between min-h-dvh pb-[80px]">
-      <TopHeader title="계정 관리" isShowIcon={true} />
+    <>
+      <Helmet>
+        <title>하루몽 - 계정관리</title>
+        <meta name="description" content="하루몽 계정관리 페이지 입니다." />
+        <meta property="author" content="하루몽" />
 
-      <main className="flex flex-col items-center flex-1 gap-10 mt-5">
-        <section
-          className="w-full p-[0.9375rem] bg-white rounded-[10px] shadow-light flex justify-between items-center"
-          aria-labelledby="items-to-change-title"
-        >
-          <div className="flex flex-col">
-            <h2
-              id="items-to-change-title"
-              className="text-base font-semibold text-black"
-            >
-              닉네임 변경
-            </h2>
-            <p className="text-base font-medium text-gray-300">{name}</p>
-          </div>
-          <button
-            type="button"
-            aria-label="닉네임 변경"
-            onClick={() => openModal('nicknameModal')}
-            className="p-2"
+        <meta property="og:locale" content="ko_KR" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://harumong.netlify.app/mypage/setting"
+        />
+        <meta property="og:site_name" content="하루몽 - 감정일기" />
+        <meta property="og:title" content="하루몽 - 감정일기" />
+        <meta
+          property="og:description"
+          content="감정 기반으로 작성하는 일기 어플리케이션 하루몽"
+        />
+        <meta
+          property="og:image"
+          content="https://harumong.netlify.app/logo.png"
+        />
+      </Helmet>
+
+      <section className="flex flex-col justify-between min-h-dvh pb-[80px]">
+        <TopHeader title="계정 관리" isShowIcon={true} />
+
+        <main className="flex flex-col items-center flex-1 gap-10 mt-5">
+          <section
+            className="w-full p-[0.9375rem] bg-white rounded-[10px] shadow-light flex justify-between items-center"
+            aria-labelledby="items-to-change-title"
           >
-            <FaChevronRight aria-hidden={true} />
-          </button>
-        </section>
-      </main>
-
-      <div className="flex flex-col gap-2">
-        <button
-          onClick={() => openModal('logoutModal')}
-          className="w-full px-5 py-[15px] bg-white rounded-[10px] shadow-light flex justify-center items-center"
-          aria-label="로그아웃"
-        >
-          <span className="text-lg font-bold text-blue-500">로그아웃</span>
-        </button>
-        <button
-          onClick={() => openModal('withdrawalModal')}
-          className="w-full px-5 py-[15px] bg-red rounded-[10px] shadow-light flex justify-center items-center"
-          aria-label="회원 탈퇴"
-        >
-          <span className="text-lg font-bold text-white">회원탈퇴</span>
-        </button>
-      </div>
-
-      {/* 닉네임 변경 모달 */}
-      <Modal
-        isOpen={isOpen('nicknameModal')}
-        closeModal={() => closeModal('nicknameModal')}
-      >
-        <div className="flex flex-col gap-3">
-          <h3 className="text-lg font-semibold">닉네임 변경</h3>
-          {/* 라벨 추가 */}
-          <div className="flex flex-row gap-1">
-            <label className="sr-only" htmlFor="nickname-input">
-              새 닉네임 입력
-            </label>
-            <input
-              type="text"
-              value={newNickname}
-              onChange={(e) => setNewNickname(e.target.value)}
-              className="flex-[2] p-2 border border-gray-300 rounded-md"
-              placeholder="새 닉네임 입력"
-              aria-label="새 닉네임 입력"
-              id="nickname-input"
-              style={{ minWidth: '0' }}
-            />
+            <div className="flex flex-col">
+              <h2
+                id="items-to-change-title"
+                className="text-base font-semibold text-black"
+              >
+                닉네임 변경
+              </h2>
+              <p className="text-base font-medium text-gray-300">{name}</p>
+            </div>
             <button
-              onClick={checkNicknameAvailability}
-              className={`flex-1 p-1 text-white ${
-                isDisabled ? 'bg-gray-300' : 'bg-blue-500'
-              } rounded-md`}
-              disabled={isDisabled}
+              type="button"
+              aria-label="닉네임 변경"
+              onClick={() => openModal('nicknameModal')}
+              className="p-2"
             >
-              중복 확인
+              <FaChevronRight aria-hidden={true} />
             </button>
-          </div>
+          </section>
+        </main>
+
+        <div className="flex flex-col gap-2">
           <button
-            onClick={handleUpdateNickname}
-            className={`p-2 text-white ${
-              isLoading ? 'bg-gray-300' : 'bg-blue-500'
-            } rounded-md`}
-            disabled={
-              isLoading || isNicknameAvailable === false || isValiable === false
-            }
+            onClick={() => openModal('logoutModal')}
+            className="w-full px-5 py-[15px] bg-white rounded-[10px] shadow-light flex justify-center items-center"
+            aria-label="로그아웃"
           >
-            {isLoading ? '업데이트 중...' : '닉네임 변경'}
+            <span className="text-lg font-bold text-blue-500">로그아웃</span>
+          </button>
+          <button
+            onClick={() => openModal('withdrawalModal')}
+            className="w-full px-5 py-[15px] bg-red rounded-[10px] shadow-light flex justify-center items-center"
+            aria-label="회원 탈퇴"
+          >
+            <span className="text-lg font-bold text-white">회원탈퇴</span>
           </button>
         </div>
-      </Modal>
 
-      <ConfirmModal
-        isOpen={isOpen('logoutModal')}
-        closeModal={() => closeModal('logoutModal')}
-        title="로그아웃"
-        onConfirm={() => handleLogout()}
-      >
-        정말 로그아웃을 하시겠습니까?
-      </ConfirmModal>
+        {/* 닉네임 변경 모달 */}
+        <Modal
+          isOpen={isOpen('nicknameModal')}
+          closeModal={() => closeModal('nicknameModal')}
+        >
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-semibold">닉네임 변경</h3>
+            {/* 라벨 추가 */}
+            <div className="flex flex-row gap-1">
+              <label className="sr-only" htmlFor="nickname-input">
+                새 닉네임 입력
+              </label>
+              <input
+                type="text"
+                value={newNickname}
+                onChange={(e) => setNewNickname(e.target.value)}
+                className="flex-[2] p-2 border border-gray-300 rounded-md"
+                placeholder="새 닉네임 입력"
+                aria-label="새 닉네임 입력"
+                id="nickname-input"
+                style={{ minWidth: '0' }}
+              />
+              <button
+                onClick={checkNicknameAvailability}
+                className={`flex-1 p-1 text-white ${
+                  isDisabled ? 'bg-gray-300' : 'bg-blue-500'
+                } rounded-md`}
+                disabled={isDisabled}
+              >
+                중복 확인
+              </button>
+            </div>
+            <button
+              onClick={handleUpdateNickname}
+              className={`p-2 text-white ${
+                isLoading ? 'bg-gray-300' : 'bg-blue-500'
+              } rounded-md`}
+              disabled={
+                isLoading ||
+                isNicknameAvailable === false ||
+                isValiable === false
+              }
+            >
+              {isLoading ? '업데이트 중...' : '닉네임 변경'}
+            </button>
+          </div>
+        </Modal>
 
-      <ConfirmModal
-        isOpen={isOpen('withdrawalModal')}
-        closeModal={() => closeModal('withdrawalModal')}
-        title="회원탈퇴"
-        onConfirm={() => handleDeleteAccount()}
-        disabled={isDeleting}
-      >
-        정말 회원탈퇴를 하시겠습니까?
-      </ConfirmModal>
-    </section>
+        <ConfirmModal
+          isOpen={isOpen('logoutModal')}
+          closeModal={() => closeModal('logoutModal')}
+          title="로그아웃"
+          onConfirm={() => handleLogout()}
+        >
+          정말 로그아웃을 하시겠습니까?
+        </ConfirmModal>
+
+        <ConfirmModal
+          isOpen={isOpen('withdrawalModal')}
+          closeModal={() => closeModal('withdrawalModal')}
+          title="회원탈퇴"
+          onConfirm={() => handleDeleteAccount()}
+          disabled={isDeleting}
+        >
+          정말 회원탈퇴를 하시겠습니까?
+        </ConfirmModal>
+      </section>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { FaChevronRight } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { useModal, useFetchAllBuddyData, useFetchAllDiaryData } from '@/hooks';
 import { authUtils } from '@/utils';
+import { Helmet } from 'react-helmet-async';
 
 const Mypage = () => {
   const [nickname, setNickName] = useState('');
@@ -64,6 +65,26 @@ const Mypage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>하루몽 - 내정보</title>
+        <meta name="description" content="하루몽 내정보 페이지 입니다." />
+        <meta property="author" content="하루몽" />
+
+        <meta property="og:locale" content="ko_KR" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://harumong.netlify.app/mypage" />
+        <meta property="og:site_name" content="하루몽 - 감정일기" />
+        <meta property="og:title" content="하루몽 - 감정일기" />
+        <meta
+          property="og:description"
+          content="감정 기반으로 작성하는 일기 어플리케이션 하루몽"
+        />
+        <meta
+          property="og:image"
+          content="https://harumong.netlify.app/logo.png"
+        />
+      </Helmet>
+
       <TopHeader title="내정보" />
       <div className="flex flex-col justify-start items-center gap-[25px] mt-5 min-h-dvh pb-[80px]">
         {/* 계정 섹션 */}

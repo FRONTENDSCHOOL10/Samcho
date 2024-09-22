@@ -106,16 +106,24 @@ const Home = ({ viewMode: initialViewMode }) => {
       <Helmet>
         <title>하루몽 - 홈</title>
         <meta name="description" content="하루몽 홈 페이지 입니다." />
+        <meta property="author" content="하루몽" />
+
+        <meta property="og:locale" content="ko_KR" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://harumong.netlify.app/home/calendar"
+        />
+        <meta property="og:site_name" content="하루몽 - 감정일기" />
         <meta property="og:title" content="하루몽 - 감정일기" />
-        <meta property="twitter:title" content="하루몽 - 감정일기" />
-        <meta property="og:type" content="site" />
-        <meta property="og:url" content="" />
         <meta
           property="og:description"
           content="감정 기반으로 작성하는 일기 어플리케이션 하루몽"
         />
-        <meta property="og:image" content="" />
-        <meta property="og:site:author" content="하루몽 일동" />
+        <meta
+          property="og:image"
+          content="https://harumong.netlify.app/logo.png"
+        />
       </Helmet>
 
       <section className="min-h-dvh pb-[80px]">
