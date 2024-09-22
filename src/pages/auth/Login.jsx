@@ -119,6 +119,7 @@ const Login = () => {
 
       if (users.length === 0) {
         toast.error('아이디와 이메일이 일치하지 않습니다.', { duration: 2000 });
+        return;
       }
 
       // 아이디와 이메일이 일치할 경우 비밀번호 재설정 요청
@@ -244,7 +245,7 @@ const Login = () => {
               />
               <button
                 onClick={handleFindId}
-                className={`flex-1 p-2 text-white ${
+                className={`flex-1 p-2 text-white text-wrap ${
                   isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
                 } rounded-md`}
                 disabled={!email || isSubmitting}
@@ -298,7 +299,7 @@ const Login = () => {
                   aria-label="이메일 입력"
                 />
                 <button
-                  className={`flex-1 p-1 text-white rounded-md  ${
+                  className={`flex-1 p-1 text-white rounded-md text-wrap ${
                     isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
                   }`}
                   onClick={handleFindPassword}
