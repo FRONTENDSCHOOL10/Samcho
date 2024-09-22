@@ -1,12 +1,8 @@
+import { lazy } from 'react';
 import PropTypes from 'prop-types';
 import { SyncLoader } from 'react-spinners';
-import {
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  ResponsiveContainer,
-} from 'recharts';
+
+const LazyRadarChart = lazy(() => import('./LazyRadarChart'));
 
 const moodOrder = ['행복', '기쁨', '보통', '나쁨', '슬픔'];
 
@@ -42,18 +38,7 @@ const MoodChart = ({ diaryData, loading }) => {
         </div>
       ) : (
         <div className="flex justify-center">
-          <ResponsiveContainer width="80%" height={250}>
-            <RadarChart cx="50%" cy="55%" outerRadius="80%" data={chartData}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="subject" className="text-sm" />
-              <Radar
-                dataKey="frequency"
-                stroke={`${diaryData.length > 0 ? '#6B97C9' : 'none'}`}
-                fill={`${diaryData.length > 0 ? '#6B97C9' : 'none'}`}
-                fillOpacity={`${diaryData.length > 0 ? 0.6 : 0}`}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
+          <LazyRadarChart chartData={chartData} diaryData={diaryData} />
         </div>
       )}
     </article>
