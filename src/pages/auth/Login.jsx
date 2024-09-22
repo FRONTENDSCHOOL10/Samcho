@@ -81,35 +81,25 @@ const Login = () => {
 
       // 이메일과 일치하는 사용자가 없을 경우
       if (users.length === 0) {
-        throw new Error('해당 이메일로 가입된 아이디가 없습니다.');
+        toast.error('해당 이메일로 가입된 아이디가 없습니다.', {
+          id: 'emailError',
+        });
+        setIsSubmitting(false);
       }
 
       // 이메일과 일치하는 사용자가 있을 경우, username을 찾음
       const foundUser = users[0];
       setFoundUserId(foundUser.username);
     } catch (error) {
-      toast.error(
-        error.message || '아이디 찾기 실패. 이메일을 확인해 주세요.',
-        {
-          duration: 2000,
-        }
-      );
-    } finally {
+      console.error(error);
       setIsSubmitting(false);
     }
+    setIsSubmitting(false);
   };
 
   // 비밀번호 찾기 처리 함수
   const handleFindPassword = async () => {
     setIsSubmitting(true);
-
-    if (findUsername.trim() === '' || email.trim() === '') {
-      toast.error('아이디와 이메일을 입력해주세요', {
-        duration: 2000,
-        id: 'findError',
-      });
-      return;
-    }
 
     try {
       // 아이디와 이메일이 일치하는지 확인
@@ -118,7 +108,11 @@ const Login = () => {
       });
 
       if (users.length === 0) {
-        toast.error('아이디와 이메일이 일치하지 않습니다.', { duration: 2000 });
+        toast.error('아이디와 이메일이 일치하지 않습니다.', {
+          duration: 2000,
+          id: 'idEmailError',
+        });
+        setIsSubmitting(false);
         return;
       }
 
@@ -130,6 +124,7 @@ const Login = () => {
       });
     } catch (error) {
       console.error(error);
+      setIsSubmitting(false);
     }
     setIsSubmitting(false);
   };
@@ -240,13 +235,13 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="이메일을 입력하세요"
-                className="flex-[2] p-2 border border-gray-300 rounded-md"
+                className="w-3/4 p-2 border border-gray-300 rounded-md"
                 aria-label="이메일 입력"
               />
               <button
                 onClick={handleFindId}
-                className={`flex-1 p-2 text-white text-wrap ${
-                  isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
+                className={`w-1/4 p-2 text-white text-wrap ${
+                  isSubmitting || !email ? 'bg-gray-300' : 'bg-blue-500'
                 } rounded-md`}
                 disabled={!email || isSubmitting}
               >
@@ -295,15 +290,17 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="이메일 입력"
-                  className="p-2 border border-gray-300 rounded-md"
+                  className="w-3/4 p-2 border border-gray-300 rounded-md"
                   aria-label="이메일 입력"
                 />
                 <button
-                  className={`flex-1 p-1 text-white rounded-md text-wrap ${
-                    isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
+                  className={`w-1/4 p-2 text-white rounded-md text-wrap ${
+                    isSubmitting || !findUsername || !email
+                      ? 'bg-gray-300'
+                      : 'bg-blue-500'
                   }`}
                   onClick={handleFindPassword}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !findUsername || !email}
                 >
                   {isSubmitting ? '인증요청 중' : '인증요청'}
                 </button>
