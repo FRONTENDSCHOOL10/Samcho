@@ -45,13 +45,11 @@ const Register = () => {
     (id, value, updatedForm = form) => {
       const validationRules = {
         username: () =>
-          validateUsername(value)
-            ? ''
-            : '영문, 숫자 포함 4자리 이상 입력하세요.',
+          validateUsername(value) ? '' : '영어, 숫자 4자리 이상 입력하세요.',
         email: () =>
           validateEmail(value) ? '' : '유효한 이메일 주소를 입력하세요.',
         name: () =>
-          validateNickname(value) ? '' : '특수문자 제외 2자리 이상 입력하세요.',
+          validateNickname(value) ? '' : '특수문자 제외 2~6 자리로 입력하세요.',
         password: () =>
           validatePassword(value)
             ? ''
