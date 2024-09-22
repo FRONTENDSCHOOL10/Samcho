@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import VisibleIcon from '@/assets/icons/passwordView/visible.svg';
 import InvisibleIcon from '@/assets/icons/passwordView/invisible.svg';
 
@@ -139,4 +139,4 @@ Input.propTypes = {
   form: PropTypes.object,
 };
 
-export default Input;
+export default memo(Input);

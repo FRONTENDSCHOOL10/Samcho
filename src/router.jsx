@@ -81,6 +81,10 @@ export const routes = [
   },
   { path: 'login', element: <Login /> },
   { path: 'register', element: <Register /> },
+  {
+    path: 'reset-password',
+    lazy: () => import('/src/pages/auth/ResetPassword.jsx'),
+  },
   { path: '*', element: <ErrorPage /> },
 ];
 

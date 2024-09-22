@@ -102,6 +102,35 @@ const Login = () => {
   // 비밀번호 찾기 처리 함수
   const handleFindPassword = async () => {
     setIsSubmitting(true);
+
+    if (findUsername.trim() === '' || email.trim() === '') {
+      toast.error('아이디와 이메일을 입력해주세요', {
+        duration: 2000,
+        id: 'findError',
+      });
+      return;
+    }
+
+    try {
+      // 아이디와 이메일이 일치하는지 확인
+      const users = await pb.collection('users').getFullList({
+        filter: `username="${findUsername}" && email="${email}"`,
+      });
+
+      if (users.length === 0) {
+        toast.error('아이디와 이메일이 일치하지 않습니다.', { duration: 2000 });
+      }
+
+      // 아이디와 이메일이 일치할 경우 비밀번호 재설정 요청
+      await pb.collection('users').requestPasswordReset(email);
+
+      toast.success('비밀번호 재설정 메일이 발송되었습니다.', {
+        duration: 2000,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    setIsSubmitting(false);
   };
 
   return (
@@ -171,26 +200,24 @@ const Login = () => {
               disabled={isSubmitting}
             />
           </div>
-
-          {/* 아이디 찾기 및 비밀번호 찾기 버튼 */}
-          <div className="flex flex-row justify-center gap-7">
-            <button
-              type="button"
-              onClick={() => openModal('findIdModal')}
-              className="text-sm text-blue-500"
-            >
-              아이디 찾기
-            </button>
-            <button
-              type="button"
-              onClick={() => openModal('findPasswordModal')}
-              className="text-sm text-blue-500"
-            >
-              비밀번호 찾기
-            </button>
-          </div>
         </form>
-
+        {/* 아이디 찾기 및 비밀번호 찾기 버튼 */}
+        <div className="flex flex-row justify-center">
+          <button
+            type="button"
+            onClick={() => openModal('findIdModal')}
+            className="w-[100px] px-2 py-2 text-sm text-blue-500"
+          >
+            아이디 찾기
+          </button>
+          <button
+            type="button"
+            onClick={() => openModal('findPasswordModal')}
+            className="w-[100px] px-2 py-2 text-sm text-blue-500"
+          >
+            비밀번호 찾기
+          </button>
+        </div>
         {/* 아이디 찾기 모달 */}
         <Modal
           isOpen={isOpen('findIdModal')}
@@ -200,7 +227,7 @@ const Login = () => {
             setEmail('');
           }}
         >
-          <section className="flex flex-col gap-3">
+          <section className="flex flex-col gap-3 min-h-[118px]">
             <h3 className="text-lg font-semibold">아이디 찾기</h3>
             <div className="flex flex-row gap-1">
               <label htmlFor="find-id-email" className="sr-only">
@@ -222,12 +249,12 @@ const Login = () => {
                 } rounded-md`}
                 disabled={!email || isSubmitting}
               >
-                검색
+                {isSubmitting ? '검색중' : '검색'}
               </button>
             </div>
             {foundUserId && (
               <div className="text-base text-center text-gray-400">
-                검색된 아이디는{' '}
+                해당 이메일로 가입된 아이디는{' '}
                 <span className="font-semibold text-blue-500">
                   {foundUserId}
                 </span>{' '}
@@ -271,23 +298,16 @@ const Login = () => {
                   aria-label="이메일 입력"
                 />
                 <button
-                  className="flex-1 p-1 text-white bg-blue-500 rounded-md"
+                  className={`flex-1 p-1 text-white rounded-md  ${
+                    isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
+                  }`}
                   onClick={handleFindPassword}
+                  disabled={isSubmitting}
                 >
-                  인증 요청
+                  {isSubmitting ? '인증요청 중' : '인증요청'}
                 </button>
               </div>
             </section>
-
-            <button
-              onClick={handleFindPassword}
-              className={`p-2 text-white ${
-                isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
-              } rounded-md`}
-              disabled={!findUsername || !email || isSubmitting}
-            >
-              비밀번호 변경
-            </button>
           </div>
         </Modal>
       </section>
