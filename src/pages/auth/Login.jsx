@@ -1,16 +1,22 @@
 import pb from '@/api/pb';
-import { Button, Input } from '@/components';
+import { Button, Input, Modal } from '@/components';
 import { authUtils } from '@/utils';
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useModal } from '@/hooks';
 
 const Login = () => {
+  const { isOpen, openModal, closeModal } = useModal();
+
   const navigate = useNavigate();
   const { state } = useLocation();
 
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [findUsername, setFindUsername] = useState('');
+  const [foundUserId, setFoundUserId] = useState(''); // 아이디 찾기 -> 검색된 아이디
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -62,6 +68,40 @@ const Login = () => {
         }
         setIsSubmitting(false);
       });
+  };
+
+  // 아이디 찾기 처리 함수
+  const handleFindId = async () => {
+    setIsSubmitting(true);
+    toast.remove();
+    try {
+      const users = await pb.collection('users').getFullList({
+        filter: `email="${email}"`, // 이메일 필터링
+      });
+
+      // 이메일과 일치하는 사용자가 없을 경우
+      if (users.length === 0) {
+        throw new Error('해당 이메일로 가입된 아이디가 없습니다.');
+      }
+
+      // 이메일과 일치하는 사용자가 있을 경우, username을 찾음
+      const foundUser = users[0];
+      setFoundUserId(foundUser.username);
+    } catch (error) {
+      toast.error(
+        error.message || '아이디 찾기 실패. 이메일을 확인해 주세요.',
+        {
+          duration: 2000,
+        }
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // 비밀번호 찾기 처리 함수
+  const handleFindPassword = async () => {
+    setIsSubmitting(true);
   };
 
   return (
@@ -131,7 +171,125 @@ const Login = () => {
               disabled={isSubmitting}
             />
           </div>
+
+          {/* 아이디 찾기 및 비밀번호 찾기 버튼 */}
+          <div className="flex flex-row justify-center gap-7">
+            <button
+              type="button"
+              onClick={() => openModal('findIdModal')}
+              className="text-sm text-blue-500"
+            >
+              아이디 찾기
+            </button>
+            <button
+              type="button"
+              onClick={() => openModal('findPasswordModal')}
+              className="text-sm text-blue-500"
+            >
+              비밀번호 찾기
+            </button>
+          </div>
         </form>
+
+        {/* 아이디 찾기 모달 */}
+        <Modal
+          isOpen={isOpen('findIdModal')}
+          closeModal={() => {
+            closeModal('findIdModal');
+            setFoundUserId('');
+            setEmail('');
+          }}
+        >
+          <section className="flex flex-col gap-3">
+            <h3 className="text-lg font-semibold">아이디 찾기</h3>
+            <div className="flex flex-row gap-1">
+              <label htmlFor="find-id-email" className="sr-only">
+                이메일 입력
+              </label>
+              <input
+                type="email"
+                id="find-id-email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="이메일을 입력하세요"
+                className="flex-[2] p-2 border border-gray-300 rounded-md"
+                aria-label="이메일 입력"
+              />
+              <button
+                onClick={handleFindId}
+                className={`flex-1 p-2 text-white ${
+                  isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
+                } rounded-md`}
+                disabled={!email || isSubmitting}
+              >
+                검색
+              </button>
+            </div>
+            {foundUserId && (
+              <div className="text-base text-center text-gray-400">
+                검색된 아이디는{' '}
+                <span className="font-semibold text-blue-500">
+                  {foundUserId}
+                </span>{' '}
+                입니다.
+              </div>
+            )}
+          </section>
+        </Modal>
+
+        {/* 비밀번호 찾기 모달 */}
+        <Modal
+          isOpen={isOpen('findPasswordModal')}
+          closeModal={() => closeModal('findPasswordModal')}
+        >
+          <div className="flex flex-col gap-3">
+            <h3 className="text-lg font-semibold">비밀번호 찾기</h3>
+            <section className="flex flex-col gap-2">
+              <label htmlFor="find-password-username" className="sr-only">
+                아이디 입력
+              </label>
+              <input
+                type="text"
+                id="find-password-username"
+                value={findUsername}
+                onChange={(e) => setFindUsername(e.target.value)}
+                placeholder="아이디 입력"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                aria-label="아이디 입력"
+              />
+              <div className="flex flex-row gap-1">
+                <label htmlFor="find-password-email" className="sr-only">
+                  이메일 입력
+                </label>
+                <input
+                  type="email"
+                  id="find-password-email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="이메일 입력"
+                  className="p-2 border border-gray-300 rounded-md"
+                  aria-label="이메일 입력"
+                />
+                <button
+                  className="flex-1 p-1 text-white bg-blue-500 rounded-md"
+                  onClick={handleFindPassword}
+                >
+                  인증 요청
+                </button>
+              </div>
+            </section>
+
+            <button
+              onClick={handleFindPassword}
+              className={`p-2 text-white ${
+                isSubmitting ? 'bg-gray-300' : 'bg-blue-500'
+              } rounded-md`}
+              disabled={!findUsername || !email || isSubmitting}
+            >
+              비밀번호 변경
+            </button>
+          </div>
+        </Modal>
       </section>
     </>
   );
