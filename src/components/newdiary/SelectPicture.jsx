@@ -1,7 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import CameraIcon from '@/assets/icons/diary/camera.svg';
 import PropTypes from 'prop-types';
-import heic2any from 'heic2any';
 import toast from 'react-hot-toast';
 
 const SelectPicture = ({ picture, setPicture }) => {
@@ -25,30 +24,26 @@ const SelectPicture = ({ picture, setPicture }) => {
     };
 
     const handleHEICFile = async (file) => {
-      const convertPromise = heic2any({ blob: file, toType: 'image/jpeg' });
-
-      toast.promise(
-        convertPromise,
-        {
-          loading: '파일 변환 중...',
-          success: '파일 변환 완료!',
-          error: 'HEIC 변환 오류 발생',
-        },
-        {
-          duration: 2000,
-        }
-      );
+      toast.loading('파일 변환 중...', { duration: 2000 });
 
       try {
-        const jpegBlob = await convertPromise;
+        const loadHeic2any = () => import('heic2any');
+        const heic2anyModule = await loadHeic2any();
+        const jpegBlob = await heic2anyModule.default({
+          blob: file,
+          toType: 'image/jpeg',
+        });
+
         const jpegFile = new File([jpegBlob], 'image.jpg', {
           type: 'image/jpeg',
         });
         setPicture(jpegFile);
         setPreview(URL.createObjectURL(jpegFile));
+        toast.success('파일 변환 완료!', { duration: 2000 });
       } catch (error) {
         console.error('HEIC conversion error:', error);
         setPreview(null);
+        toast.error('HEIC 변환 오류 발생', { duration: 2000 });
       }
     };
 
@@ -101,7 +96,7 @@ const SelectPicture = ({ picture, setPicture }) => {
       >
         {!preview && (
           <>
-            <img src={CameraIcon} className="w-10 h-9" />
+            <img src={CameraIcon} className="w-10 h-9" alt="Camera icon" />
             <span>
               원하는 사진 1장을 선택해주세요 <br /> (선택사항)
             </span>

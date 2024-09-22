@@ -4,11 +4,13 @@ import {
   BuddyManagement,
   Chart,
   ChartMoreList,
+  DetailDiary,
   ErrorPage,
   Home,
   Login,
   Mypage,
   MyPageSetting,
+  Newdiary,
   Notification,
   PhotoGallery,
   Post,
@@ -49,8 +51,14 @@ export const routes = [
         path: 'mypage',
         children: [
           { index: true, element: <Mypage /> },
-          { path: 'setting', element: <MyPageSetting /> },
-          { path: 'buddy-management', element: <BuddyManagement /> },
+          {
+            path: 'setting',
+            element: <MyPageSetting />,
+          },
+          {
+            path: 'buddy-management',
+            element: <BuddyManagement />,
+          },
           { path: 'photo', element: <PhotoGallery /> },
         ],
       },
@@ -66,9 +74,9 @@ export const routes = [
     children: [
       {
         path: 'detail/:id',
-        lazy: () => import('@/pages/diary/DetailDiary'),
+        element: <DetailDiary />,
       },
-      { path: 'new', lazy: () => import('@/pages/diary/NewDiary') },
+      { path: 'new', element: <Newdiary /> },
     ],
   },
   { path: 'login', element: <Login /> },

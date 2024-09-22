@@ -8,6 +8,7 @@ import {
   differenceInHours,
   differenceInMinutes,
 } from 'date-fns';
+import { Helmet } from 'react-helmet-async';
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
@@ -76,41 +77,63 @@ const Post = () => {
   }, []);
 
   return (
-    <section className="flex flex-col gap-5 pb-[80px]">
-      <TopHeader
-        title="교환일기 우편함"
-        subTitle="교환일기는 24시간 뒤에 자동으로 삭제됩니다."
-      />
-      <main className="flex flex-col gap-5">
-        {loading && (
-          <LoadingSpinner text="하루몽이 교환일기를 불러오고 있어요" />
-        )}
-        {error && (
-          <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-            <p className="font-medium text-center text-red">
-              교환일기를 불러오지 못했습니다.
-            </p>
-          </div>
-        )}
-        {posts.length === 0 && !loading && (
-          <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-            <p className="font-medium text-center text-gray-400">
-              단짝과 교환한 일기가 존재하지 않아요!
-            </p>
-          </div>
-        )}
-        {posts.map((post) => (
-          <DiaryCard
-            key={post.id}
-            diary={post}
-            buddyData={buddyData}
-            type="date"
-            exchange={true}
-            timeAgo={post.timeAgo} // 계산된 시간 차이를 DiaryCard로 넘김
-          />
-        ))}
-      </main>
-    </section>
+    <>
+      <Helmet>
+        <title>하루몽 - 우편함</title>
+        <meta name="description" content="하루몽 우편함 페이지 입니다." />
+        <meta property="author" content="하루몽" />
+
+        <meta property="og:locale" content="ko_KR" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://harumong.netlify.app/post" />
+        <meta property="og:site_name" content="하루몽 - 감정일기" />
+        <meta property="og:title" content="하루몽 - 감정일기" />
+        <meta
+          property="og:description"
+          content="감정 기반으로 작성하는 일기 어플리케이션 하루몽"
+        />
+        <meta
+          property="og:image"
+          content="https://harumong.netlify.app/logo.png"
+        />
+      </Helmet>
+
+      <section className="flex flex-col gap-5 pb-[80px]">
+        <TopHeader
+          title="교환일기 우편함"
+          subTitle="교환일기는 24시간 뒤에 자동으로 삭제됩니다."
+        />
+        <main className="flex flex-col gap-5">
+          {loading && (
+            <LoadingSpinner text="하루몽이 교환일기를 불러오고 있어요" />
+          )}
+          {error && (
+            <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+              <p className="font-medium text-center text-red">
+                교환일기를 불러오지 못했습니다.
+              </p>
+            </div>
+          )}
+          {posts.length === 0 && !loading && (
+            <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+              <p className="font-medium text-center text-gray-400">
+                단짝과 교환한 일기가 존재하지 않아요!
+              </p>
+            </div>
+          )}
+          {posts.map((post) => (
+            <DiaryCard
+              key={post.id}
+              diary={post}
+              buddyData={buddyData}
+              type="date"
+              exchange={true}
+              timeAgo={post.timeAgo} // 계산된 시간 차이를 DiaryCard로 넘김
+            />
+          ))}
+        </main>
+      </section>
+    </>
   );
 };
 

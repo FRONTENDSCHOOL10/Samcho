@@ -5,7 +5,6 @@ export { default as DiaryCard } from './common/DiaryCard.jsx';
 export { default as DiaryDetail } from './common/DiaryDetail.jsx';
 export { default as Input } from './common/Input.jsx';
 export { default as Modal } from './common/Modal.jsx';
-export { default as PostCard } from './common/PostCard.jsx';
 export { default as Select } from './common/Select.jsx';
 export { default as ToggleButton } from './common/ToggleButton.jsx';
 export { default as YearMonth } from './common/YearMonth.jsx';
