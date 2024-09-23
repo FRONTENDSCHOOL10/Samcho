@@ -1,12 +1,23 @@
 import PropTypes from 'prop-types';
-import { useState, memo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import VisibleIcon from '@/assets/icons/passwordView/visible.svg';
 import InvisibleIcon from '@/assets/icons/passwordView/invisible.svg';
 
-const inputClasses =
-  'block py-2.5 px-0 w-full text-base rounded-none bg-transparent border-b text-gray-450 border-gray-400 focus:outline-none focus:border-blue-500 focus:text-blue-500';
-
-const errorClasses = 'w-full text-red text-xs mt-1 text-nowrap';
+const styles = {
+  input:
+    'block py-2.5 px-0 w-full text-base rounded-none bg-transparent border-b text-gray-450 border-gray-400 focus:outline-none focus:border-blue-500 focus:text-blue-500',
+  error: 'w-full text-red text-xs mt-1 text-nowrap',
+  success: 'w-full mt-1 text-xs text-green-600',
+  label: (isFocused, hasValue) => `
+    absolute text-sm top-3 duration-300 transform origin-[0]
+    ${
+      isFocused || hasValue
+        ? '-translate-y-6 scale-75'
+        : 'translate-y-0 scale-100'
+    }
+    ${isFocused ? 'text-blue-500' : 'text-gray-450'}
+  `,
+};
 
 const Input = ({
   label,
@@ -21,108 +32,104 @@ const Input = ({
   form = {},
   ...props
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [hasValue, setHasValue] = useState(false);
-  const [isHide, setIsHide] = useState(type === 'password'); // 초기 상태를 password 여부로 설정
+  const [inputState, setInputState] = useState({
+    isFocused: false,
+    hasValue: false,
+    isHide: type === 'password',
+  });
 
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = ({ target: { value } }) => {
-    setIsFocused(false);
-    setHasValue(Boolean(value));
-  };
-  const handleChange = (e) => {
-    setHasValue(Boolean(e.target.value));
+  const handleFocus = useCallback(
+    () => setInputState((prev) => ({ ...prev, isFocused: true })),
+    []
+  );
 
-    if (onChange) {
-      onChange(e);
-    }
-  };
+  const handleBlur = useCallback(({ target: { value } }) => {
+    setInputState((prev) => ({
+      ...prev,
+      isFocused: false,
+      hasValue: Boolean(value),
+    }));
+  }, []);
 
-  const handleToggle = () => {
-    setIsHide((prev) => !prev);
-  };
+  const handleChange = useCallback(
+    (e) => {
+      setInputState((prev) => ({ ...prev, hasValue: Boolean(e.target.value) }));
+      onChange?.(e);
+    },
+    [onChange]
+  );
 
-  const labelClasses = `
-    absolute text-sm top-3 duration-300 transform origin-[0]
-    ${
-      isFocused || hasValue
-        ? '-translate-y-6 scale-75'
-        : 'translate-y-0 scale-100'
-    }
-    ${isFocused ? 'text-blue-500' : 'text-gray-450'}
-  `;
+  const handleToggle = useCallback(() => {
+    setInputState((prev) => ({ ...prev, isHide: !prev.isHide }));
+  }, []);
 
-  // 성공 메시지 조건 설정
-  const successMessages = {
-    username: renderSuccessMessage(
-      id === 'username' && !error && hasValue && duplicate,
-      '사용 가능한 아이디입니다.'
-    ),
-    email: renderSuccessMessage(
-      id === 'email' && !error && hasValue && duplicate,
-      '사용 가능한 이메일입니다.'
-    ),
-    name: renderSuccessMessage(
-      id === 'name' && !error && hasValue && duplicate,
-      '사용 가능한 닉네임입니다.'
-    ),
-    password: renderSuccessMessage(
-      id === 'password' && !error && hasValue,
-      '사용 가능한 비밀번호입니다.'
-    ),
-    passwordConfirm: renderSuccessMessage(
-      id === 'passwordConfirm' &&
+  const successMessage = useMemo(() => {
+    const messages = {
+      username: '사용 가능한 아이디입니다.',
+      email: '사용 가능한 이메일입니다.',
+      name: '사용 가능한 닉네임입니다.',
+      password: '사용 가능한 비밀번호입니다.',
+      passwordConfirm: '비밀번호가 일치합니다.',
+    };
+
+    const conditions = {
+      username: !error && inputState.hasValue && duplicate,
+      email: !error && inputState.hasValue && duplicate,
+      name: !error && inputState.hasValue && duplicate,
+      password: !error && inputState.hasValue,
+      passwordConfirm:
         !error &&
-        hasValue &&
+        inputState.hasValue &&
         (form.password || '') === (form.passwordConfirm || ''),
-      '비밀번호가 일치합니다.'
-    ),
-  };
+    };
+
+    return conditions[id] ? messages[id] : null;
+  }, [
+    id,
+    error,
+    inputState.hasValue,
+    duplicate,
+    form.password,
+    form.passwordConfirm,
+  ]);
 
   return (
     <div className={`relative w-[242px] ${className}`}>
       <input
-        type={type === 'password' ? (isHide ? 'password' : 'text') : type}
+        type={
+          type === 'password' ? (inputState.isHide ? 'password' : 'text') : type
+        }
         id={id}
-        className={`${inputClasses} ${error ? 'border-red-500' : ''}`}
+        className={`${styles.input} ${error ? 'border-red-500' : ''}`}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}
         {...props}
       />
-      <label htmlFor={id} className={labelClasses}>
+      <label
+        htmlFor={id}
+        className={styles.label(inputState.isFocused, inputState.hasValue)}
+      >
         {label}
       </label>
 
-      {/* 에러 메시지 */}
-      {error && errorMessage && <p className={errorClasses}>{errorMessage}</p>}
+      {error && errorMessage && <p className={styles.error}>{errorMessage}</p>}
+      {successMessage && <p className={styles.success}>{successMessage}</p>}
 
-      {/* 성공 메시지*/}
-      {successMessages[id]}
-
-      {/* 비밀번호 보기/숨기기 아이콘 */}
       {isViewIcon && (
         <button
           type="button"
           className="absolute right-0 top-3"
           onClick={handleToggle}
-          aria-label={isHide ? '비밀번호 보기' : '비밀번호 숨기기'}
-          title={isHide ? '비밀번호 보기' : '비밀번호 숨기기'}
+          aria-label={inputState.isHide ? '비밀번호 보기' : '비밀번호 숨기기'}
         >
           <img
-            src={isHide ? InvisibleIcon : VisibleIcon}
-            alt={isHide ? '비밀번호 숨김' : '비밀번호 표시'}
+            src={inputState.isHide ? InvisibleIcon : VisibleIcon}
+            alt={inputState.isHide ? '비밀번호 숨김' : '비밀번호 표시'}
           />
         </button>
       )}
     </div>
-  );
-};
-
-/* 성공 메세지 렌더링 함수 */
-const renderSuccessMessage = (condition, message) => {
-  return (
-    condition && <p className="w-full mt-1 text-xs text-green-600">{message}</p>
   );
 };
 
@@ -139,4 +146,4 @@ Input.propTypes = {
   form: PropTypes.object,
 };
 
-export default memo(Input);
+export default Input;

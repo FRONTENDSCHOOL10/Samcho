@@ -1,17 +1,17 @@
-import pb from '@/api/pb';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Input } from '@/components';
-import { useCheckAvailability } from '@/hooks';
+import toast from 'react-hot-toast';
+import pb from '@/api/pb';
 import {
-  authUtils,
   validateEmail,
+  validateUsername,
   validateNickname,
   validatePassword,
-  validateUsername,
+  authUtils,
 } from '@/utils';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCheckAvailability } from '@/hooks';
 import { Helmet } from 'react-helmet-async';
-import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 
 const FORM_FIELDS = [
   'username',
@@ -24,6 +24,8 @@ const DUPLICATE_CHECK_FIELDS = ['username', 'email', 'name'];
 
 const Register = () => {
   const navigate = useNavigate();
+  const { duplicate, checkAvailability, resetDuplicate } =
+    useCheckAvailability();
 
   const [form, setForm] = useState({
     username: '',
@@ -39,49 +41,87 @@ const Register = () => {
     if (authUtils.getAuth().isAuth) navigate('/');
   }, [navigate]);
 
-  const { duplicate, checkAvailability, resetDuplicate } =
-    useCheckAvailability();
+  const validateField = useCallback(
+    (id, value, updatedForm = form) => {
+      const validationRules = {
+        username: () =>
+          validateUsername(value) ? '' : '영어, 숫자 4자리 이상 입력하세요.',
+        email: () =>
+          validateEmail(value) ? '' : '유효한 이메일 주소를 입력하세요.',
+        name: () =>
+          validateNickname(value) ? '' : '특수문자 제외 2~6 자리로 입력하세요.',
+        password: () =>
+          validatePassword(value)
+            ? ''
+            : '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.',
+        passwordConfirm: () =>
+          value === updatedForm.password ? '' : '비밀번호가 일치하지 않습니다.',
+      };
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
+      return validationRules[id] ? validationRules[id]() : '';
+    },
+    [form]
+  );
 
-    if (DUPLICATE_CHECK_FIELDS.includes(id)) {
-      resetDuplicate(id);
-    }
+  const handleChange = useCallback(
+    (e) => {
+      const { id, value } = e.target;
 
-    setForm((prevForm) => {
-      const updatedForm = { ...prevForm, [id]: value };
-      const error = validateField(id, value, updatedForm);
-      setErrors((prev) => ({ ...prev, [id]: error }));
-
-      if (id === 'password' || id === 'passwordConfirm') {
-        const confirmError = validateField(
-          'passwordConfirm',
-          updatedForm.passwordConfirm,
-          updatedForm
-        );
-        setErrors((prev) => ({ ...prev, passwordConfirm: confirmError }));
+      if (DUPLICATE_CHECK_FIELDS.includes(id)) {
+        resetDuplicate(id);
       }
 
-      return updatedForm;
+      setForm((prevForm) => {
+        const updatedForm = { ...prevForm, [id]: value };
+        const error = validateField(id, value, updatedForm);
+        setErrors((prev) => ({ ...prev, [id]: error }));
+
+        if (id === 'password' || id === 'passwordConfirm') {
+          const confirmError = validateField(
+            'passwordConfirm',
+            updatedForm.passwordConfirm,
+            updatedForm
+          );
+          setErrors((prev) => ({ ...prev, passwordConfirm: confirmError }));
+        }
+
+        return updatedForm;
+      });
+    },
+    [validateField, resetDuplicate]
+  );
+
+  const validateForm = useCallback(() => {
+    const newErrors = {};
+    const isValid = FORM_FIELDS.every((field) => {
+      if (!form[field].trim()) {
+        newErrors[field] = '해당 필드 입력은 필수입니다.';
+        return false;
+      }
+      const error = validateField(field, form[field]);
+      if (error) {
+        newErrors[field] = error;
+        return false;
+      }
+      return true;
     });
-  };
+
+    setErrors(newErrors);
+    return isValid;
+  }, [form, validateField]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    toast.remove();
 
-    if (!validateForm(form, setErrors)) {
-      toast.error('모든 필드를 올바르게 입력해주세요.', {
-        duration: 1500,
-        id: 'fieldError',
-      });
+    if (!validateForm()) {
+      toast.error('모든 필드를 올바르게 입력해주세요.', { duration: 1500 });
       return;
     }
 
-    if (!duplicate.username || !duplicate.email || !duplicate.name) {
+    if (!DUPLICATE_CHECK_FIELDS.every((field) => duplicate[field])) {
       toast.error('중복 확인을 하지 않은 필드가 존재합니다.', {
         duration: 1500,
-        id: 'duplicateError',
       });
       return;
     }
@@ -97,9 +137,7 @@ const Register = () => {
           success: '회원가입을 완료했습니다!',
           error: '회원가입에 실패했습니다...',
         },
-        {
-          duration: 2000,
-        }
+        { duration: 2000 }
       );
       await pb.collection('users').requestVerification(form.email);
       toast.success('가입한 이메일 인증 후 로그인이 가능합니다.', {
@@ -108,6 +146,7 @@ const Register = () => {
       navigate('/login');
     } catch (error) {
       console.error('[Error] 회원가입: ', error);
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -127,7 +166,23 @@ const Register = () => {
         중복확인
       </button>
     ),
-    [checkAvailability, form, duplicate]
+    [checkAvailability, form, validateField, duplicate]
+  );
+
+  const formFields = useMemo(
+    () => [
+      { id: 'username', label: '아이디', type: 'text' },
+      { id: 'email', label: '이메일', type: 'email' },
+      { id: 'name', label: '닉네임', type: 'text' },
+      { id: 'password', label: '비밀번호', type: 'password', isViewIcon: true },
+      {
+        id: 'passwordConfirm',
+        label: '비밀번호 확인',
+        type: 'password',
+        isViewIcon: true,
+      },
+    ],
+    []
   );
 
   return (
@@ -160,70 +215,24 @@ const Register = () => {
       </header>
       <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-5">
-          <div className="flex justify-between max-w-[250px] gap-2">
-            <Input
-              label="아이디"
-              type="text"
-              id="username"
-              value={form.username}
-              onChange={handleChange}
-              error={!!errors.username}
-              errorMessage={errors.username}
-              duplicate={duplicate.username}
-              className="min-h-[65px]"
-            />
-            {renderDuplicateCheckButton('username')}
-          </div>
-          <div className="flex justify-between max-w-[250px] gap-2">
-            <Input
-              label="이메일"
-              type="email"
-              id="email"
-              value={form.email}
-              onChange={handleChange}
-              error={!!errors.email}
-              errorMessage={errors.email}
-              duplicate={duplicate.email}
-              className="min-h-[65px]"
-            />
-            {renderDuplicateCheckButton('email')}
-          </div>
-          <div className="flex justify-between max-w-[250px] gap-2">
-            <Input
-              label="닉네임"
-              type="text"
-              id="name"
-              value={form.name}
-              onChange={handleChange}
-              error={!!errors.name}
-              errorMessage={errors.name}
-              duplicate={duplicate.name}
-              className="min-h-[65px]"
-            />
-            {renderDuplicateCheckButton('name')}
-          </div>
-          <Input
-            label="비밀번호"
-            type="password"
-            id="password"
-            value={form.password}
-            onChange={handleChange}
-            error={!!errors.password}
-            errorMessage={errors.password}
-            isViewIcon={true}
-            className="min-h-[65px]"
-          />
-          <Input
-            label="비밀번호 확인"
-            type="password"
-            id="passwordConfirm"
-            value={form.passwordConfirm}
-            onChange={handleChange}
-            error={!!errors.passwordConfirm}
-            errorMessage={errors.passwordConfirm}
-            isViewIcon={true}
-            className="min-h-[65px]"
-          />
+          {formFields.map(({ id, label, type, isViewIcon }) => (
+            <div key={id} className="flex justify-between max-w-[250px] gap-2">
+              <Input
+                label={label}
+                type={type}
+                id={id}
+                value={form[id]}
+                onChange={handleChange}
+                error={!!errors[id]}
+                errorMessage={errors[id]}
+                duplicate={duplicate[id]}
+                isViewIcon={isViewIcon}
+                className="min-h-[65px]"
+              />
+              {DUPLICATE_CHECK_FIELDS.includes(id) &&
+                renderDuplicateCheckButton(id)}
+            </div>
+          ))}
         </div>
 
         <div className="flex flex-row justify-between flex-nowrap">
@@ -244,46 +253,6 @@ const Register = () => {
       </form>
     </div>
   );
-};
-
-const validateForm = (form, setErrors) => {
-  let isValid = true;
-  const newErrors = {};
-
-  FORM_FIELDS.forEach((field) => {
-    if (!form[field].trim()) {
-      newErrors[field] = '이 필드는 필수입니다.';
-      isValid = false;
-    } else {
-      const error = validateField(field, form[field]);
-      if (error) {
-        newErrors[field] = error;
-        isValid = false;
-      }
-    }
-  });
-
-  setErrors(newErrors);
-  return isValid;
-};
-
-const validateField = (id, value, updatedForm) => {
-  const validationRules = {
-    username: () =>
-      validateUsername(value) ? '' : '영어, 숫자 4자리 이상 입력하세요.',
-    email: () =>
-      validateEmail(value) ? '' : '유효한 이메일 주소를 입력하세요.',
-    name: () =>
-      validateNickname(value) ? '' : '특수문자 제외 2~6 자리로 입력하세요.',
-    password: () =>
-      validatePassword(value)
-        ? ''
-        : '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.',
-    passwordConfirm: () =>
-      value === updatedForm.password ? '' : '비밀번호가 일치하지 않습니다.',
-  };
-
-  return validationRules[id] ? validationRules[id]() : '';
 };
 
 export default React.memo(Register);
