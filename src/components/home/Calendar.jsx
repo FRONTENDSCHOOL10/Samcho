@@ -9,14 +9,8 @@ const Calendar = ({
   diaryData = [],
   selectedMonth = format(new Date(), 'yyyy-MM'),
   selectedMood,
-  loading,
 }) => {
-  const { weekRows } = useCalendar(
-    diaryData,
-    selectedMonth,
-    selectedMood,
-    loading
-  );
+  const { weekRows } = useCalendar(diaryData, selectedMonth, selectedMood);
 
   return (
     <table className="w-full border-separate border-spacing-y-5">
@@ -42,7 +36,6 @@ const Calendar = ({
                     date={day.date}
                     id={day.id}
                     hasDiaryWithDifferentMood={day.hasDiaryWithDifferentMood}
-                    loading={loading}
                   />
                 ) : null}
               </td>
@@ -58,7 +51,6 @@ Calendar.propTypes = {
   diaryData: PropTypes.array,
   selectedMonth: PropTypes.string,
   selectedMood: PropTypes.string,
-  loading: PropTypes.bool,
 };
 
 export default Calendar;

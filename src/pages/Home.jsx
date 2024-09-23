@@ -74,7 +74,6 @@ const Home = ({ viewMode: initialViewMode }) => {
           diaryData={diaryData}
           selectedMonth={selectedMonth}
           selectedMood={selectedMood}
-          loading={loading}
         />
       );
     }
