@@ -3,7 +3,7 @@ import moods from '@/assets/icons/mood/moods';
 
 const SelectMood = ({ isSelected, setSelected }) => {
   const handleClick = (name) => {
-    setSelected(isSelected === name ? null : name);
+    setSelected(isSelected === name ? '' : name);
   };
 
   const emotionItems = Object.entries(moods).map(([key, src]) => (

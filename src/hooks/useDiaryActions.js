@@ -73,11 +73,12 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       setIsSubmitting(true);
 
       if (
-        selectedMood.length === 0 ||
+        selectedMood === '' ||
         selectedEmotions.length === 0 ||
         selectedWeathers.length === 0 ||
         text === ''
       ) {
+        console.log(selectedMood);
         toast.remove();
         toast.error('입력하지 않은 필수 값이 있습니다.', {
           duration: 1500,
