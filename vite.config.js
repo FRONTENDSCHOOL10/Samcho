@@ -44,8 +44,26 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          // 주요 React 관련 라이브러리
           react: ['react', 'react-dom'],
           'react-router-dom': ['react-router-dom'],
+
+          // UI 관련 라이브러리
+          'ui-libs': ['react-hot-toast', 'react-icons', 'react-spinners'],
+
+          // 유틸리티 라이브러리
+          utils: ['lodash', 'query-string', 'date-fns'],
+
+          // 이미지 처리 관련
+          'image-processing': ['browser-image-compression'],
+
+          // 기타 라이브러리
+          misc: ['pocketbase', 'react-helmet-async'],
+
+          components: [
+            './src/components/common/DiaryDetail.jsx',
+            './src/pages/diary/DetailDiary.jsx',
+          ],
         },
       },
     },
