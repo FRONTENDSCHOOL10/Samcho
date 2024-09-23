@@ -172,7 +172,7 @@ const DiaryCard = ({
         closeModal={() => closeModal('deleteModal')}
         title="일기삭제"
         onConfirm={() =>
-          deleteDiary(diary.id, () => closeModal('deleteModal'), onDelete)
+          deleteDiary(diary.id, closeModal('deleteModal'), onDelete)
         }
       >
         <strong>{date}</strong> 일기를 삭제 하시겠습니까?

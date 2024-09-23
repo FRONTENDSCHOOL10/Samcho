@@ -183,11 +183,11 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       const pendingPost = post.find((item) => item.status === 'pending');
 
       if (acceptedPost) {
-        toast.error('교환 중인 일기는 삭제할 수 없습니다 🙅‍♀️'),
+        toast.error('교환 중인 일기는 삭제할 수 없습니다.'),
           {
             duration: 2000,
           };
-        if (closeModal) closeModal();
+        if (closeModal) await closeModal();
         return;
       }
 
@@ -203,25 +203,18 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         }
         await pb.collection('post').delete(pendingPost.id);
       }
+      await toast.promise(pb.collection('diary').delete(id), {
+        loading: '일기를 삭제하는 중입니다...',
+        success: '일기를 성공적으로 삭제했습니다.',
+        error: '일기 삭제 중 오류가 발생했습니다. 다시 시도해주세요',
+      });
 
-      await toast.promise(
-        pb.collection('diary').delete(id),
-        {
-          loading: '일기를 삭제하는 중입니다...⏳',
-          success: '일기를 성공적으로 삭제했습니다.',
-          error: '일기 삭제 중 오류가 발생했습니다. 다시 시도해주세요 😥',
-        },
-        {
-          duration: 2000,
-        }
-      );
-
-      if (closeModal) closeModal();
+      if (closeModal) await closeModal();
       if (onDelete) onDelete(id);
       navigate('/');
     } catch (error) {
       console.error('[error] 다이어리 삭제 실패: ', error);
-      throw error;
+      return;
     }
   };
 
