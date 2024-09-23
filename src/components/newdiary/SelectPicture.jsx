@@ -96,7 +96,13 @@ const SelectPicture = ({ picture, setPicture }) => {
       >
         {!preview && (
           <>
-            <img src={CameraIcon} className="w-10 h-9" alt="Camera icon" />
+            <img
+              src={CameraIcon}
+              className="w-10 h-9"
+              alt="Camera icon"
+              width={40}
+              height={36}
+            />
             <span>
               원하는 사진 1장을 선택해주세요 <br /> (선택사항)
             </span>

@@ -19,6 +19,9 @@ const SelectMood = ({ isSelected, setSelected }) => {
           className={`w-full h-full transition-filter duration-300 ease-in-out ${
             isSelected === key ? 'filter-none' : 'filter grayscale'
           }`}
+          width={44}
+          height={44}
+          loading="lazy"
         />
         <span
           className={`text-xs font-medium ${

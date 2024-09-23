@@ -17,7 +17,14 @@ const WeatherWithIcon = ({ src, text, isSelected, onClick, className }) => {
       onClick={onClick}
       aria-pressed={isSelected}
     >
-      <img src={src} alt={text} className={imageClasses} />
+      <img
+        src={src}
+        alt={text}
+        className={imageClasses}
+        width={36}
+        height={36}
+        loading="lazy"
+      />
       <span className={spanClasses}>{text}</span>
     </button>
   );

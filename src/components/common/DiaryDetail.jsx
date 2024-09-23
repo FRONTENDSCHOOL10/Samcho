@@ -76,6 +76,7 @@ const DiaryDetail = ({ diaryDetail, exchange = false }) => {
               alt={`${diaryDetail.mood} 아이콘`}
               width={44}
               height={44}
+              loading="lazy"
             />
             <span className="text-base font-semibold text-gray-450">
               {dateFormatted}

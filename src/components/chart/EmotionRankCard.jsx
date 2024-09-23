@@ -21,6 +21,9 @@ const EmotionRankCard = ({ text, count, rank, image, grayscale = false }) => {
           src={image}
           alt={text}
           className="w-[50px] h-[50px] rounded-full object-cover"
+          width={50}
+          height={50}
+          loading="lazy"
         />
         <p className="text-sm font-medium text-blue" aria-hidden="true">
           {text}

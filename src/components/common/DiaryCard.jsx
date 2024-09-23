@@ -113,6 +113,7 @@ const DiaryCard = ({
               alt={mood}
               title={mood}
               aria-label={`${mood} 기분`}
+              loading="lazy"
             />
             <span className="text-nowrap px-2.5 py-0.5 text-xs rounded-md bg-blue-50 text-gray-450 h-fit">
               {day}
