@@ -73,7 +73,7 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       setIsSubmitting(true);
 
       if (
-        selectedMood === '' ||
+        selectedMood.length === 0 ||
         selectedEmotions.length === 0 ||
         selectedWeathers.length === 0 ||
         text === ''
