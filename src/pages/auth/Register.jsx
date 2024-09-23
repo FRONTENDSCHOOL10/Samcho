@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Input } from '@/components';
-import toast from 'react-hot-toast';
 import pb from '@/api/pb';
+import { Button, Input } from '@/components';
+import { useCheckAvailability } from '@/hooks';
 import {
+  authUtils,
   validateEmail,
-  validateUsername,
   validateNickname,
   validatePassword,
-  authUtils,
+  validateUsername,
 } from '@/utils';
-import { useCheckAvailability } from '@/hooks';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const FORM_FIELDS = [
   'username',
@@ -24,8 +24,6 @@ const DUPLICATE_CHECK_FIELDS = ['username', 'email', 'name'];
 
 const Register = () => {
   const navigate = useNavigate();
-  const { duplicate, checkAvailability, resetDuplicate } =
-    useCheckAvailability();
 
   const [form, setForm] = useState({
     username: '',
@@ -41,27 +39,8 @@ const Register = () => {
     if (authUtils.getAuth().isAuth) navigate('/');
   }, [navigate]);
 
-  const validateField = useCallback(
-    (id, value, updatedForm = form) => {
-      const validationRules = {
-        username: () =>
-          validateUsername(value) ? '' : '영어, 숫자 4자리 이상 입력하세요.',
-        email: () =>
-          validateEmail(value) ? '' : '유효한 이메일 주소를 입력하세요.',
-        name: () =>
-          validateNickname(value) ? '' : '특수문자 제외 2~6 자리로 입력하세요.',
-        password: () =>
-          validatePassword(value)
-            ? ''
-            : '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.',
-        passwordConfirm: () =>
-          value === updatedForm.password ? '' : '비밀번호가 일치하지 않습니다.',
-      };
-
-      return validationRules[id] ? validationRules[id]() : '';
-    },
-    [form]
-  );
+  const { duplicate, checkAvailability, resetDuplicate } =
+    useCheckAvailability();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -88,34 +67,13 @@ const Register = () => {
     });
   };
 
-  const validateForm = useCallback(() => {
-    let isValid = true;
-    const newErrors = {};
-
-    FORM_FIELDS.forEach((field) => {
-      if (!form[field].trim()) {
-        newErrors[field] = '이 필드는 필수입니다.';
-        isValid = false;
-      } else {
-        const error = validateField(field, form[field]);
-        if (error) {
-          newErrors[field] = error;
-          isValid = false;
-        }
-      }
-    });
-
-    setErrors(newErrors);
-    return isValid;
-  }, [form, validateField]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.remove();
 
-    if (!validateForm()) {
+    if (!validateForm(form, setErrors)) {
       toast.error('모든 필드를 올바르게 입력해주세요.', {
         duration: 1500,
+        id: 'fieldError',
       });
       return;
     }
@@ -123,6 +81,7 @@ const Register = () => {
     if (!duplicate.username || !duplicate.email || !duplicate.name) {
       toast.error('중복 확인을 하지 않은 필드가 존재합니다.', {
         duration: 1500,
+        id: 'duplicateError',
       });
       return;
     }
@@ -168,7 +127,7 @@ const Register = () => {
         중복확인
       </button>
     ),
-    [checkAvailability, form, validateField, duplicate]
+    [checkAvailability, form, duplicate]
   );
 
   return (
@@ -285,6 +244,46 @@ const Register = () => {
       </form>
     </div>
   );
+};
+
+const validateForm = (form, setErrors) => {
+  let isValid = true;
+  const newErrors = {};
+
+  FORM_FIELDS.forEach((field) => {
+    if (!form[field].trim()) {
+      newErrors[field] = '이 필드는 필수입니다.';
+      isValid = false;
+    } else {
+      const error = validateField(field, form[field]);
+      if (error) {
+        newErrors[field] = error;
+        isValid = false;
+      }
+    }
+  });
+
+  setErrors(newErrors);
+  return isValid;
+};
+
+const validateField = (id, value, updatedForm) => {
+  const validationRules = {
+    username: () =>
+      validateUsername(value) ? '' : '영어, 숫자 4자리 이상 입력하세요.',
+    email: () =>
+      validateEmail(value) ? '' : '유효한 이메일 주소를 입력하세요.',
+    name: () =>
+      validateNickname(value) ? '' : '특수문자 제외 2~6 자리로 입력하세요.',
+    password: () =>
+      validatePassword(value)
+        ? ''
+        : '영문, 숫자, 특수문자 포함 8자리 이상 입력하세요.',
+    passwordConfirm: () =>
+      value === updatedForm.password ? '' : '비밀번호가 일치하지 않습니다.',
+  };
+
+  return validationRules[id] ? validationRules[id]() : '';
 };
 
 export default React.memo(Register);

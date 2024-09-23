@@ -1,11 +1,11 @@
 import pb from '@/api/pb';
-import { Button, Input, Modal } from '@/components';
+import { Button, FindIdModal, FindPwModal, Input } from '@/components';
+import { useModal } from '@/hooks';
 import { authUtils } from '@/utils';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useModal } from '@/hooks';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const { isOpen, openModal, closeModal } = useModal();
@@ -15,9 +15,11 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
-  const [findUsername, setFindUsername] = useState('');
-  const [foundUserId, setFoundUserId] = useState(''); // 아이디 찾기 -> 검색된 아이디
   const [password, setPassword] = useState('');
+
+  const [findUsername, setFindUsername] = useState('');
+  const [foundUserId, setFoundUserId] = useState('');
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -41,7 +43,6 @@ const Login = () => {
     if (username === '' || password === '') {
       toast.error('아이디 혹은 비밀번호를 입력해 주세요.', {
         duration: 1500,
-        className: 'custom-toast',
       });
       return;
     }
@@ -68,65 +69,6 @@ const Login = () => {
         }
         setIsSubmitting(false);
       });
-  };
-
-  // 아이디 찾기 처리 함수
-  const handleFindId = async () => {
-    setIsSubmitting(true);
-    toast.remove();
-    try {
-      const users = await pb.collection('users').getFullList({
-        filter: `email="${email}"`, // 이메일 필터링
-      });
-
-      // 이메일과 일치하는 사용자가 없을 경우
-      if (users.length === 0) {
-        toast.error('해당 이메일로 가입된 아이디가 없습니다.', {
-          id: 'emailError',
-        });
-        setIsSubmitting(false);
-      }
-
-      // 이메일과 일치하는 사용자가 있을 경우, username을 찾음
-      const foundUser = users[0];
-      setFoundUserId(foundUser.username);
-    } catch (error) {
-      console.error(error);
-      setIsSubmitting(false);
-    }
-    setIsSubmitting(false);
-  };
-
-  // 비밀번호 찾기 처리 함수
-  const handleFindPassword = async () => {
-    setIsSubmitting(true);
-
-    try {
-      // 아이디와 이메일이 일치하는지 확인
-      const users = await pb.collection('users').getFullList({
-        filter: `username="${findUsername}" && email="${email}"`,
-      });
-
-      if (users.length === 0) {
-        toast.error('아이디와 이메일이 일치하지 않습니다.', {
-          duration: 2000,
-          id: 'idEmailError',
-        });
-        setIsSubmitting(false);
-        return;
-      }
-
-      // 아이디와 이메일이 일치할 경우 비밀번호 재설정 요청
-      await pb.collection('users').requestPasswordReset(email);
-
-      toast.success('비밀번호 재설정 메일이 발송되었습니다.', {
-        duration: 2000,
-      });
-    } catch (error) {
-      console.error(error);
-      setIsSubmitting(false);
-    }
-    setIsSubmitting(false);
   };
 
   return (
@@ -197,7 +139,6 @@ const Login = () => {
             />
           </div>
         </form>
-        {/* 아이디 찾기 및 비밀번호 찾기 버튼 */}
         <div className="flex flex-row justify-center">
           <button
             type="button"
@@ -214,100 +155,26 @@ const Login = () => {
             비밀번호 찾기
           </button>
         </div>
-        {/* 아이디 찾기 모달 */}
-        <Modal
-          isOpen={isOpen('findIdModal')}
-          closeModal={() => {
-            closeModal('findIdModal');
-            setFoundUserId('');
-            setEmail('');
-          }}
-        >
-          <section className="flex flex-col gap-3 min-h-[118px]">
-            <h3 className="text-lg font-semibold">아이디 찾기</h3>
-            <div className="flex flex-row gap-1">
-              <label htmlFor="find-id-email" className="sr-only">
-                이메일 입력
-              </label>
-              <input
-                type="email"
-                id="find-id-email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="이메일을 입력하세요"
-                className="w-3/4 p-2 border border-gray-300 rounded-md"
-                aria-label="이메일 입력"
-              />
-              <button
-                onClick={handleFindId}
-                className={`w-1/4 p-2 text-white text-wrap ${
-                  isSubmitting || !email ? 'bg-gray-300' : 'bg-blue-500'
-                } rounded-md`}
-                disabled={!email || isSubmitting}
-              >
-                {isSubmitting ? '검색중' : '검색'}
-              </button>
-            </div>
-            {foundUserId && (
-              <div className="text-base text-center text-gray-400">
-                해당 이메일로 가입된 아이디는{' '}
-                <span className="font-semibold text-blue-500">
-                  {foundUserId}
-                </span>{' '}
-                입니다.
-              </div>
-            )}
-          </section>
-        </Modal>
-
-        {/* 비밀번호 찾기 모달 */}
-        <Modal
-          isOpen={isOpen('findPasswordModal')}
-          closeModal={() => closeModal('findPasswordModal')}
-        >
-          <div className="flex flex-col gap-3">
-            <h3 className="text-lg font-semibold">비밀번호 찾기</h3>
-            <section className="flex flex-col gap-2">
-              <label htmlFor="find-password-username" className="sr-only">
-                아이디 입력
-              </label>
-              <input
-                type="text"
-                id="find-password-username"
-                value={findUsername}
-                onChange={(e) => setFindUsername(e.target.value)}
-                placeholder="아이디 입력"
-                className="w-full p-2 border border-gray-300 rounded-md"
-                aria-label="아이디 입력"
-              />
-              <div className="flex flex-row gap-1">
-                <label htmlFor="find-password-email" className="sr-only">
-                  이메일 입력
-                </label>
-                <input
-                  type="email"
-                  id="find-password-email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="이메일 입력"
-                  className="w-3/4 p-2 border border-gray-300 rounded-md"
-                  aria-label="이메일 입력"
-                />
-                <button
-                  className={`w-1/4 p-2 text-white rounded-md text-wrap ${
-                    isSubmitting || !findUsername || !email
-                      ? 'bg-gray-300'
-                      : 'bg-blue-500'
-                  }`}
-                  onClick={handleFindPassword}
-                  disabled={isSubmitting || !findUsername || !email}
-                >
-                  {isSubmitting ? '인증요청 중' : '인증요청'}
-                </button>
-              </div>
-            </section>
-          </div>
-        </Modal>
+        <FindIdModal
+          isOpen={isOpen}
+          closeModal={closeModal}
+          setFoundUserId={setFoundUserId}
+          setEmail={setEmail}
+          email={email}
+          isSubmitting={isSubmitting}
+          foundUserId={foundUserId}
+          setIsSubmitting={setIsSubmitting}
+        />
+        <FindPwModal
+          isOpen={isOpen}
+          closeModal={closeModal}
+          findUsername={findUsername}
+          setFindUsername={setFindUsername}
+          email={email}
+          setEmail={setEmail}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+        />
       </section>
     </>
   );

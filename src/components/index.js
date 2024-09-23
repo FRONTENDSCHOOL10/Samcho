@@ -13,6 +13,10 @@ export { default as BuddyListModal } from './common/BuddyListModal.jsx';
 export { default as ConfirmModal } from './common/ConfirmModal';
 export { default as LoadingSpinner } from './common/LoadingSpinner.jsx';
 
+// auth
+export { default as FindIdModal } from './auth/FindIdModal';
+export { default as FindPwModal } from './auth/FindPwModal';
+
 // home
 export { default as Calendar } from './home/Calendar.jsx';
 export { default as FeelingCalendar } from './home/FeelingCalendar.jsx';
