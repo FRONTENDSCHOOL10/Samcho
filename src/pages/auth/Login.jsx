@@ -89,14 +89,14 @@ const Login = () => {
         />
         <meta
           property="og:image"
-          content="https://harumong.netlify.app/logo.png"
+          content="https://harumong.netlify.app/logo.webp"
         />
       </Helmet>
       <section className="flex flex-col items-center justify-center gap-10 min-h-dvh">
         <header className="flex justify-center">
           <h1 className="sr-only">하루몽 로그인</h1>
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="하루몽"
             loading="lazy"
             width={225}

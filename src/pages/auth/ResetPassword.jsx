@@ -66,7 +66,7 @@ export const Component = () => {
       <header className="flex justify-center">
         <h1 className="sr-only">하루몽 비밀번호 재설정</h1>
         <img
-          src="/logo.png"
+          src="/logo.webp"
           alt="하루몽"
           loading="lazy"
           width={225}

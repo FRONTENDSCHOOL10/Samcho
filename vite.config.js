@@ -3,11 +3,6 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 import svgr from 'vite-plugin-svgr';
 import { visualizer } from 'rollup-plugin-visualizer';
-import viteImagemin from '@vheemstra/vite-plugin-imagemin';
-import imageminMozjpeg from 'imagemin-mozjpeg';
-import imageminPngquant from 'imagemin-pngquant';
-import imageminWebp from 'imagemin-webp';
-import imageminSVGO from 'imagemin-svgo';
 
 export default defineConfig({
   publicDir: 'public',
@@ -17,24 +12,7 @@ export default defineConfig({
     port: 3000,
     open: false,
   },
-  plugins: [
-    react(),
-    svgr(),
-    viteImagemin({
-      plugins: {
-        jpg: imageminMozjpeg(),
-        png: imageminPngquant(),
-        svg: imageminSVGO(),
-      },
-      makeWebp: {
-        plugins: {
-          jpg: imageminWebp(),
-          png: imageminWebp(),
-        },
-      },
-    }),
-    visualizer({ open: false }),
-  ],
+  plugins: [react(), svgr(), visualizer({ open: false })],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -59,11 +37,6 @@ export default defineConfig({
 
           // 기타 라이브러리
           misc: ['pocketbase', 'react-helmet-async'],
-
-          components: [
-            './src/components/common/DiaryDetail.jsx',
-            './src/pages/diary/DetailDiary.jsx',
-          ],
         },
       },
     },

@@ -34,7 +34,7 @@ const Chart = () => {
         />
         <meta
           property="og:image"
-          content="https://harumong.netlify.app/logo.png"
+          content="https://harumong.netlify.app/logo.webp"
         />
       </Helmet>
       <section className="flex flex-col gap-5 pb-[80px]">

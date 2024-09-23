@@ -90,7 +90,7 @@ const ChartMoreList = () => {
         />
         <meta
           property="og:image"
-          content="https://harumong.netlify.app/logo.png"
+          content="https://harumong.netlify.app/logo.webp"
         />
       </Helmet>
       <section className="min-h-dvh pb-[80px]">

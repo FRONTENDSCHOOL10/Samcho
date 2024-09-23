@@ -16,7 +16,7 @@ const ErrorPage = () => {
       className="flex flex-col items-center justify-center w-full h-screen gap-10 px-12"
       aria-label="페이지를 찾을 수 없음"
     >
-      <img src="/errorMong.png" alt="에러 페이지 안내 이미지" />
+      <img src="/errorMong.webp" alt="에러 페이지 안내 이미지" />
       <div className="flex flex-col gap-5">
         <h1 className="text-lg font-bold text-center whitespace-pre-wrap text-blue">
           {ERROR_404_HEADER}

@@ -206,7 +206,7 @@ const Register = () => {
         />
         <meta
           property="og:image"
-          content="https://harumong.netlify.app/logo.png"
+          content="https://harumong.netlify.app/logo.webp"
         />
       </Helmet>
 
