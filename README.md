@@ -1,20 +1,23 @@
 <div align="center">
-<h2><img src="https://velog.velcdn.com/images/zidoopal/post/aee398fb-c463-4b1c-8347-9767d0e39ba7/image.png" alt="하루몽 로고"> <img src="https://velog.velcdn.com/images/zidoopal/post/f46dac17-2b58-4bae-a81a-5bcf92b08911/image.png" alt="하루몽 캐릭터"></h2>
+<img src="https://velog.velcdn.com/images/zidoopal/post/aee398fb-c463-4b1c-8347-9767d0e39ba7/image.png" alt="하루몽 로고"> <img src="https://velog.velcdn.com/images/zidoopal/post/f46dac17-2b58-4bae-a81a-5bcf92b08911/image.png" alt="하루몽 캐릭터">
+<h2>감정 기반 일기 웹 애플리케이션 하루몽</h2>
 <p>멋쟁이 사자처럼 프론트엔드 스쿨 10기&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;3조 <strong>삼초고려</strong></p>
 </div>
 
 <br>
 
-## 목차
+## 📚 목차
 
+- [팀원 구성](#팀원-구성)
 - [프로젝트 소개](#프로젝트-소개)
+- [유저 플로우](#유저-플로우)
+- [ERD](#erd)
 - [프로젝트 기능 소개](#프로젝트-기능-소개)
 - [개발 환경 및 기술 스택](#개발-환경-및-기술-스택)
-- [팀원 소개](#팀원-소개)
 
 <br>
 
-### 프로젝트 소개
+## 👩‍💻 프로젝트 소개
 
 <table align="center" style="width: 70%">
 <tr><th style="text-align: center">하루몽 소개</th></tr>
@@ -53,7 +56,21 @@
 
 <br>
 
-### 프로젝트 기능 소개
+<br>
+
+## 🏃‍♂️ 유저 플로우
+
+![](https://velog.velcdn.com/images/zidoopal/post/d63794a8-f11e-4e62-8d0a-5bd6b6b4d0d7/image.png)
+
+<br>
+
+## 🧱 ERD
+
+![](https://velog.velcdn.com/images/zidoopal/post/54af6e8e-eadf-446b-af35-16f50ec88f1b/image.png)
+
+<br>
+
+## 🧩 프로젝트 기능 소개
 
 <table align="center" style="width: 100%">
 <tr><th style="text-align:center">주요 기능</th></tr>
@@ -69,7 +86,15 @@
 
 <tr><th style="text-align:center">기능 상세 설명</th></tr>
 <tr><th style="text-align:center">회원가입 및 로그인</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/74c5a32e-8923-49f7-9486-e3559f3c7179/image.gif" alt="하루몽 회원가입 및 로그인 화면" style="display: block; margin-left: auto; margin-right: auto;" />
+
+<br>
+
+<div align="left">
 
 - 회원가입
 
@@ -81,74 +106,212 @@
   - 회원가입 완료 시 입력한 이메일로 인증 메일 전송
 
 - 로그인
-  - 인증 메일 인증 완료 후 로그인 가능
 
+  인증 메일 인증 완료 후 로그인 가능
+
+</div>
 </td></tr>
-<tr><th style="text-align:center">일기 작성</th></tr>
-<tr><td>
 
+<tr><th style="text-align:center">아이디 / 비밀번호 찾기</th></tr>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/6e029696-231f-4272-8232-1a2c9f187b52/image.gif" alt="하루몽 사이트 아이디,비밀번호 찾기 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<br>
+
+<div align="left">
+
+- 아이디 찾기
+
+  - 가입 시 인증 받았던 이메일을 입력하면 가입한 아이디를 안내함
+
+  <br>
+
+- 비밀번호 찾기
+  - 가입 시 인증 받았던 이메일과 아이디를 입력하면 비밀번호 재설정 인증 메일이 발송됨.
+  - 인증 메일 확인 후, 비밀번호 재설정
+
+</div>
+</td></tr>
+
+<tr><th style="text-align:center">일기 작성</th></tr>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/886a5fd9-9783-461d-b715-fc17dda04373/image.gif" alt="하루몽 사이트 일기 작성 화면" style="display: block; margin-left: auto; margin-right: auto;" />
+
+<br>
+
+<div align="left">
+
+  <br>
+  
 - 하루에 최대 1번 일기 작성 가능
 - 오늘 하루의 기분(행복, 기쁨, 보통, 나쁨, 슬픔 중 선택)
 - 감정 선택 (긍정적 감정 10가지, 부정적 감정 10가지 중 최소 1개, 최대 5개)
 - 날씨 선택 (최소 1개, 최대 2개 선택)
 - 한줄일기 작성 (최대 200자, 공백 제외)
-- 사진 1장 첨부 가능(선택 사항)
+- 사진 1장 첨부 가능(선택 사항) 
 - 일기 작성 후 해당 날짜에 기분 이모티콘이 캘린더에 표시됨
+
+</div>
 </td></tr>
+
+<tr><th style="text-align:center">일기 내용 자동 저장</th></tr>
+
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/1a2e1b41-030d-47cf-a9d2-348359e76f3b/image.gif" alt="하루몽 사이트 일기 내용 자동 저장 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<br>
+
+<div align="left">
+
+  <br>
+  
+- 일기 작성 중 입력한 내용이 세션 스토리지에 자동 저장
+- 새로고침 / 뒤로가기 시 입력한 내용 복구 가능
+- 새 일기 작성 완료 시 자동 저장된 데이터 삭제
+
+</div>
+</td></tr>
+
 <tr><th style="text-align:center">일기 상세</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/02d51b26-3354-41e1-958f-783af990749e/image.gif" alt="하루몽 사이트 일기 수정, 삭제 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<div align="left">
+
+   <br>
 
 - 작성한 일기의 상세 내용 확인 가능
 - 일기 수정 및 삭제 가능
 - '단짝'과 일기 교환 기능 제공
+
+</div>
+
 </td></tr>
 <tr><th style="text-align:center">단짝 기능</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/904c1c98-8c27-4e03-a091-8f6c5fc0affb/image.gif" alt="하루몽 사이트 단짝 기능 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<div align="left">
+  
+   <br>
 
 - 아이디 또는 닉네임 검색을 통한 유저 검색 후 단짝 신청 가능
 - 단짝 신청 수락 및 거절 가능
 - 단짝 관계가 맺어지면 일기 교환 가능
 - 단짝과의 관계를 관리할 수 있으며, 단짝 해제(절교) 기능 제공
+
+</div>
+
 </td></tr>
 <tr><th style="text-align:center">일기 교환</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/077e806b-1082-4820-8ad5-b1e21ab12862/image.gif" alt="하루몽 사이트 일기 교환 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<div align="left">
+  
+   <br>
 
 - 단짝과 1:1 일기 교환 가능
 - 교환된 일기는 우편함에서 확인 가능
 - 교환된 일기는 24시간 뒤 자동으로 삭제
 - 교환된 일기가 몇 시간이 경과했는지 우편함에서 확인 가능
+
+</div>
+
 </td></tr>
 <tr><th style="text-align:center">기분 필터링 및 검색</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/6a2511c1-3f3a-4b3f-b1ff-16a3141aac9e/image.gif" alt="하루몽 사이트 일기 기분 필터링 기능 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<div align="left">
+  
+   <br>
 
 - 일기 작성 시 선택한 기분에 따라 필터링 가능
 - 선택한 기분의 일기만 캘린더에 표시
 - 일기 기록이 없는 날은 다른 색으로 표시되어 일기가 기록되지 않았음을 시각적으로 알림
 - 한줄일기의 내용을 기반으로 일기 검색 가능
 - 검색 기록은 로컬스토리지에 저장되며, 유저별로 관리 가능
+
+</div>
+
 </td></tr>
 <tr><th style="text-align:center">월별 분석 보고서</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/5b1a6f3e-c424-40b7-8fff-31e63652a536/image.gif" alt="하루몽 사이트 월별 일기 분석 보고서 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<div align="left">
+  
+   <br>
 
 - 월별 감정 패턴 분석 제공
 - 선택한 기분의 분포도와 감정 랭킹 제공
 - 감정 차트와 분포도를 통해 자신의 감정 상태를 분석하고 성찰할 수 있음
+
+</div>
+
 </td></tr>
 <tr><th style="text-align:center">캘린더</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/c8328bbd-76b3-4c89-b8f9-6819488df9df/image.gif" alt="하루몽 사이트 메인 캘린더 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<div align="left">
+  
+   <br>
 
 - 작성된 일기를 날짜별로 확인 가능
 - 캘린더에서 날짜를 선택하여 바로 일기 작성 가능
 - 한 달간의 일기를 한눈에 볼 수 있는 캘린더 뷰 제공
 - 한 달간의 일기를 피드 형식으로 확인할 수 있는 리스트 뷰 제공
+
+</div>
+
 </td></tr>
 <tr><th style="text-align:center">마이페이지</th></tr>
-<tr><td>
+<tr align="center"><td>
+
+<br>
+
+<img src="https://velog.velcdn.com/images/zidoopal/post/d64529fc-1b86-4996-83a8-23717d65aeb7/image.gif" alt="하루몽 사이트 마이페이지 화면" style="display: block; margin-left: auto; margin-right: auto; " />
+
+<div align="left">
+  
+   <br>
 
 - 닉네임 변경 및 회원 탈퇴 기능 제공
 - 기록한 일기와 사진 갯수 확인 가능
 - 기록한 사진 모아보기 기능 제공
 - 단짝 관리 기능: 단짝 관계의 유지 기간 확인 및 단짝 해제 가능
+
+</div>
+
 </td></tr>
 
 </th></tr>
@@ -156,10 +319,10 @@
 
 <br>
 
-### 개발 환경 및 기술 스택
+## 🔧 개발 환경 및 기술 스택
 
-<table align="center"  style="width: 70%">
-<tr><th>카테고리</th><th style="width: 400px">사용 기술</th></tr>
+<table align="center" ">
+<tr><th>카테고리</th><th>사용 기술</th></tr>
 
 <tr><td><strong>🌞 프론트엔드</strong></td>
 <td>
@@ -201,31 +364,31 @@
 
 <br>
 
-### 팀원 소개
+## 👩🏾‍🤝‍🧑🏼 팀원 구성
 
 <table align="center">
 <tr>
 <td>
   <a href="https://github.com/devHyeon99">
-    <img src="https://velog.velcdn.com/images/zidoopal/post/d7e8a34f-eac8-4050-a598-c0f21024e012/image.webp" alt="엄현호 프로필"  style="width: 200px; height: 200px; object-fit: cover"/>
+    <img src="https://velog.velcdn.com/images/zidoopal/post/d7e8a34f-eac8-4050-a598-c0f21024e012/image.webp" alt="엄현호 프로필"  style="width: 200px;"/>
   </a>
 </td>
 
 <td>
   <a href="https://github.com/paintover">
-    <img src="https://avatars.githubusercontent.com/u/109131616?v=4" alt="이서연 프로필"  style="width: 200px; height: 200px; object-fit: cover"/>
+    <img src="https://avatars.githubusercontent.com/u/109131616?v=4" alt="이서연 프로필"  style="width: 200px;"/>
   </a>
 </td>
 
 <td align="center">
   <a href="https://github.com/gmlyb1">
-    <img src="https://avatars.githubusercontent.com/u/77711043?v=4" alt="이영빈 프로필"  style="width: 200px; height: 200px; object-fit: cover"/>
+    <img src="https://avatars.githubusercontent.com/u/77711043?v=4" alt="이영빈 프로필"  style="width: 200px;"/>
   </a>
 </td>
 
 <td align="center">
   <a href="https://github.com/heydoopal">
-    <img src="https://avatars.githubusercontent.com/u/167097136?v=4" alt="지유진 프로필"  style="width: 200px; height: 200px; object-fit: cover"/>
+    <img src="https://avatars.githubusercontent.com/u/167097136?v=4" alt="지유진 프로필"  style="width: 200px;"/>
   </a>
 </td>
 </tr>
