@@ -5,64 +5,64 @@ import {
   TopNavigation,
   YearMonth,
 } from '@/components';
-import { useFetchAllBuddyData, useFetchMonthlyDiaryData } from '@/hooks';
-import { format } from 'date-fns';
-import PropTypes from 'prop-types';
-import queryString from 'query-string';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFetchAllBuddyData } from '@/hooks';
+import { useMonthlyDateStore } from '@/stores';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const Home = ({ viewMode: initialViewMode }) => {
+const Home = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [viewMode, setViewMode] = useState(initialViewMode || 'calendar');
-  const [selectedMood, setSelectedMood] = useState('전체');
-  const [selectedMonth, setSelectedMonth] = useState(() => {
-    const queryParams = queryString.parse(location.search);
-    return queryParams.date || format(new Date(), 'yyyy-MM');
-  });
+  const {
+    viewMode,
+    setViewMode,
+    selectedMood,
+    setSelectedMood,
+    selectedMonth,
+    setSelectedMonth,
+    diaryData,
+    loading,
+    initialize,
+  } = useMonthlyDateStore();
 
-  const { diaryData, setDiaryData, loading } =
-    useFetchMonthlyDiaryData(selectedMonth);
+  useEffect(() => {
+    // 페이지 진입 시 초기화 로직 호출
+    initialize();
+  }, [initialize]);
+
+  useEffect(() => {
+    navigate(`/home/${viewMode}`);
+  }, [navigate, viewMode]);
+
   const { buddyData } = useFetchAllBuddyData();
 
   const filteredMoodData = useMemo(() => {
-    if (selectedMood === '전체') return diaryData;
-    return diaryData.filter((diary) => diary.mood === selectedMood);
+    const dataToReturn =
+      selectedMood === '전체'
+        ? diaryData
+        : diaryData.filter((diary) => diary.mood === selectedMood);
+
+    return dataToReturn.sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [diaryData, selectedMood]);
 
   useEffect(() => {
-    if (selectedMood !== '전체' && filteredMoodData.length === 0) {
+    if (
+      selectedMood !== '전체' &&
+      filteredMoodData.length === 0 &&
+      diaryData.length !== 0
+    ) {
       toast.error(`${selectedMood} 기분의 일기가 없어요😥`, {
-        duration: 1500,
+        duration: 2000,
+        id: 'filterError',
       });
     }
-  }, [selectedMood, filteredMoodData.length]);
+  }, [selectedMood, filteredMoodData.length, diaryData.length]);
 
   const handleToggleView = useCallback(() => {
-    setViewMode((prevMode) => (prevMode === 'calendar' ? 'list' : 'calendar'));
-  }, []);
-
-  useEffect(() => {
-    const newQueryParams = queryString.stringify({
-      date: selectedMonth,
-    });
-    navigate(`/home/${viewMode}?${newQueryParams}`, { replace: true });
-  }, [navigate, selectedMonth, viewMode]);
-
-  const handleDiaryDelete = useCallback(
-    (id) => {
-      setDiaryData((prevData) => prevData.filter((diary) => diary.id !== id));
-    },
-    [setDiaryData]
-  );
-
-  const handleMonthChange = useCallback((newMonth) => {
-    setSelectedMonth(newMonth);
-  }, []);
+    setViewMode(viewMode === 'calendar' ? 'list' : 'calendar');
+  }, [viewMode, setViewMode]);
 
   const renderContent = () => {
     if (loading)
@@ -82,12 +82,7 @@ const Home = ({ viewMode: initialViewMode }) => {
       <main className="flex flex-col gap-5">
         {filteredMoodData.length > 0 ? (
           filteredMoodData.map((diary) => (
-            <DiaryCard
-              key={diary.id}
-              diary={diary}
-              buddyData={buddyData}
-              onDelete={handleDiaryDelete}
-            />
+            <DiaryCard key={diary.id} diary={diary} buddyData={buddyData} />
           ))
         ) : (
           <div className="fixed flex flex-col items-center w-full gap-8 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
@@ -134,7 +129,7 @@ const Home = ({ viewMode: initialViewMode }) => {
         />
         <YearMonth
           selectedMonth={selectedMonth}
-          setSelectedMonth={handleMonthChange}
+          setSelectedMonth={setSelectedMonth}
           className="py-5"
         />
         {renderContent()}
@@ -143,8 +138,4 @@ const Home = ({ viewMode: initialViewMode }) => {
   );
 };
 
-Home.propTypes = {
-  viewMode: PropTypes.oneOf(['calendar', 'list']),
-};
-
-export default React.memo(Home);
+export default Home;

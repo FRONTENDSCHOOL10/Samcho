@@ -136,7 +136,7 @@ const DiaryDetail = ({ diaryDetail, exchange = false }) => {
         isOpen={isOpen('deleteModal')}
         closeModal={() => closeModal('deleteModal')}
         title="일기삭제"
-        onConfirm={() => deleteDiary(diaryDetail.id, closeModal('deleteModal'))}
+        onConfirm={() => deleteDiary(diaryDetail, closeModal('deleteModal'))}
       >
         <strong>{diaryDetail.date}</strong> 일기를 삭제 하시겠습니까?
       </ConfirmModal>

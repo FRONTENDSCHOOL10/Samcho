@@ -15,7 +15,6 @@ const DiaryCard = ({
   diary,
   buddyData,
   type = 'icons',
-  onDelete,
   exchange = false,
   timeAgo,
 }) => {
@@ -172,9 +171,7 @@ const DiaryCard = ({
         isOpen={isOpen('deleteModal')}
         closeModal={() => closeModal('deleteModal')}
         title="일기삭제"
-        onConfirm={() =>
-          deleteDiary(diary.id, closeModal('deleteModal'), onDelete)
-        }
+        onConfirm={() => deleteDiary(diary, closeModal('deleteModal'))}
       >
         <strong>{date}</strong> 일기를 삭제 하시겠습니까?
       </ConfirmModal>
@@ -200,7 +197,6 @@ DiaryCard.propTypes = {
     })
   ).isRequired,
   type: PropTypes.oneOf(['icons', 'date']),
-  onDelete: PropTypes.func,
   exchange: PropTypes.bool,
   timeAgo: PropTypes.string,
 };

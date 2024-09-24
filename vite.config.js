@@ -30,7 +30,7 @@ export default defineConfig({
           'ui-libs': ['react-hot-toast', 'react-icons', 'react-spinners'],
 
           // 유틸리티 라이브러리
-          utils: ['lodash', 'query-string', 'date-fns'],
+          utils: ['lodash', 'date-fns'],
 
           // 이미지 처리 관련
           'image-processing': ['browser-image-compression'],

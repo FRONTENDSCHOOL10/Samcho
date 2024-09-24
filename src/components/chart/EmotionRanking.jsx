@@ -9,7 +9,7 @@ const defaultRankingsData = Array.from({ length: 3 }, (_, index) => ({
   emotion: '기록 없음',
   count: 0,
   rank: index + 1,
-  image: '/icons/emotions/default.png',
+  image: '/icons/emotions/default.webp',
 }));
 
 const EmotionRanking = ({ diaryData, loading }) => {

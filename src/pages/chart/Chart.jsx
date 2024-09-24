@@ -1,20 +1,22 @@
-import { useState } from 'react';
-import { format } from 'date-fns';
 import {
   EmotionRanking,
+  MoodChart,
   MoodDistributionChart,
   TopHeader,
-  MoodChart,
   YearMonth,
 } from '@/components';
-import { useFetchMonthlyDiaryData } from '@/hooks';
+import { useMonthlyDateStore } from '@/stores';
+import { Suspense, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 const Chart = () => {
-  const [selectedMonth, setSelectedMonth] = useState(() =>
-    format(new Date(), 'yyyy-MM')
-  );
-  const { diaryData, loading } = useFetchMonthlyDiaryData(selectedMonth);
+  const { selectedMonth, setSelectedMonth, diaryData, loading, initialize } =
+    useMonthlyDateStore();
+
+  useEffect(() => {
+    // 페이지 진입 시 초기화 로직 호출
+    initialize();
+  }, [initialize]);
 
   return (
     <>
@@ -43,7 +45,13 @@ const Chart = () => {
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
         />
-        <MoodChart diaryData={diaryData} loading={loading} />
+        <Suspense
+          fallback={
+            <div className="w-[400px] h-[304px] bg-white shadow-light"></div>
+          }
+        >
+          <MoodChart diaryData={diaryData} loading={loading} />
+        </Suspense>
         <MoodDistributionChart diaryData={diaryData} loading={loading} />
         <EmotionRanking diaryData={diaryData} loading={loading} />
       </section>

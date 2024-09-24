@@ -4,11 +4,13 @@ import { toast } from 'react-hot-toast';
 import { pb } from '@/api';
 import imageCompression from 'browser-image-compression';
 import { format } from 'date-fns';
+import { useMonthlyDateStore } from '@/stores';
 
 const baseImageUrl = `${import.meta.env.VITE_PB_API}/files/diary`;
 
 const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
   const userId = JSON.parse(localStorage.getItem('auth')).user.id;
+  const { setDiaryData } = useMonthlyDateStore();
 
   const navigate = useNavigate();
 
@@ -78,7 +80,6 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         selectedWeathers.length === 0 ||
         text === ''
       ) {
-        console.log(selectedMood);
         toast.remove();
         toast.error('입력하지 않은 필수 값이 있습니다.', {
           duration: 1500,
@@ -151,8 +152,17 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
             duration: 2000,
           }
         )
-        .then(() => {
+        .then((response) => {
           setIsSubmitting(false);
+
+          if (diaryId) {
+            // 수정의 경우
+            setDiaryData('update', response);
+          } else {
+            // 새로 작성의 경우
+            setDiaryData('create', response);
+          }
+
           if (!diaryId) sessionStorage.removeItem('autosave');
           navigate(`/home/calendar?date=${format(defaultTitle, 'yyyy-MM')}`);
         })
@@ -171,13 +181,14 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
       text,
       picture,
       navigate,
+      setDiaryData,
     ]
   );
 
-  const deleteDiary = async (id, closeModal, onDelete) => {
+  const deleteDiary = async (diary, closeModal) => {
     try {
       const post = await pb.collection('post').getFullList({
-        filter: `(requester_diary = "${id}" || recipient_diary = "${id}")`,
+        filter: `(requester_diary = "${diary.id}" || recipient_diary = "${diary.id}")`,
       });
 
       const acceptedPost = post.find((item) => item.status === 'accepted');
@@ -204,14 +215,14 @@ const useDiaryActions = (diaryDetail, defaultTitle, diaryId) => {
         }
         await pb.collection('post').delete(pendingPost.id);
       }
-      await toast.promise(pb.collection('diary').delete(id), {
+      await toast.promise(pb.collection('diary').delete(diary.id), {
         loading: '일기를 삭제하는 중입니다...',
         success: '일기를 성공적으로 삭제했습니다.',
         error: '일기 삭제 중 오류가 발생했습니다. 다시 시도해주세요',
       });
 
       if (closeModal) await closeModal();
-      if (onDelete) onDelete(id);
+      setDiaryData('delete', diary);
       navigate('/');
     } catch (error) {
       console.error('[error] 다이어리 삭제 실패: ', error);

@@ -33,8 +33,8 @@ export const routes = [
       {
         path: 'home',
         children: [
-          { path: 'calendar', element: <Home viewMode="calendar" /> },
-          { path: 'list', element: <Home viewMode="list" /> },
+          { path: 'calendar', element: <Home /> },
+          { path: 'list', element: <Home /> },
           { path: 'notification', element: <Notification /> },
           { path: 'search', element: <SearchDiary /> },
         ],

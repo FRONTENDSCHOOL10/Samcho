@@ -1,2 +1,2 @@
 export { default as useNotificationStore } from './notificationStore';
-export { default as useDiaryStore } from './useDiaryStore';
+export { default as useMonthlyDateStore } from './useMonthlyDateStore';
