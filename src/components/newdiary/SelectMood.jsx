@@ -21,7 +21,6 @@ const SelectMood = ({ isSelected, setSelected }) => {
           }`}
           width={44}
           height={44}
-          loading="lazy"
         />
         <span
           className={`text-xs font-medium ${

@@ -64,7 +64,6 @@ const FeelingCalendar = React.memo(
               className={harumongImgClasses}
               width={44}
               height={44}
-              loading="lazy"
             />
           ) : (
             <DayCircle className={dayCircleClasses} />

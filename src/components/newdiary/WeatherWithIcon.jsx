@@ -23,7 +23,6 @@ const WeatherWithIcon = ({ src, text, isSelected, onClick, className }) => {
         className={imageClasses}
         width={36}
         height={36}
-        loading="lazy"
       />
       <span className={spanClasses}>{text}</span>
     </button>

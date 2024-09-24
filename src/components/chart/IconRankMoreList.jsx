@@ -17,7 +17,6 @@ const IconRankMoreList = ({ rank = 1, emotion = '신나는', count = 0 }) => {
           alt={emotion}
           width={40}
           height={40}
-          loading="lazy"
         />
         <figcaption className="flex flex-col gap-[5px]">
           <span>{emotion}</span>

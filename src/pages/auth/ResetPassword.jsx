@@ -65,13 +65,7 @@ export const Component = () => {
       </Helmet>
       <header className="flex justify-center">
         <h1 className="sr-only">하루몽 비밀번호 재설정</h1>
-        <img
-          src="/logo.webp"
-          alt="하루몽"
-          loading="lazy"
-          width={225}
-          height={150}
-        />
+        <img src="/logo.webp" alt="하루몽" width={225} height={150} />
       </header>
       <form onSubmit={handleSubmit}>
         <fieldset>

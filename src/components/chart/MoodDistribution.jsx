@@ -35,7 +35,6 @@ const MoodDistribution = ({ mood = '행복', ratio = 0, grayscale = false }) => 
         className={`w-9 h-9 ${grayscale ? 'grayscale' : ''}`}
         width={36}
         height={36}
-        loading="lazy"
       />
       <span
         className={`flex justify-center items-center w-[45px] h-5 bg-blue-10 rounded-xl self-stretch text-xs font-medium text-blue-500 text-center ${
